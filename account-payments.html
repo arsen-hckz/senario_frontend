@@ -125,15 +125,42 @@
       gap: 20px;
     }
     .card-icon {
-      width: 44px; height: 28px;
-      border: 1px solid var(--border);
+      width: 50px; height: 32px;
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--gray);
-      flex-shrink: 0;
+      flex-shrink: 0; overflow: hidden;
     }
-    .card-icon--visa { color: #1a1f71; border-color: #1a1f71; }
-    .card-icon--mc   { color: #eb001b; border-color: #eb001b; }
+
+    /* DIGITAL WALLETS */
+    .wallet-section { margin-top: 40px; margin-bottom: 32px; }
+    .wallet-section__title {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray);
+      padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px;
+    }
+    .wallet-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .wallet-row:last-child { border-bottom: none; }
+    .wallet-info { display: flex; align-items: center; gap: 16px; }
+    .wallet-name {
+      font-family: var(--ff-condensed); font-size: 16px;
+      font-weight: 300; letter-spacing: 0.05em;
+    }
+    .wallet-status {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gray); margin-top: 3px;
+    }
+    .wallet-status.connected { color: #2d7a3c; }
+    .btn-wallet {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em;
+      text-transform: uppercase; padding: 10px 20px;
+      border: 1px solid var(--border); background: none; cursor: pointer;
+      color: var(--black); transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-wallet:hover { border-color: var(--black); }
+    .btn-wallet.connected { border-color: #2d7a3c; color: #2d7a3c; }
+    .btn-wallet.connected:hover { border-color: #c0392b; color: #c0392b; }
     .card-details__name {
       font-family: var(--ff-mono);
       font-size: 11px;
@@ -276,6 +303,9 @@
 
     <div class="card-grid" id="cardGrid"></div>
 
+    <!-- DIGITAL WALLETS -->
+    <div class="wallet-section" id="walletSection"></div>
+
     <div class="add-card-section">
       <p class="add-card-title">Add New Card</p>
       <div class="form-grid">
@@ -315,6 +345,17 @@
       ]));
     }
 
+    var CARD_LOGOS = {
+      visa: '<svg width="50" height="32" viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="32" rx="4" fill="#fff" stroke="#e8e8e4" stroke-width="1"/><text x="25" y="22" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#1a1f71">VISA</text></svg>',
+      mc:   '<svg width="50" height="32" viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="32" rx="4" fill="#fff" stroke="#e8e8e4" stroke-width="1"/><circle cx="19" cy="16" r="8" fill="#EB001B"/><circle cx="31" cy="16" r="8" fill="#F79E1B" opacity="0.9"/></svg>'
+    };
+
+    var WALLET_DEFS = [
+      { id: 'gpay',     name: 'Google Pay', svg: '<svg width="50" height="32" viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="32" rx="4" fill="#fff" stroke="#e8e8e4" stroke-width="1"/><text x="8" y="22" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700" fill="#4285F4">G</text><text x="20" y="21" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="500" fill="#5F6368">Pay</text></svg>' },
+      { id: 'paypal',   name: 'PayPal',     svg: '<svg width="50" height="32" viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="32" rx="4" fill="#fff" stroke="#e8e8e4" stroke-width="1"/><text x="6" y="21" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#003087">Pay</text><text x="26" y="21" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#009cde">Pal</text></svg>' },
+      { id: 'applepay', name: 'Apple Pay',  svg: '<svg width="50" height="32" viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="32" rx="4" fill="#000"/><text x="25" y="20" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="400" letter-spacing="0.5" fill="#fff">APPLE PAY</text></svg>' }
+    ];
+
     function renderCards() {
       seedCards();
       var cards = JSON.parse(localStorage.getItem('snr_cards') || '[]');
@@ -325,10 +366,11 @@
         return;
       }
       cards.forEach(function(card, idx) {
+        var logo = CARD_LOGOS[card.type] || '<svg width="50" height="32" viewBox="0 0 50 32"><rect width="50" height="32" rx="4" fill="#fff" stroke="#e8e8e4" stroke-width="1"/><text x="25" y="21" text-anchor="middle" font-family="Arial" font-size="9" fill="#9A9A9A">CARD</text></svg>';
         var el = document.createElement('div');
         el.className = 'payment-card';
         el.innerHTML =
-          '<div class="card-icon card-icon--' + card.type + '">' + card.type.toUpperCase() + '</div>' +
+          '<div class="card-icon">' + logo + '</div>' +
           '<div class="card-details">' +
             '<div class="card-details__name">' + card.name + '&nbsp;&nbsp;····&nbsp;' + card.last4 + '</div>' +
             '<div class="card-details__meta">Expires ' + card.expiry + '</div>' +
@@ -336,6 +378,34 @@
           '<button class="card-remove" onclick="removeCard(' + idx + ')">Remove</button>';
         grid.appendChild(el);
       });
+    }
+
+    function renderWallets() {
+      var connected = JSON.parse(localStorage.getItem('snr_wallets') || '{}');
+      var section = document.getElementById('walletSection');
+      section.innerHTML = '<p class="wallet-section__title">Digital Wallets</p>';
+      WALLET_DEFS.forEach(function(w) {
+        var isOn = !!connected[w.id];
+        var row = document.createElement('div');
+        row.className = 'wallet-row';
+        row.innerHTML =
+          '<div class="wallet-info">' +
+            '<div style="width:50px;height:32px;flex-shrink:0;">' + w.svg + '</div>' +
+            '<div>' +
+              '<div class="wallet-name">' + w.name + '</div>' +
+              '<div class="wallet-status' + (isOn ? ' connected' : '') + '">' + (isOn ? 'Connected' : 'Not connected') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn-wallet' + (isOn ? ' connected' : '') + '" onclick="toggleWallet(\'' + w.id + '\')">' + (isOn ? 'Disconnect' : 'Connect') + '</button>';
+        section.appendChild(row);
+      });
+    }
+
+    function toggleWallet(id) {
+      var connected = JSON.parse(localStorage.getItem('snr_wallets') || '{}');
+      connected[id] = !connected[id];
+      localStorage.setItem('snr_wallets', JSON.stringify(connected));
+      renderWallets();
     }
 
     function removeCard(idx) {
@@ -357,7 +427,7 @@
         return;
       }
       var last4 = number.slice(-4);
-      var type  = number[0] === '4' ? 'visa' : 'mc';
+      var type  = number[0] === '4' ? 'visa' : (number[0] === '5' ? 'mc' : 'mc');
       var cards = JSON.parse(localStorage.getItem('snr_cards') || '[]');
       cards.push({ type: type, name: name, last4: last4, expiry: expiry });
       localStorage.setItem('snr_cards', JSON.stringify(cards));
@@ -381,6 +451,7 @@
     });
 
     renderCards();
+    renderWallets();
 
     (function() {
       if (localStorage.getItem('snr_loggedIn')) {

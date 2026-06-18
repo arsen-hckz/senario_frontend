@@ -254,6 +254,47 @@
       color: var(--gray);
     }
 
+    /* ─── STOCK STATES ──────────────────────────── */
+    .stock-tag {
+      position: absolute; top: 10px; right: 10px;
+      font-family: var(--ff-mono); font-size: 7px;
+      letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 7px;
+      pointer-events: none;
+    }
+    .stock-tag--low { background: #fdf0e8; color: var(--orange); }
+    .stock-tag--oos { background: var(--black); color: var(--white); }
+
+    .product-card__atc.oos {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+    .product-card--oos .product-card__image img { filter: grayscale(40%); }
+    .product-card--oos:hover .product-card__image img {
+      filter: grayscale(40%);
+      transform: none;
+    }
+
+    .product-card__name-row { display: flex; align-items: center; gap: 8px; }
+    .product-card__oos-label {
+      font-family: var(--ff-mono); font-size: 7px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray);
+      white-space: nowrap;
+    }
+
+    /* SALE */
+    .product-card__tag--sale { background: var(--orange); }
+    .product-card__price-wrap {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
+    }
+    .product-card__price--original {
+      font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.1em;
+      color: var(--gray); text-decoration: line-through;
+    }
+    .product-card__price--sale {
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.1em;
+      color: var(--orange);
+    }
+
     /* ─── FOOTER ─────────────────────────────────── */
     .site-footer {
       padding: 60px 24px 44px;
@@ -388,93 +429,7 @@
 
   <!-- PRODUCT GRID -->
   <section class="product-section">
-    <div class="product-grid">
-
-      <a class="product-card" href="product.html?id=1">
-        <div class="product-card__image">
-          <img src="test images/TS01556BLK.jpg" alt="Item 01">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 01</span>
-          <span class="product-card__price">€59</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=2">
-        <div class="product-card__image">
-          <img src="test images/d0e8fa2825a148d3b7cce5adac3a3901.webp" alt="Item 02">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 02</span>
-          <span class="product-card__price">€129</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=3">
-        <div class="product-card__image">
-          <img src="test images/0001s_0000_Curves12copy_0001_Layer2.avif" alt="Item 03">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 03</span>
-          <span class="product-card__price">€89</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=4">
-        <div class="product-card__image">
-          <img src="test images/46-04221_1_copy.webp" alt="Item 04">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 04</span>
-          <span class="product-card__price">€175</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=5">
-        <div class="product-card__image">
-          <img src="test images/15-00247_1_copy.webp" alt="Item 05">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 05</span>
-          <span class="product-card__price">€95</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=6">
-        <div class="product-card__image">
-          <img src="test images/01-01431_1_copy.webp" alt="Item 06">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 06</span>
-          <span class="product-card__price">€149</span>
-        </div>
-      </a>
-
-      <a class="product-card" href="product.html?id=7">
-        <div class="product-card__image">
-          <img src="test images/mockup_sizescopy2.webp" alt="Item 07">
-          <span class="product-card__tag">New</span>
-          <button class="product-card__atc" onclick="addToCart(event, this)">Add to Cart</button>
-        </div>
-        <div class="product-card__info">
-          <span class="product-card__name">Item 07</span>
-          <span class="product-card__price">€65</span>
-        </div>
-      </a>
-
-    </div>
+    <div class="product-grid" id="productGrid"></div>
   </section>
 
   <!-- FOOTER -->
@@ -516,25 +471,128 @@
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    function addToCart(e, btn) {
+    var defaultProducts = [
+      { name:'Item 01', price:59,  qty:25, sizes:'XS,S,M,L,XL', tag:'New',  image:'test images/TS01556BLK.jpg',                                 desc:'Essential tee in heavyweight cotton.' },
+      { name:'Item 02', price:129, qty:8,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/d0e8fa2825a148d3b7cce5adac3a3901.webp',           desc:'Relaxed fit overshirt.' },
+      { name:'Item 03', price:89,  qty:30, sizes:'XS,S,M,L',     tag:'New',  image:'test images/0001s_0000_Curves12copy_0001_Layer2.avif',        desc:'Curved-hem essential.' },
+      { name:'Item 04', price:175, qty:0,  sizes:'S,M,L,XL,XXL', tag:'New',  image:'test images/46-04221_1_copy.webp',                            desc:'Heavy cargo trousers.' },
+      { name:'Item 05', price:95,  qty:20, sizes:'XS,S,M,L',     tag:'New',  image:'test images/15-00247_1_copy.webp',                            desc:'Long-sleeve layering piece.' },
+      { name:'Item 06', price:149, qty:5,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/01-01431_1_copy.webp',                            desc:'Technical outerwear jacket.' },
+      { name:'Item 07', price:65,  qty:15, sizes:'XS,S,M,L,XL',  tag:'New',  image:'test images/mockup_sizescopy2.webp',                         desc:'Graphic print tee.' }
+    ];
+
+    function getProducts() {
+      var stored = localStorage.getItem('snr_products');
+      if (!stored) {
+        localStorage.setItem('snr_products', JSON.stringify(defaultProducts));
+        return defaultProducts;
+      }
+      var products = JSON.parse(stored);
+      var migrated = false;
+      products.forEach(function(p) {
+        if (p.qty === undefined)       { p.qty = 99;   migrated = true; }
+        if (p.salePrice === undefined) { p.salePrice = null; migrated = true; }
+      });
+      if (migrated) localStorage.setItem('snr_products', JSON.stringify(products));
+      return products;
+    }
+
+    function renderGrid() {
+      var products = getProducts();
+      var grid  = document.getElementById('productGrid');
+      var count = document.querySelector('.collection-header__count');
+      if (count) count.textContent = products.length + ' Piece' + (products.length === 1 ? '' : 's');
+      grid.innerHTML = '';
+
+      products.forEach(function(p, i) {
+        var oos    = p.qty === 0;
+        var low    = !oos && p.qty < 10;
+        var onSale = !oos && p.salePrice && p.salePrice > 0 && p.salePrice < p.price;
+
+        // Stock tag (top-right corner of image)
+        var stockTag = oos ? '<span class="stock-tag stock-tag--oos">Out of Stock</span>'
+                    : low ? '<span class="stock-tag stock-tag--low">Low Stock</span>'
+                    : '';
+
+        // Product tag (top-left — "Sale" overrides "New" etc.)
+        var tagHtml = onSale
+          ? '<span class="product-card__tag product-card__tag--sale">Sale</span>'
+          : (p.tag ? '<span class="product-card__tag">' + p.tag + '</span>' : '');
+
+        var atcBtn = oos
+          ? '<button class="product-card__atc oos" onclick="event.stopPropagation()">Out of Stock</button>'
+          : '<button class="product-card__atc" onclick="addToCart(event, this, ' + i + ')">Add to Cart</button>';
+
+        var nameHtml = oos
+          ? '<div class="product-card__name-row"><span class="product-card__name">' + p.name + '</span><span class="product-card__oos-label">Out of Stock</span></div>'
+          : '<span class="product-card__name">' + p.name + '</span>';
+
+        var priceHtml = onSale
+          ? '<div class="product-card__price-wrap"><span class="product-card__price--original">€' + p.price + '</span><span class="product-card__price--sale">€' + p.salePrice + '</span></div>'
+          : '<span class="product-card__price">€' + p.price + '</span>';
+
+        var card = document.createElement('a');
+        card.className = 'product-card' + (oos ? ' product-card--oos' : '');
+        card.href = 'product.html?id=' + (i + 1);
+        card.innerHTML =
+          '<div class="product-card__image">' +
+            '<img src="' + p.image + '" alt="' + p.name + '">' +
+            tagHtml + stockTag + atcBtn +
+          '</div>' +
+          '<div class="product-card__info">' +
+            nameHtml + priceHtml +
+          '</div>';
+
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(24px)';
+        grid.appendChild(card);
+
+        gsap.to(card, {
+          opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          delay: i * 0.08,
+          scrollTrigger: { trigger: card, start: 'top 88%' }
+        });
+      });
+    }
+
+    function addToCart(e, btn, productIdx) {
       e.preventDefault();
       e.stopPropagation();
-      if (btn.classList.contains('added')) return;
+      if (btn.classList.contains('added') || btn.classList.contains('oos')) return;
+
+      var products = getProducts();
+      if (products[productIdx] && products[productIdx].qty > 0) {
+        products[productIdx].qty -= 1;
+        localStorage.setItem('snr_products', JSON.stringify(products));
+
+        if (products[productIdx].qty === 0) {
+          btn.textContent = 'Out of Stock';
+          btn.classList.add('oos');
+          var card = btn.closest('.product-card');
+          if (card) {
+            card.classList.add('product-card--oos');
+            var infoDiv = card.querySelector('.product-card__info');
+            var nameEl = infoDiv && infoDiv.querySelector('.product-card__name');
+            if (nameEl) {
+              var row = document.createElement('div');
+              row.className = 'product-card__name-row';
+              row.innerHTML = '<span class="product-card__name">' + products[productIdx].name + '</span><span class="product-card__oos-label">Out of Stock</span>';
+              nameEl.replaceWith(row);
+            }
+          }
+          return;
+        }
+      }
+
       btn.textContent = '✓ Added to Cart';
       btn.classList.add('added');
-      setTimeout(() => {
+      setTimeout(function() {
         btn.classList.remove('added');
         btn.textContent = 'Add to Cart';
       }, 2000);
     }
 
-    document.querySelectorAll('.product-card').forEach((card, i) => {
-      gsap.to(card, {
-        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-        delay: i * 0.08,
-        scrollTrigger: { trigger: card, start: 'top 88%' }
-      });
-    });
+    renderGrid();
   </script>
   <script>
     (function() {

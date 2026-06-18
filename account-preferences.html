@@ -232,6 +232,34 @@
       margin-top: 12px; display: none;
     }
 
+    /* FORM FIELDS */
+    .form-field { display: flex; flex-direction: column; margin-bottom: 20px; }
+    .form-field label {
+      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 8px;
+    }
+    .form-field input, .form-field select {
+      background: none; border: none; border-bottom: 1px solid var(--border);
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.06em;
+      color: var(--black); padding: 8px 0; outline: none;
+      transition: border-color 0.2s; -webkit-appearance: none; appearance: none;
+    }
+    .form-field input:focus, .form-field select:focus { border-bottom-color: var(--black); }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-secondary {
+      display: inline-block; font-family: var(--ff-mono); font-size: 9px;
+      letter-spacing: 0.2em; text-transform: uppercase; padding: 12px 24px;
+      background: none; color: var(--black); border: 1px solid var(--border);
+      cursor: pointer; transition: border-color 0.2s; margin-top: 20px;
+    }
+    .btn-secondary:hover { border-color: var(--black); }
+    .section-msg {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; margin-top: 12px; display: none;
+    }
+    .section-msg--ok  { color: #2d7a3c; display: block; }
+    .section-msg--err { color: #c0392b; display: block; }
+
     /* FOOTER */
     .site-footer {
       padding: 32px 24px;
@@ -347,6 +375,79 @@
       </div>
     </div>
 
+    <!-- CHANGE PASSWORD -->
+    <div class="pref-section">
+      <p class="pref-section__title">Change Password</p>
+      <div class="form-field">
+        <label>Current Password</label>
+        <input type="password" id="pwCurrent" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label>New Password</label>
+          <input type="password" id="pwNew" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="form-field">
+          <label>Confirm New Password</label>
+          <input type="password" id="pwConfirm" placeholder="••••••••" autocomplete="new-password">
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="savePassword()">Update Password</button>
+      <p class="section-msg" id="pwMsg"></p>
+    </div>
+
+    <!-- CURRENCY -->
+    <div class="pref-section">
+      <p class="pref-section__title">Currency</p>
+      <div class="form-field" style="max-width:220px;">
+        <label>Display Currency</label>
+        <select id="prefCurrency">
+          <option value="EUR">EUR — Euro</option>
+          <option value="USD">USD — US Dollar</option>
+          <option value="GBP">GBP — British Pound</option>
+          <option value="CHF">CHF — Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- DEFAULT ADDRESS -->
+    <div class="pref-section">
+      <p class="pref-section__title">Default Address</p>
+      <div class="form-field">
+        <label>Full Name</label>
+        <input type="text" id="addrName" placeholder="First Last" autocomplete="name">
+      </div>
+      <div class="form-field">
+        <label>Street Address</label>
+        <input type="text" id="addrStreet" placeholder="123 Street Name" autocomplete="street-address">
+      </div>
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label>City</label>
+          <input type="text" id="addrCity" placeholder="Athens" autocomplete="address-level2">
+        </div>
+        <div class="form-field">
+          <label>Postal Code</label>
+          <input type="text" id="addrPostal" placeholder="10001" autocomplete="postal-code">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Country</label>
+        <select id="addrCountry" autocomplete="country-name">
+          <option value="">Select country</option>
+          <option value="GR">Greece</option>
+          <option value="CY">Cyprus</option>
+          <option value="DE">Germany</option>
+          <option value="FR">France</option>
+          <option value="IT">Italy</option>
+          <option value="ES">Spain</option>
+          <option value="GB">United Kingdom</option>
+          <option value="US">United States</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+    </div>
+
     <button class="btn-primary" onclick="savePrefs()">Save Preferences</button>
     <p class="save-msg" id="saveMsg">Preferences saved.</p>
   </div>
@@ -369,6 +470,12 @@
           b.classList.toggle('selected', b.dataset.size === prefs.size);
         });
       }
+      if (prefs.currency) document.getElementById('prefCurrency').value = prefs.currency;
+      if (prefs.addrName)   document.getElementById('addrName').value   = prefs.addrName;
+      if (prefs.addrStreet) document.getElementById('addrStreet').value = prefs.addrStreet;
+      if (prefs.addrCity)   document.getElementById('addrCity').value   = prefs.addrCity;
+      if (prefs.addrPostal) document.getElementById('addrPostal').value = prefs.addrPostal;
+      if (prefs.addrCountry) document.getElementById('addrCountry').value = prefs.addrCountry;
     }
 
     document.querySelectorAll('.size-btn').forEach(function(btn) {
@@ -379,16 +486,53 @@
     });
 
     function savePrefs() {
-      var prefs = {};
+      var prefs = JSON.parse(localStorage.getItem('snr_prefs') || '{}');
       ['pref_orders','pref_drops','pref_restocks','pref_editorial'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) prefs[id] = el.checked;
       });
       var sel = document.querySelector('.size-btn.selected');
       if (sel) prefs.size = sel.dataset.size;
+      prefs.currency   = document.getElementById('prefCurrency').value;
+      prefs.addrName   = document.getElementById('addrName').value.trim();
+      prefs.addrStreet = document.getElementById('addrStreet').value.trim();
+      prefs.addrCity   = document.getElementById('addrCity').value.trim();
+      prefs.addrPostal = document.getElementById('addrPostal').value.trim();
+      prefs.addrCountry= document.getElementById('addrCountry').value;
       localStorage.setItem('snr_prefs', JSON.stringify(prefs));
       var msg = document.getElementById('saveMsg');
       msg.style.display = 'block';
+      setTimeout(function() { msg.style.display = 'none'; }, 2200);
+    }
+
+    function savePassword() {
+      var cur     = document.getElementById('pwCurrent').value;
+      var nw      = document.getElementById('pwNew').value;
+      var confirm = document.getElementById('pwConfirm').value;
+      var msg     = document.getElementById('pwMsg');
+      msg.className = 'section-msg';
+      var stored = localStorage.getItem('snr_password');
+      if (stored && cur !== stored) {
+        msg.textContent = 'Current password is incorrect.';
+        msg.className = 'section-msg section-msg--err';
+        return;
+      }
+      if (nw.length < 6) {
+        msg.textContent = 'New password must be at least 6 characters.';
+        msg.className = 'section-msg section-msg--err';
+        return;
+      }
+      if (nw !== confirm) {
+        msg.textContent = 'Passwords do not match.';
+        msg.className = 'section-msg section-msg--err';
+        return;
+      }
+      localStorage.setItem('snr_password', nw);
+      document.getElementById('pwCurrent').value = '';
+      document.getElementById('pwNew').value = '';
+      document.getElementById('pwConfirm').value = '';
+      msg.textContent = 'Password updated.';
+      msg.className = 'section-msg section-msg--ok';
       setTimeout(function() { msg.style.display = 'none'; }, 2200);
     }
 
