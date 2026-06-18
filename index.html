@@ -428,10 +428,10 @@
           </svg>
         </button>
         <div class="account-menu__dropdown" id="accountDropdown">
-          <a href="#">Orders</a>
-          <a href="#">Personal Data</a>
-          <a href="#">Payment Methods</a>
-          <a href="#">Preferences</a>
+          <a href="account-orders.html">Orders</a>
+          <a href="account-payments.html">Payment Methods</a>
+          <a href="account-preferences.html">Preferences</a>
+          <a href="admin.html" id="adminLink" style="display:none">Admin Dashboard</a>
           <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
@@ -649,19 +649,19 @@
   <script>
     (function() {
       if (localStorage.getItem('snr_loggedIn')) {
-        var l = document.getElementById('headerLogin');
-        var m = document.getElementById('accountMenu');
-        if (l) l.style.display = 'none';
-        if (m) m.style.display = 'flex';
+        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
+        if(l) l.style.display='none'; if(m) m.style.display='flex';
       }
-      var trigger = document.getElementById('accountTrigger');
-      var drop    = document.getElementById('accountDropdown');
-      if (trigger && drop) {
-        trigger.addEventListener('click', function(e) { e.stopPropagation(); drop.classList.toggle('open'); });
-        document.addEventListener('click', function() { drop.classList.remove('open'); });
+      if (localStorage.getItem('snr_admin')) {
+        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
+      }
+      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
+      if(trigger&&drop){
+        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
+        document.addEventListener('click',function(){drop.classList.remove('open');});
       }
     })();
-    function logout() { localStorage.removeItem('snr_loggedIn'); window.location.href = 'index.html'; }
+    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
   </script>
 </body>
 </html>
