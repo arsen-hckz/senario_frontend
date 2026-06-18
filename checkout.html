@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Σenario</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --white:   #ffffff;
+      --black:   #0d0d0d;
+      --orange:  #C4622D;
+      --gray:    #9A9A9A;
+      --border:  #e8e8e4;
+      --ff-display:   'Bebas Neue', sans-serif;
+      --ff-condensed: 'Barlow Condensed', sans-serif;
+      --ff-mono:      'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--ff-condensed);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── HEADER ─────────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      padding: 0 40px 10px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: start;
+    }
+    .site-header__nav { display: flex; gap: 28px; padding-top: 22px; }
+    .site-header__nav a {
+      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+    }
+    .site-header__nav a:hover { color: var(--orange); }
+    .site-header__actions {
+      display: flex; align-items: center; gap: 18px;
+      justify-content: flex-end; padding-top: 22px;
+    }
+    .site-header__actions a {
+      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .site-header__actions a:hover { color: var(--orange); }
+    .site-header__logo { width: 260px; height: auto; justify-self: center; margin-top: -18px; }
+
+    /* ─── PAGE TITLE ─────────────────────────────── */
+    .page-title {
+      padding: 48px 40px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-title__eyebrow {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 10px;
+    }
+    .page-title h1 {
+      font-family: var(--ff-display); font-size: clamp(48px, 6vw, 80px);
+      line-height: 1; letter-spacing: 0.02em;
+    }
+
+    /* ─── CHECKOUT LAYOUT ────────────────────────── */
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+    }
+
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ─── FORM SIDE ──────────────────────────────── */
+    .checkout-form {
+      padding: 48px 40px 80px;
+      border-right: 1px solid var(--border);
+    }
+
+    .form-section { margin-bottom: 48px; }
+
+    .form-section__title {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray);
+      margin-bottom: 24px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-row.full { grid-template-columns: 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-group label {
+      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gray);
+    }
+
+    .form-group input,
+    .form-group select {
+      height: 44px; padding: 0 14px;
+      border: 1px solid var(--border); background: var(--white);
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.06em;
+      color: var(--black); outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--black); }
+
+    /* Payment icons row */
+    .payment-methods {
+      display: flex; gap: 10px; margin-bottom: 20px;
+    }
+
+    .pay-icon {
+      border: 1px solid var(--border); padding: 8px 14px;
+      color: var(--gray); cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      min-width: 56px; height: 40px;
+    }
+
+    .pay-icon.active,
+    .pay-icon:hover { border-color: var(--black); color: var(--black); }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr 80px 80px;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .btn-place-order {
+      width: 100%; padding: 18px; background: var(--black); color: var(--white);
+      border: none; font-family: var(--ff-mono); font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s; margin-top: 8px;
+    }
+    .btn-place-order:hover { background: var(--orange); }
+
+    .form-note {
+      margin-top: 14px; font-family: var(--ff-mono); font-size: 8px;
+      letter-spacing: 0.12em; color: var(--gray); line-height: 1.7;
+    }
+
+    /* ─── ORDER SUMMARY SIDE ─────────────────────── */
+    .order-summary {
+      padding: 48px 40px;
+      background: #fafafa;
+      position: sticky;
+      top: 0;
+      align-self: start;
+    }
+
+    .order-summary__title {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 28px;
+    }
+
+    .summary-item {
+      display: flex; gap: 16px; align-items: center;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+
+    .summary-item__img {
+      width: 64px; height: 76px; object-fit: cover; background: var(--border); flex-shrink: 0;
+    }
+
+    .summary-item__info { flex: 1; }
+
+    .summary-item__name {
+      font-family: var(--ff-condensed); font-size: 16px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+
+    .summary-item__meta {
+      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gray); margin-top: 4px;
+    }
+
+    .summary-item__price {
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.1em;
+    }
+
+    .summary-totals { margin-top: 24px; }
+
+    .summary-row {
+      display: flex; justify-content: space-between;
+      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.1em;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row__label { color: var(--gray); text-transform: uppercase; }
+
+    .summary-row--total {
+      font-size: 14px; padding: 18px 0 0; border-top: 1px solid var(--black);
+      border-bottom: none; margin-top: 8px;
+    }
+
+    /* ─── AUTH GATE ──────────────────────────────── */
+    .auth-gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      padding: 60px 24px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .auth-box__eyebrow {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 12px;
+    }
+
+    .auth-box__title {
+      font-family: var(--ff-display); font-size: clamp(36px, 5vw, 56px);
+      line-height: 1; letter-spacing: 0.02em; margin-bottom: 40px;
+    }
+
+    .auth-options {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .auth-btn {
+      width: 100%; padding: 18px; border: none; cursor: pointer;
+      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.22em;
+      text-transform: uppercase; transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .auth-btn--primary { background: var(--black); color: var(--white); }
+    .auth-btn--primary:hover { background: var(--orange); }
+
+    .auth-btn--secondary {
+      background: none; color: var(--black); border: 1px solid var(--border);
+    }
+    .auth-btn--secondary:hover { border-color: var(--black); }
+
+    .auth-divider {
+      display: flex; align-items: center; gap: 16px;
+      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em;
+      color: var(--gray); text-transform: uppercase; margin: 4px 0;
+    }
+    .auth-divider::before,
+    .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    .site-footer {
+      padding: 60px 24px 44px; text-align: center; border-top: 1px solid var(--border);
+    }
+    .footer__logo { width: 200px; height: auto; margin: 0 auto 14px; display: block; }
+    .footer__slogan {
+      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.14em;
+      color: var(--gray); text-transform: uppercase; line-height: 1.8; margin-bottom: 32px;
+    }
+    .footer__socials { display: flex; justify-content: center; gap: 7px; margin-bottom: 36px; }
+    .social-btn {
+      width: 38px; height: 38px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s;
+    }
+    .social-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .footer__legal {
+      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.18em;
+      color: var(--border); text-transform: uppercase;
+    }
+
+    /* ─── ACCOUNT MENU ───────────────────────────── */
+    .account-menu { position: relative; display: flex; align-items: center; }
+    .account-menu__trigger {
+      background: none; border: none; cursor: pointer;
+      color: var(--black); display: flex; align-items: center;
+      padding: 0; transition: color 0.2s;
+    }
+    .account-menu__trigger:hover { color: var(--orange); }
+    .account-menu__dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--white); border: 1px solid var(--border);
+      min-width: 190px; z-index: 200;
+      display: none; flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .account-menu__dropdown.open { display: flex; }
+    .account-menu__dropdown a,
+    .account-menu__dropdown button {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black);
+      padding: 13px 16px; border: none; background: none;
+      text-align: left; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none; display: block; width: 100%;
+    }
+    .account-menu__dropdown button:last-child { border-bottom: none; }
+    .account-menu__dropdown a:hover,
+    .account-menu__dropdown button:hover { background: var(--black); color: var(--white); }
+    .account-menu__dropdown .logout-btn { color: var(--gray); }
+    .account-menu__dropdown .logout-btn:hover { background: var(--black); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <nav class="site-header__nav">
+      <a href="collection.html">Collection</a>
+      <a href="index.html">Moodboard</a>
+      <a href="concept.html">Concept</a>
+    </nav>
+    <a href="index.html">
+      <img class="site-header__logo" src="logo_combined.png" alt="Σenario">
+    </a>
+    <div class="site-header__actions">
+      <a href="login.html" id="headerLogin"><span>Login</span></a>
+      <div class="account-menu" id="accountMenu" style="display:none">
+        <button class="account-menu__trigger" id="accountTrigger" aria-label="Account">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </button>
+        <div class="account-menu__dropdown" id="accountDropdown">
+          <a href="#">Orders</a>
+          <a href="#">Personal Data</a>
+          <a href="#">Payment Methods</a>
+          <a href="#">Preferences</a>
+          <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+      <a href="cart.html" aria-label="Cart">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <p class="page-title__eyebrow">Σenario</p>
+    <h1>Checkout</h1>
+  </div>
+
+  <!-- AUTH GATE -->
+  <div class="auth-gate" id="authGate">
+    <div class="auth-box">
+      <p class="auth-box__eyebrow">Σenario / Checkout</p>
+      <h2 class="auth-box__title">How do you<br>want to proceed?</h2>
+      <div class="auth-options">
+        <button class="auth-btn auth-btn--primary" onclick="loginCheckout()">Login to my account</button>
+        <div class="auth-divider">or</div>
+        <button class="auth-btn auth-btn--secondary" onclick="startCheckout()">Continue as Guest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT LAYOUT -->
+  <div class="checkout-layout" id="checkoutLayout" style="display:none">
+
+    <!-- FORM -->
+    <div class="checkout-form">
+
+      <!-- Contact -->
+      <div class="form-section">
+        <p class="form-section__title">Contact Information</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="John">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Doe">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="john@example.com">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" placeholder="+30 000 000 0000">
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping -->
+      <div class="form-section">
+        <p class="form-section__title">Shipping Address</p>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" placeholder="Street address">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" placeholder="Athens">
+          </div>
+          <div class="form-group">
+            <label>Postal Code</label>
+            <input type="text" placeholder="10000">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Country</label>
+            <select>
+              <option>Greece</option>
+              <option>Cyprus</option>
+              <option>Germany</option>
+              <option>United Kingdom</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="form-section">
+        <p class="form-section__title">Payment</p>
+        <div class="payment-methods">
+          <div class="pay-icon active" title="Card">
+            <svg width="22" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="1" width="22" height="16" rx="2"/>
+              <line x1="1" y1="6" x2="23" y2="6"/>
+              <line x1="5" y1="12" x2="9" y2="12"/>
+            </svg>
+          </div>
+          <div class="pay-icon" title="PayPal">
+            <svg width="18" height="20" viewBox="0 0 24 28" fill="currentColor">
+              <path d="M7.6 26.4l.6-3.8H4.8L7.8 3.2c0-.2.2-.4.4-.4h7.2c2.4 0 4 .5 4.8 1.5.4.5.6 1 .7 1.6 0 .6 0 1.3-.2 2.1-.7 3.4-2.9 5.1-6.6 5.1h-1.6c-.5 0-.9.3-1 .8l-1 6.3-.1.4c0 .1-.1.2-.2.2H7.6z"/>
+              <path opacity=".5" d="M21 6.6c0 .2 0 .4-.1.6-.8 4.3-3.6 5.8-7.1 5.8H12c-.4 0-.8.3-.9.7l-1.3 8-.4 2.3c0 .3.2.6.5.6h3.6c.4 0 .7-.3.8-.6v-.2l.7-4.3v-.2c.1-.4.4-.6.8-.6h.5c3.1 0 5.5-1.3 6.2-4.9.3-1.5.1-2.7-.6-3.6-.2-.2-.4-.4-.6-.6z"/>
+            </svg>
+          </div>
+          <div class="pay-icon" title="Apple Pay">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="16" viewBox="0 0 165.521 105.965" fill="currentColor">
+              <path d="M9.14 16.305c-1.7 2.01-4.42 3.59-7.14 3.36-.34-2.72.99-5.62 2.55-7.4C6.25 10.225 9.21 8.785 11.63 8.645c.29 2.8-.82 5.56-2.49 7.66zm2.46 3.9c-3.95-.23-7.32 2.24-9.2 2.24-1.9 0-4.79-2.12-7.94-2.06-4.09.06-7.88 2.37-9.97 6.05-4.27 7.37-1.12 18.28 3.03 24.28 2.03 2.97 4.46 6.24 7.66 6.12 3.03-.12 4.21-1.96 7.9-1.96 3.7 0 4.75 1.96 7.96 1.9 3.32-.06 5.42-2.97 7.45-5.95 2.34-3.39 3.3-6.68 3.36-6.85-.07-.03-6.44-2.49-6.5-9.83-.06-6.15 5.02-9.1 5.25-9.26-2.87-4.26-7.34-4.73-8.96-4.79h-.04zM43.23 11.505v45.25h7.02v-15.47h9.71c8.87 0 15.1-6.08 15.1-14.91s-6.13-14.87-14.9-14.87zm7.02 5.95h8.09c6.09 0 9.57 3.25 9.57 8.95s-3.48 8.98-9.6 8.98h-8.06zm37.49 39.65c4.4 0 8.48-2.23 10.33-5.76h.14v5.41h6.5V32.765c0-6.53-5.23-10.74-13.28-10.74-7.47 0-13 4.27-13.22 10.13h6.33c.52-2.79 3.13-4.62 6.66-4.62 4.3 0 6.71 2 6.71 5.68v2.49l-8.77.52c-8.15.49-12.56 3.83-12.56 9.63 0 5.86 4.56 9.75 11.16 9.75zm1.89-5.52c-3.75 0-6.14-1.8-6.14-4.55 0-2.85 2.3-4.5 6.7-4.76l7.8-.49v2.55c0 4.16-3.52 7.25-8.36 7.25zm27.97 17.87c6.85 0 10.07-2.62 12.88-10.56l12.33-34.6h-7.17l-8.27 26.76h-.14l-8.27-26.76h-7.39l11.89 32.92-.64 2.01c-1.07 3.38-2.82 4.69-5.94 4.69-.55 0-1.63-.06-2.07-.12v5.45c.41.12 2.17.21 2.79.21z"/>
+            </svg>
+          </div>
+          <div class="pay-icon" title="Google Pay">
+            <svg width="36" height="14" viewBox="0 0 56 24" fill="currentColor">
+              <path d="M26.1 11.9v7h-2.2V2h5.8c1.4 0 2.6.5 3.6 1.4.9.9 1.4 2 1.4 3.3 0 1.3-.5 2.4-1.4 3.3-.9.9-2.1 1.4-3.6 1.4h-3.6v.5zm0-7.9v5.8h3.7c.8 0 1.5-.3 2-.8.5-.5.8-1.2.8-1.9 0-.8-.3-1.4-.8-1.9-.5-.5-1.2-.8-2-.8h-3.7v-.4zm13.7 3.4c1.5 0 2.7.4 3.6 1.2.9.8 1.3 1.9 1.3 3.3v6.8H42.7v-1.5h-.1c-.8 1.2-2 1.8-3.5 1.8-1.2 0-2.3-.4-3.1-1.1-.8-.7-1.2-1.7-1.2-2.8 0-1.2.4-2.1 1.3-2.8.9-.7 2.1-1 3.5-1 1.3 0 2.3.2 3.1.7v-.5c0-.7-.3-1.4-.8-1.9-.5-.5-1.2-.7-1.9-.7-1.1 0-2 .5-2.6 1.4l-2-.9c.8-1.4 2.2-2 4.4-2zm-.6 10.3c.7 0 1.3-.3 1.8-.8.5-.5.8-1.1.8-1.9-.5-.4-1.3-.7-2.5-.7-.9 0-1.6.2-2.1.6-.5.4-.8.9-.8 1.4 0 .5.2.9.7 1.2.4.3 1 .5 1.7.5h.4v-.3zM55.6 7.6l-7.3 16.7h-2.3l2.7-5.9L43.9 7.6h2.4l2.9 7.1h.1l2.8-7.1h2.5z" fill="#5f6368"/>
+              <path d="M18.8 10.2c0-.7-.1-1.4-.2-2.1H10v3.9h5c-.2 1.1-.8 2-1.7 2.7v2.2h2.8c1.6-1.5 2.7-3.8 2.7-6.7z" fill="#4285f4"/>
+              <path d="M10 19.8c2.5 0 4.6-.8 6.1-2.2l-2.8-2.2c-.8.6-1.9.9-3.2.9-2.5 0-4.6-1.7-5.3-3.9H1.8v2.3C3.3 17.7 6.4 19.8 10 19.8z" fill="#34a853"/>
+              <path d="M4.7 12.4c-.2-.6-.3-1.2-.3-1.8s.1-1.2.3-1.8V6.5H1.8A9.7 9.7 0 0 0 .4 10.6c0 1.5.3 3 .9 4.1l3.4-2.3z" fill="#fbbc05"/>
+              <path d="M10 5c1.4 0 2.6.5 3.6 1.4l2.7-2.7C14.6 2.2 12.5 1.3 10 1.3 6.4 1.3 3.3 3.4 1.8 6.5l3.4 2.3C5.9 6.6 7.7 5 10 5z" fill="#ea4335"/>
+            </svg>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" placeholder="0000 0000 0000 0000">
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="form-group">
+            <label>Name on Card</label>
+            <input type="text" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label>Expiry</label>
+            <input type="text" placeholder="MM/YY">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" placeholder="000">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-place-order">Place Order</button>
+      <p class="form-note">
+        By placing your order you agree to our Terms & Conditions and Privacy Policy.<br>
+        All transactions are secured and encrypted.
+      </p>
+
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary">
+      <p class="order-summary__title">Your Order</p>
+
+      <div class="summary-item">
+        <img class="summary-item__img" src="test images/TS01556BLK.jpg" alt="Item 01">
+        <div class="summary-item__info">
+          <p class="summary-item__name">Item 01</p>
+          <p class="summary-item__meta">Size: S — Qty: 1</p>
+        </div>
+        <span class="summary-item__price">€59</span>
+      </div>
+
+      <div class="summary-item">
+        <img class="summary-item__img" src="test images/46-04221_1_copy.webp" alt="Item 04">
+        <div class="summary-item__info">
+          <p class="summary-item__name">Item 04</p>
+          <p class="summary-item__meta">Size: M — Qty: 1</p>
+        </div>
+        <span class="summary-item__price">€175</span>
+      </div>
+
+      <div class="summary-totals">
+        <div class="summary-row">
+          <span class="summary-row__label">Subtotal</span>
+          <span>€234</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row__label">Shipping</span>
+          <span>€0</span>
+        </div>
+        <div class="summary-row summary-row--total">
+          <span>Total</span>
+          <span>€234</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <img class="footer__logo" src="logo_graffiti.png" alt="Σenario">
+    <p class="footer__slogan">A new form of luxury.<br>Built from reality, not status.</p>
+    <div class="footer__socials">
+      <a href="#" class="social-btn" aria-label="Instagram">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a href="#" class="social-btn" aria-label="TikTok">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.56a8.22 8.22 0 004.8 1.54V6.67a4.85 4.85 0 01-1.03-.02z"/>
+        </svg>
+      </a>
+      <a href="#" class="social-btn" aria-label="Email">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/>
+        </svg>
+      </a>
+    </div>
+    <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    function loginCheckout() {
+      localStorage.setItem('snr_loggedIn', '1');
+      startCheckout();
+    }
+
+    function startCheckout() {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('checkoutLayout').style.display = 'grid';
+    }
+
+    document.querySelectorAll('.pay-icon').forEach(icon => {
+      icon.addEventListener('click', () => {
+        document.querySelectorAll('.pay-icon').forEach(i => i.classList.remove('active'));
+        icon.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

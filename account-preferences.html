@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preferences — Σenario</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --white:   #ffffff;
+      --black:   #0d0d0d;
+      --orange:  #C4622D;
+      --gray:    #9A9A9A;
+      --border:  #e8e8e4;
+      --ff-display:   'Bebas Neue', sans-serif;
+      --ff-condensed: 'Barlow Condensed', sans-serif;
+      --ff-mono:      'DM Mono', monospace;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--ff-condensed);
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      padding: 0 40px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: start;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header__nav { display: flex; gap: 28px; padding-top: 32px; }
+    .site-header__nav a {
+      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+    }
+    .site-header__nav a:hover { color: var(--orange); }
+    .site-header__logo { width: 340px; height: auto; justify-self: center; margin-top: -24px; }
+    .site-header__actions {
+      display: flex; align-items: center; gap: 18px;
+      justify-content: flex-end; padding-top: 32px;
+    }
+    .site-header__actions a {
+      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .site-header__actions a:hover { color: var(--orange); }
+
+    /* ACCOUNT MENU */
+    .account-menu { position: relative; display: flex; align-items: center; }
+    .account-menu__trigger {
+      background: none; border: none; cursor: pointer;
+      color: var(--black); display: flex; align-items: center;
+      padding: 0; transition: color 0.2s;
+    }
+    .account-menu__trigger:hover { color: var(--orange); }
+    .account-menu__dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--white); border: 1px solid var(--border);
+      min-width: 190px; z-index: 200;
+      display: none; flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .account-menu__dropdown.open { display: flex; }
+    .account-menu__dropdown a,
+    .account-menu__dropdown button {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--black);
+      padding: 13px 16px; border: none; background: none;
+      text-align: left; cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none; display: block; width: 100%;
+    }
+    .account-menu__dropdown a:last-child,
+    .account-menu__dropdown button:last-child { border-bottom: none; }
+    .account-menu__dropdown a:hover,
+    .account-menu__dropdown button:hover { background: var(--border); }
+    .account-menu__dropdown .logout-btn { color: var(--gray); }
+    .account-menu__dropdown .logout-btn:hover { color: var(--orange); background: transparent; }
+
+    /* PAGE LAYOUT */
+    .account-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+    .account-title {
+      font-family: var(--ff-display);
+      font-size: 48px;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .account-subtitle {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 48px;
+    }
+
+    /* SECTION */
+    .pref-section {
+      margin-bottom: 40px;
+    }
+    .pref-section__title {
+      font-family: var(--ff-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+
+    /* TOGGLE ROW */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label {
+      font-family: var(--ff-condensed);
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+    .toggle-desc {
+      font-family: var(--ff-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-top: 3px;
+    }
+
+    /* PILL TOGGLE */
+    .toggle-switch {
+      position: relative;
+      width: 44px; height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.25s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--black); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); }
+
+    /* SIZE SELECTOR */
+    .size-row {
+      padding: 20px 0;
+    }
+    .size-row label {
+      font-family: var(--ff-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray);
+      display: block;
+      margin-bottom: 14px;
+    }
+    .size-options { display: flex; gap: 10px; flex-wrap: wrap; }
+    .size-btn {
+      width: 44px; height: 36px;
+      border: 1px solid var(--border);
+      background: none;
+      font-family: var(--ff-mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; color: var(--black);
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .size-btn.selected {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+    .size-btn:hover:not(.selected) { border-color: var(--black); }
+
+    /* SAVE */
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--ff-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 32px;
+    }
+    .btn-primary:hover { background: var(--orange); }
+    .save-msg {
+      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #2d7a3c;
+      margin-top: 12px; display: none;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer__legal {
+      font-family: var(--ff-mono); font-size: 8px;
+      letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="site-header__nav">
+      <a href="collection.html">Collection</a>
+      <a href="index.html">Moodboard</a>
+      <a href="concept.html">Concept</a>
+    </nav>
+    <a href="index.html">
+      <img class="site-header__logo" src="logo_combined.png" alt="Σenario">
+    </a>
+    <div class="site-header__actions">
+      <a href="login.html" id="headerLogin"><span>Login</span></a>
+      <div class="account-menu" id="accountMenu" style="display:none">
+        <button class="account-menu__trigger" id="accountTrigger" aria-label="Account">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </button>
+        <div class="account-menu__dropdown" id="accountDropdown">
+          <a href="account-orders.html">Orders</a>
+          <a href="account-payments.html">Payment Methods</a>
+          <a href="account-preferences.html">Preferences</a>
+          <a href="admin.html" id="adminLink" style="display:none">Admin Dashboard</a>
+          <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+      </div>
+      <a href="cart.html" aria-label="Cart">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <div class="account-wrap">
+    <h1 class="account-title">Preferences</h1>
+    <p class="account-subtitle">Manage your account settings</p>
+
+    <!-- NOTIFICATIONS -->
+    <div class="pref-section">
+      <p class="pref-section__title">Notifications</p>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Order Updates</div>
+          <div class="toggle-desc">Shipping & delivery status</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pref_orders" checked>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">New Drops</div>
+          <div class="toggle-desc">Be first to know about new releases</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pref_drops">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Restocks</div>
+          <div class="toggle-desc">When sold-out items come back</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pref_restocks" checked>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Editorial</div>
+          <div class="toggle-desc">Campaign stories & lookbooks</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pref_editorial">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- SIZE -->
+    <div class="pref-section">
+      <p class="pref-section__title">Default Size</p>
+      <div class="size-row">
+        <label>Quick-select your size for faster checkout</label>
+        <div class="size-options" id="sizeOptions">
+          <button class="size-btn" data-size="XS">XS</button>
+          <button class="size-btn" data-size="S">S</button>
+          <button class="size-btn selected" data-size="M">M</button>
+          <button class="size-btn" data-size="L">L</button>
+          <button class="size-btn" data-size="XL">XL</button>
+          <button class="size-btn" data-size="XXL">XXL</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="savePrefs()">Save Preferences</button>
+    <p class="save-msg" id="saveMsg">Preferences saved.</p>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    if (!localStorage.getItem('snr_loggedIn')) window.location.href = 'login.html';
+
+    function loadPrefs() {
+      var prefs = JSON.parse(localStorage.getItem('snr_prefs') || '{}');
+      ['pref_orders','pref_drops','pref_restocks','pref_editorial'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && prefs[id] !== undefined) el.checked = prefs[id];
+      });
+      if (prefs.size) {
+        document.querySelectorAll('.size-btn').forEach(function(b) {
+          b.classList.toggle('selected', b.dataset.size === prefs.size);
+        });
+      }
+    }
+
+    document.querySelectorAll('.size-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+      });
+    });
+
+    function savePrefs() {
+      var prefs = {};
+      ['pref_orders','pref_drops','pref_restocks','pref_editorial'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) prefs[id] = el.checked;
+      });
+      var sel = document.querySelector('.size-btn.selected');
+      if (sel) prefs.size = sel.dataset.size;
+      localStorage.setItem('snr_prefs', JSON.stringify(prefs));
+      var msg = document.getElementById('saveMsg');
+      msg.style.display = 'block';
+      setTimeout(function() { msg.style.display = 'none'; }, 2200);
+    }
+
+    loadPrefs();
+
+    (function() {
+      if (localStorage.getItem('snr_loggedIn')) {
+        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
+        if(l) l.style.display='none'; if(m) m.style.display='flex';
+      }
+      if (localStorage.getItem('snr_admin')) {
+        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
+      }
+      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
+      if(trigger&&drop){
+        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
+        document.addEventListener('click',function(){drop.classList.remove('open');});
+      }
+    })();
+    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
+  </script>
+
+</body>
+</html>
