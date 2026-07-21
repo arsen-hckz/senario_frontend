@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -19,14 +19,17 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       font-weight: 300;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
@@ -44,7 +47,7 @@
     }
     .site-header__nav { display: flex; gap: 28px; padding-top: 32px; }
     .site-header__nav a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
     }
     .site-header__nav a:hover, .site-header__nav a.active { color: var(--orange); }
@@ -54,7 +57,7 @@
       justify-content: flex-end; padding-top: 32px;
     }
     .site-header__actions a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
       display: flex; align-items: center; gap: 6px;
     }
@@ -78,7 +81,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -93,6 +96,19 @@
     .account-menu__dropdown .logout-btn { color: var(--gray); }
     .account-menu__dropdown .logout-btn:hover { color: var(--orange); background: transparent; }
 
+    @media (max-width: 640px) {
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
+      .site-header__actions a span { display: none; }
+      .order-card__header { grid-template-columns: 1fr auto auto; }
+      .order-card__header > div:nth-child(2) { display: none; }
+    }
+
     /* PAGE LAYOUT */
     .account-wrap {
       max-width: 900px;
@@ -106,7 +122,7 @@
       margin-bottom: 8px;
     }
     .account-subtitle {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -131,7 +147,7 @@
     }
     .order-card__header:hover { background: #fafafa; }
     .order-label {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -139,14 +155,14 @@
       margin-bottom: 4px;
     }
     .order-value {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 12px;
       letter-spacing: 0.08em;
       color: var(--black);
     }
     .order-badge {
       display: inline-block;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -183,13 +199,13 @@
       background: #f0f0f0;
     }
     .order-item__name {
-      font-family: var(--ff-condensed);
-      font-size: 15px;
-      font-weight: 300;
-      letter-spacing: 0.06em;
+      font-family: var(--ff-body);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
     }
     .order-item__meta {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -197,14 +213,14 @@
       margin-top: 4px;
     }
     .order-item__price {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 12px;
       letter-spacing: 0.08em;
     }
     .order-total {
       margin-top: 16px;
       text-align: right;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -221,7 +237,7 @@
       opacity: 0.2;
     }
     .empty-state__text {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -230,7 +246,7 @@
     }
     .btn-ghost {
       display: inline-block;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -247,7 +263,7 @@
       text-align: center;
     }
     .footer__legal {
-      font-family: var(--ff-mono); font-size: 8px;
+      font-family: var(--ff-body); font-size: 8px;
       letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase;
     }
   </style>
@@ -300,92 +316,64 @@
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
+  <script src="api.js"></script>
   <script>
-    if (!localStorage.getItem('snr_loggedIn')) window.location.href = 'login.html';
-
-    function seedOrders() {
-      if (localStorage.getItem('snr_orders')) return;
-      var orders = [
-        {
-          id: 'SNR-2025-001',
-          date: '12 May 2025',
-          status: 'delivered',
-          items: [
-            { name: 'Item 01', size: 'M', qty: 1, price: 59 },
-            { name: 'Item 03', size: 'L', qty: 1, price: 89 }
-          ]
-        },
-        {
-          id: 'SNR-2025-002',
-          date: '3 June 2025',
-          status: 'shipped',
-          items: [
-            { name: 'Item 06', size: 'M', qty: 1, price: 149 }
-          ]
-        }
-      ];
-      localStorage.setItem('snr_orders', JSON.stringify(orders));
-    }
-
-    function renderOrders() {
-      seedOrders();
-      var orders = JSON.parse(localStorage.getItem('snr_orders') || '[]');
-      var list = document.getElementById('orderList');
-
-      if (!orders.length) {
-        list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9781;</div><p class="empty-state__text">No orders yet</p><a class="btn-ghost" href="collection.html">Shop the Collection</a></div>';
-        return;
-      }
-
-      orders.forEach(function(order, idx) {
-        var total = order.items.reduce(function(s, i) { return s + i.price * i.qty; }, 0);
-        var badgeClass = 'order-badge--' + order.status;
-        var itemsHTML = order.items.map(function(item) {
-          return '<div class="order-item">' +
-            '<div class="order-item__img"></div>' +
-            '<div><div class="order-item__name">' + item.name + '</div>' +
-            '<div class="order-item__meta">Size ' + item.size + ' &nbsp;·&nbsp; Qty ' + item.qty + '</div></div>' +
-            '<div class="order-item__price">€' + item.price + '</div>' +
-            '</div>';
-        }).join('');
-
-        var card = document.createElement('div');
-        card.className = 'order-card';
-        card.innerHTML =
-          '<div class="order-card__header" onclick="toggleOrder(this)">' +
-            '<div><div class="order-label">Order</div><div class="order-value">' + order.id + '</div></div>' +
-            '<div><div class="order-label">Date</div><div class="order-value">' + order.date + '</div></div>' +
-            '<div><span class="order-badge ' + badgeClass + '">' + order.status + '</span></div>' +
-            '<div class="order-chevron">▾</div>' +
-          '</div>' +
-          '<div class="order-card__body">' + itemsHTML +
-            '<div class="order-total">Total &nbsp;<strong>€' + total + '</strong></div>' +
-          '</div>';
-        list.appendChild(card);
-      });
-    }
+    if (!localStorage.getItem('snr_token')) window.location.href = 'login.html';
 
     function toggleOrder(header) {
       header.parentElement.classList.toggle('open');
     }
 
-    renderOrders();
+    async function renderOrders() {
+      var list = document.getElementById('orderList');
+      list.innerHTML = '<p style="color:var(--gray);padding:24px;font-family:var(--ff-body);">Loading orders...</p>';
 
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
+      try {
+        var res = await apiFetch('/orders/');
+        if (!res || !res.ok) throw new Error();
+        var orders = await res.json();
+        list.innerHTML = '';
+
+        if (!orders.length) {
+          list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9781;</div><p class="empty-state__text">No orders yet</p><a class="btn-ghost" href="collection.html">Shop the Collection</a></div>';
+          return;
+        }
+
+        orders.forEach(function(order) {
+          var date   = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+          var total  = parseFloat(order.total || 0);
+          var badge  = 'order-badge--' + order.status;
+          var itemsHTML = (order.items || []).map(function(item) {
+            return '<div class="order-item">' +
+              '<div class="order-item__img"></div>' +
+              '<div><div class="order-item__name">' + item.product_name + '</div>' +
+              '<div class="order-item__meta">' + (item.size ? 'Size ' + item.size + ' &nbsp;·&nbsp; ' : '') + 'Qty ' + item.qty + '</div></div>' +
+              '<div class="order-item__price">€' + Math.round(parseFloat(item.price)) + '</div>' +
+              '</div>';
+          }).join('');
+
+          var card = document.createElement('div');
+          card.className = 'order-card';
+          card.innerHTML =
+            '<div class="order-card__header" onclick="toggleOrder(this)">' +
+              '<div><div class="order-label">Order</div><div class="order-value">#' + order.id + '</div></div>' +
+              '<div><div class="order-label">Date</div><div class="order-value">' + date + '</div></div>' +
+              '<div><span class="order-badge ' + badge + '">' + order.status + '</span></div>' +
+              '<div class="order-chevron">▾</div>' +
+            '</div>' +
+            '<div class="order-card__body">' + itemsHTML +
+              '<div class="order-total">Total &nbsp;<strong>€' + Math.round(total) + '</strong></div>' +
+            '</div>';
+          list.appendChild(card);
+        });
+      } catch (ex) {
+        list.innerHTML = '<p style="color:var(--gray);padding:24px;font-family:var(--ff-body);">Could not load orders.</p>';
       }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
-      }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
-      }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
+    }
+
+    snrInitNav();
+    function logout() { snrLogout(); }
+    renderOrders();
   </script>
 
 </body>

@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -20,14 +20,17 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       font-weight: 300;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
@@ -45,7 +48,7 @@
     }
     .site-header__nav { display: flex; gap: 28px; padding-top: 32px; }
     .site-header__nav a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
     }
     .site-header__nav a:hover { color: var(--orange); }
@@ -55,7 +58,7 @@
       justify-content: flex-end; padding-top: 32px;
     }
     .site-header__actions a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
       display: flex; align-items: center; gap: 6px;
     }
@@ -79,7 +82,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -107,7 +110,7 @@
       padding: 32px 0;
     }
     .sidebar-section-title {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -118,7 +121,7 @@
     .sidebar-nav li a {
       display: block;
       padding: 12px 20px;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -158,7 +161,7 @@
       padding: 20px 20px 18px;
     }
     .stat-label {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -180,14 +183,14 @@
       margin-bottom: 16px;
     }
     .table-title {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gray);
     }
     .btn-add {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -205,7 +208,7 @@
       border-collapse: collapse;
     }
     .data-table th {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -215,7 +218,7 @@
       border-bottom: 1px solid var(--border);
     }
     .data-table td {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.08em;
       padding: 14px 12px;
@@ -230,7 +233,7 @@
       object-fit: cover; background: #f0f0f0;
     }
     .action-btn {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -247,7 +250,7 @@
     /* STATUS BADGE */
     .status-badge {
       display: inline-block;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -258,13 +261,13 @@
     .status-badge--processing  { background: #f0f0f0; color: var(--gray); }
     .status-badge--cancelled   { background: #fce8e8; color: #c0392b; }
 
-    .stock-badge { display: inline-block; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; }
+    .stock-badge { display: inline-block; font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; }
     .stock-badge--in  { background: #e8f5ea; color: #2d7a3c; }
     .stock-badge--low { background: #fdf0e8; color: var(--orange); }
     .stock-badge--oos { background: #fce8e8; color: #c0392b; }
 
     .order-status-select {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -308,7 +311,7 @@
     .modal-grid .span2 { grid-column: 1/-1; }
     .form-field { display: flex; flex-direction: column; }
     .form-field label {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -321,7 +324,7 @@
       background: none;
       border: none;
       border-bottom: 1px solid var(--border);
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.06em;
       color: var(--black);
@@ -339,7 +342,7 @@
       margin-top: 28px;
     }
     .btn-save {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -352,7 +355,7 @@
     }
     .btn-save:hover { background: var(--orange); }
     .btn-cancel {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -377,7 +380,7 @@
       padding: 24px 24px 16px;
     }
     .analytics-title {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray); margin-bottom: 16px;
     }
     .top-item {
@@ -385,20 +388,20 @@
       padding: 10px 0; border-bottom: 1px solid var(--border);
     }
     .top-item:last-child { border-bottom: none; }
-    .top-item__rank { font-family: var(--ff-mono); font-size: 8px; color: var(--gray); margin-right: 10px; min-width: 14px; }
-    .top-item__name { font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.08em; }
-    .top-item__stats { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.08em; color: var(--gray); text-align: right; }
+    .top-item__rank { font-family: var(--ff-body); font-size: 8px; color: var(--gray); margin-right: 10px; min-width: 14px; }
+    .top-item__name { font-family: var(--ff-body); font-size: 10px; letter-spacing: 0.08em; }
+    .top-item__stats { font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.08em; color: var(--gray); text-align: right; }
     .day-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
-    .day-label { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); width: 28px; flex-shrink: 0; }
+    .day-label { font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); width: 28px; flex-shrink: 0; }
     .day-bar-track { flex: 1; height: 5px; background: var(--border); }
     .day-bar-fill { height: 100%; background: var(--black); }
     .day-bar-fill.peak { background: var(--orange); }
-    .day-count { font-family: var(--ff-mono); font-size: 9px; color: var(--gray); min-width: 18px; text-align: right; }
-    .analytics-empty { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); padding: 16px 0; }
+    .day-count { font-family: var(--ff-body); font-size: 9px; color: var(--gray); min-width: 18px; text-align: right; }
+    .analytics-empty { font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); padding: 16px 0; }
 
     /* SALE BADGE IN TABLE */
     .sale-badge {
-      display: inline-block; font-family: var(--ff-mono); font-size: 7px;
+      display: inline-block; font-family: var(--ff-body); font-size: 7px;
       letter-spacing: 0.12em; text-transform: uppercase;
       padding: 2px 6px; background: var(--orange); color: var(--white); margin-left: 6px;
     }
@@ -410,8 +413,32 @@
       text-align: center;
     }
     .footer__legal {
-      font-family: var(--ff-mono); font-size: 8px;
+      font-family: var(--ff-body); font-size: 8px;
       letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { border-right: none; border-bottom: 1px solid var(--border); padding: 12px 0; }
+      .admin-main { padding: 24px 16px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .analytics-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
+      .site-header__actions a span { display: none; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .modal { padding: 24px 20px; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .modal-grid .span2 { grid-column: auto; }
     }
   </style>
 </head>
@@ -561,8 +588,9 @@
           <input type="text" id="fSizes" placeholder="XS, S, M, L, XL">
         </div>
         <div class="form-field span2">
-          <label>Image URL or path</label>
-          <input type="text" id="fImage" placeholder="test images/filename.jpg">
+          <label>Product Image</label>
+          <input type="file" id="fImage" accept="image/*" onchange="previewImage(this)">
+          <img id="fImagePreview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:4px;object-fit:cover;">
         </div>
         <div class="form-field span2">
           <label>Description</label>
@@ -580,42 +608,14 @@
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
+  <script src="api.js"></script>
   <script>
-    if (!localStorage.getItem('snr_admin')) window.location.href = 'index.html';
+    if (localStorage.getItem('snr_is_staff') !== '1') window.location.href = 'index.html';
 
-    var editingIdx = null;
+    snrInitNav();
+    function logout() { snrLogout(); }
 
-    var defaultProducts = [
-      { name:'Item 01', price:59,  salePrice:null, qty:25, sizes:'XS,S,M,L,XL', tag:'New',  image:'test images/TS01556BLK.jpg',                                      desc:'Essential tee in heavyweight cotton.' },
-      { name:'Item 02', price:129, salePrice:null, qty:8,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/d0e8fa2825a148d3b7cce5adac3a3901.webp',                desc:'Relaxed fit overshirt.' },
-      { name:'Item 03', price:89,  salePrice:null, qty:30, sizes:'XS,S,M,L',     tag:'New',  image:'test images/0001s_0000_Curves12copy_0001_Layer2.avif',             desc:'Curved-hem essential.' },
-      { name:'Item 04', price:175, salePrice:null, qty:0,  sizes:'S,M,L,XL,XXL', tag:'New',  image:'test images/46-04221_1_copy.webp',                                 desc:'Heavy cargo trousers.' },
-      { name:'Item 05', price:95,  salePrice:null, qty:20, sizes:'XS,S,M,L',     tag:'New',  image:'test images/15-00247_1_copy.webp',                                 desc:'Long-sleeve layering piece.' },
-      { name:'Item 06', price:149, salePrice:null, qty:5,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/01-01431_1_copy.webp',                                 desc:'Technical outerwear jacket.' },
-      { name:'Item 07', price:65,  salePrice:null, qty:15, sizes:'XS,S,M,L,XL',  tag:'New',  image:'test images/mockup_sizescopy2.webp',                              desc:'Graphic print tee.' }
-    ];
-
-    function getProducts() {
-      var stored = localStorage.getItem('snr_products');
-      if (!stored) {
-        localStorage.setItem('snr_products', JSON.stringify(defaultProducts));
-        return defaultProducts;
-      }
-      var products = JSON.parse(stored);
-      var migrated = false;
-      products.forEach(function(p) {
-        if (p.qty === undefined)       { p.qty = 99;   migrated = true; }
-        if (p.salePrice === undefined) { p.salePrice = null; migrated = true; }
-      });
-      if (migrated) localStorage.setItem('snr_products', JSON.stringify(products));
-      return products;
-    }
-
-    function getOrders() {
-      var stored = localStorage.getItem('snr_orders');
-      if (!stored) return [];
-      return JSON.parse(stored);
-    }
+    var editingProductId = null;
 
     /* NAV */
     function showPage(page, link) {
@@ -628,257 +628,282 @@
     }
 
     /* OVERVIEW */
-    function renderOverview() {
-      var products = getProducts();
-      var orders   = getOrders();
-      var revenue  = orders.reduce(function(s,o){ return s + o.items.reduce(function(ss,i){ return ss+i.price*(i.qty||1); },0); }, 0);
-      var totalUnits = orders.reduce(function(s,o){ return s + o.items.reduce(function(ss,i){ return ss+(i.qty||1); },0); }, 0);
-      var avgOrder = orders.length ? Math.round(revenue / orders.length) : 0;
-      var onSale   = products.filter(function(p){ return p.salePrice && p.salePrice < p.price; }).length;
+    async function renderOverview() {
+      try {
+        var pRes = await apiFetch('/products/admin/');
+        var oRes = await apiFetch('/orders/admin/');
+        var products = pRes && pRes.ok ? await pRes.json() : [];
+        var orders   = oRes && oRes.ok ? await oRes.json() : [];
 
-      var stats = [
-        { label:'Products',   value: products.length },
-        { label:'Orders',     value: orders.length },
-        { label:'Revenue',    value: '€'+revenue },
-        { label:'Units Sold', value: totalUnits },
-        { label:'On Sale',    value: onSale }
-      ];
-      var grid = document.getElementById('statGrid');
-      grid.style.gridTemplateColumns = 'repeat(5,1fr)';
-      grid.innerHTML = stats.map(function(s){
-        return '<div class="stat-card"><div class="stat-label">'+s.label+'</div><div class="stat-value">'+s.value+'</div></div>';
-      }).join('');
+        var revenue    = orders.reduce(function(s,o){ return s + parseFloat(o.total||0); }, 0);
+        var totalUnits = orders.reduce(function(s,o){ return s + (o.items||[]).reduce(function(ss,i){ return ss+(i.qty||1); },0); }, 0);
+        var onSale     = products.filter(function(p){ return p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price); }).length;
 
-      /* ── TOP PRODUCTS ── */
-      var itemSales = {};
-      orders.forEach(function(order) {
-        order.items.forEach(function(item) {
-          if (!itemSales[item.name]) itemSales[item.name] = { qty:0, revenue:0 };
-          itemSales[item.name].qty     += (item.qty||1);
-          itemSales[item.name].revenue += item.price*(item.qty||1);
+        var stats = [
+          { label:'Products',   value: products.length },
+          { label:'Orders',     value: orders.length },
+          { label:'Revenue',    value: '€'+Math.round(revenue) },
+          { label:'Units Sold', value: totalUnits },
+          { label:'On Sale',    value: onSale }
+        ];
+        var grid = document.getElementById('statGrid');
+        grid.style.gridTemplateColumns = 'repeat(5,1fr)';
+        grid.innerHTML = stats.map(function(s){
+          return '<div class="stat-card"><div class="stat-label">'+s.label+'</div><div class="stat-value">'+s.value+'</div></div>';
+        }).join('');
+
+        /* top products */
+        var itemSales = {};
+        orders.forEach(function(order) {
+          (order.items||[]).forEach(function(item) {
+            var key = item.product_name;
+            if (!itemSales[key]) itemSales[key] = { qty:0, revenue:0 };
+            itemSales[key].qty     += (item.qty||1);
+            itemSales[key].revenue += parseFloat(item.price||0)*(item.qty||1);
+          });
         });
-      });
-      var topItems = Object.keys(itemSales).map(function(k){ return { name:k, qty:itemSales[k].qty, revenue:itemSales[k].revenue }; });
-      topItems.sort(function(a,b){ return b.qty - a.qty; });
+        var topItems = Object.keys(itemSales).map(function(k){ return { name:k, qty:itemSales[k].qty, revenue:itemSales[k].revenue }; });
+        topItems.sort(function(a,b){ return b.qty - a.qty; });
 
-      var topHtml = '<div class="analytics-card"><p class="analytics-title">Top Products by Sales</p>';
-      if (!topItems.length) {
-        topHtml += '<p class="analytics-empty">No sales data yet.</p>';
-      } else {
-        topItems.slice(0,6).forEach(function(item, i) {
-          topHtml +=
-            '<div class="top-item">'+
-              '<div style="display:flex;align-items:center;">'+
-                '<span class="top-item__rank">'+(i+1)+'.</span>'+
-                '<span class="top-item__name">'+item.name+'</span>'+
-              '</div>'+
-              '<div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; €'+item.revenue+'</div>'+
-            '</div>';
+        var topHtml = '<div class="analytics-card"><p class="analytics-title">Top Products by Sales</p>';
+        if (!topItems.length) {
+          topHtml += '<p class="analytics-empty">No sales data yet.</p>';
+        } else {
+          topItems.slice(0,6).forEach(function(item, i) {
+            topHtml += '<div class="top-item"><div style="display:flex;align-items:center;"><span class="top-item__rank">'+(i+1)+'.</span><span class="top-item__name">'+item.name+'</span></div><div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; €'+Math.round(item.revenue)+'</div></div>';
+          });
+        }
+        topHtml += '</div>';
+
+        /* orders by day */
+        var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        var dayCount = [0,0,0,0,0,0,0];
+        orders.forEach(function(o) {
+          var d = new Date(o.created_at);
+          if (!isNaN(d.getTime())) dayCount[d.getDay()]++;
         });
-      }
-      topHtml += '</div>';
+        var maxDay  = Math.max.apply(null, dayCount) || 1;
+        var peakIdx = dayCount.indexOf(Math.max.apply(null, dayCount));
+        var dayHtml = '<div class="analytics-card"><p class="analytics-title">Orders by Day of Week</p>';
+        if (!orders.length) {
+          dayHtml += '<p class="analytics-empty">No order data yet.</p>';
+        } else {
+          dayNames.forEach(function(day, i) {
+            var pct = Math.round((dayCount[i] / maxDay) * 100);
+            dayHtml += '<div class="day-row"><span class="day-label">'+day+'</span><div class="day-bar-track"><div class="day-bar-fill'+(i===peakIdx?' peak':'')+'" style="width:'+pct+'%"></div></div><span class="day-count">'+dayCount[i]+'</span></div>';
+          });
+        }
+        dayHtml += '</div>';
+        document.getElementById('analyticsGrid').innerHTML = topHtml + dayHtml;
 
-      /* ── ORDERS BY DAY ── */
-      var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var dayCount = [0,0,0,0,0,0,0];
-      orders.forEach(function(order) {
-        var d = new Date(order.date);
-        if (!isNaN(d.getTime())) dayCount[d.getDay()]++;
-      });
-      var maxDay = Math.max.apply(null, dayCount) || 1;
-      var peakIdx = dayCount.indexOf(Math.max.apply(null, dayCount));
-
-      var dayHtml = '<div class="analytics-card"><p class="analytics-title">Orders by Day of Week</p>';
-      if (!orders.length) {
-        dayHtml += '<p class="analytics-empty">No order data yet.</p>';
-      } else {
-        dayNames.forEach(function(day, i) {
-          var pct = Math.round((dayCount[i] / maxDay) * 100);
-          dayHtml +=
-            '<div class="day-row">'+
-              '<span class="day-label">'+day+'</span>'+
-              '<div class="day-bar-track"><div class="day-bar-fill'+(i===peakIdx?' peak':'')+'" style="width:'+pct+'%"></div></div>'+
-              '<span class="day-count">'+dayCount[i]+'</span>'+
-            '</div>';
+        /* recent orders */
+        var tbody = document.getElementById('recentOrdersBody');
+        tbody.innerHTML = '';
+        if (!orders.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
+          return;
+        }
+        orders.slice(0,5).forEach(function(order){
+          var date = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td>#'+order.id+'</td><td>'+date+'</td><td>'+(order.items||[]).length+'</td><td>€'+Math.round(parseFloat(order.total||0))+'</td><td><span class="status-badge status-badge--'+order.status+'">'+order.status+'</span></td>';
+          tbody.appendChild(tr);
         });
+      } catch (ex) {
+        document.getElementById('statGrid').innerHTML = '<p style="color:var(--gray);">Failed to load overview.</p>';
       }
-      dayHtml += '</div>';
-
-      document.getElementById('analyticsGrid').innerHTML = topHtml + dayHtml;
-
-      /* ── RECENT ORDERS ── */
-      var tbody = document.getElementById('recentOrdersBody');
-      tbody.innerHTML = '';
-      if (!orders.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
-        return;
-      }
-      orders.slice().reverse().slice(0,5).forEach(function(order){
-        var total = order.items.reduce(function(s,i){return s+i.price*(i.qty||1);},0);
-        var tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>'+order.id+'</td>'+
-          '<td>'+order.date+'</td>'+
-          '<td>'+order.items.length+'</td>'+
-          '<td>€'+total+'</td>'+
-          '<td><span class="status-badge status-badge--'+order.status+'">'+order.status+'</span></td>';
-        tbody.appendChild(tr);
-      });
     }
 
     /* PRODUCTS */
-    function stockBadge(qty) {
-      if (qty === 0)   return '<span class="stock-badge stock-badge--oos">Out of Stock</span>';
-      if (qty < 10)    return '<span class="stock-badge stock-badge--low">Low Stock</span>';
-      return               '<span class="stock-badge stock-badge--in">In Stock</span>';
+    function stockBadge(stock) {
+      if (stock === 0) return '<span class="stock-badge stock-badge--oos">Out of Stock</span>';
+      if (stock < 10)  return '<span class="stock-badge stock-badge--low">Low Stock</span>';
+      return                  '<span class="stock-badge stock-badge--in">In Stock</span>';
     }
 
-    function renderProducts() {
-      var products = getProducts();
-      document.getElementById('productCount').textContent = products.length + ' product' + (products.length===1?'':'s');
+    async function renderProducts() {
       var tbody = document.getElementById('productTableBody');
-      tbody.innerHTML = '';
-      products.forEach(function(p, idx) {
-        var qty = p.qty !== undefined ? p.qty : 99;
-        var onSale = p.salePrice && p.salePrice > 0 && p.salePrice < p.price;
-        var priceCell = onSale
-          ? '<span style="text-decoration:line-through;color:var(--gray);">€'+p.price+'</span> <span style="color:var(--orange);">€'+p.salePrice+'</span>'
-          : '€'+p.price;
-        var nameCell = p.name + (onSale ? '<span class="sale-badge">Sale</span>' : '');
-        var tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td><img class="product-thumb" src="'+p.image+'" alt="'+p.name+'"></td>'+
-          '<td>'+nameCell+'</td>'+
-          '<td style="font-family:var(--ff-mono);font-size:11px;">'+priceCell+'</td>'+
-          '<td style="font-family:var(--ff-mono);font-size:11px;">'+qty+'</td>'+
-          '<td>'+stockBadge(qty)+'</td>'+
-          '<td>'+p.tag+'</td>'+
-          '<td>'+
-            '<button class="action-btn action-btn--edit" onclick="openModal('+idx+')">Edit</button>'+
-            '<button class="action-btn action-btn--delete" onclick="deleteProduct('+idx+')">Delete</button>'+
-          '</td>';
-        tbody.appendChild(tr);
-      });
+      tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
+      try {
+        var res = await apiFetch('/products/admin/');
+        var products = res && res.ok ? await res.json() : [];
+        document.getElementById('productCount').textContent = products.length + ' product' + (products.length===1?'':'s');
+        tbody.innerHTML = '';
+        products.forEach(function(p) {
+          var stock  = p.stock || 0;
+          var onSale = p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price);
+          var priceCell = onSale
+            ? '<span style="text-decoration:line-through;color:var(--gray);">€'+Math.round(parseFloat(p.price))+'</span> <span style="color:var(--orange);">€'+Math.round(parseFloat(p.sale_price))+'</span>'
+            : '€'+Math.round(parseFloat(p.price));
+          var nameCell = p.name + (onSale ? '<span class="sale-badge">Sale</span>' : '');
+          var tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td><img class="product-thumb" src="'+(p.image||'')+'" alt="'+p.name+'"></td>'+
+            '<td>'+nameCell+'</td>'+
+            '<td style="font-family:var(--ff-mono);font-size:11px;">'+priceCell+'</td>'+
+            '<td style="font-family:var(--ff-mono);font-size:11px;">'+stock+'</td>'+
+            '<td>'+stockBadge(stock)+'</td>'+
+            '<td>'+(p.category ? p.category.name : '—')+'</td>'+
+            '<td>'+
+              '<button class="action-btn action-btn--edit" onclick="openModal('+p.id+')">Edit</button>'+
+              '<button class="action-btn action-btn--delete" onclick="deleteProduct('+p.id+')">Delete</button>'+
+            '</td>';
+          tbody.appendChild(tr);
+        });
+      } catch (ex) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Failed to load products.</td></tr>';
+      }
     }
 
     /* ALL ORDERS */
-    function renderAllOrders() {
-      var orders = getOrders();
-      var tbody  = document.getElementById('allOrdersBody');
-      tbody.innerHTML = '';
-      if (!orders.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
-        return;
+    async function renderAllOrders() {
+      var tbody = document.getElementById('allOrdersBody');
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
+      try {
+        var res = await apiFetch('/orders/admin/');
+        var orders = res && res.ok ? await res.json() : [];
+        tbody.innerHTML = '';
+        if (!orders.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
+          return;
+        }
+        orders.forEach(function(order) {
+          var date  = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+          var total = Math.round(parseFloat(order.total||0));
+          var tr    = document.createElement('tr');
+          tr.innerHTML =
+            '<td>#'+order.id+'</td>'+
+            '<td>'+date+'</td>'+
+            '<td>'+(order.items||[]).length+'</td>'+
+            '<td>€'+total+'</td>'+
+            '<td>'+
+              '<select class="order-status-select" onchange="updateOrderStatus('+order.id+',this.value)">'+
+                ['pending','confirmed','shipped','delivered','cancelled'].map(function(s){
+                  return '<option value="'+s+'"'+(order.status===s?' selected':'')+'>'+s+'</option>';
+                }).join('')+
+              '</select>'+
+            '</td>';
+          tbody.appendChild(tr);
+        });
+      } catch (ex) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">Failed to load orders.</td></tr>';
       }
-      orders.forEach(function(order, idx){
-        var total = order.items.reduce(function(s,i){return s+i.price*i.qty;},0);
-        var tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>'+order.id+'</td>'+
-          '<td>'+order.date+'</td>'+
-          '<td>'+order.items.length+'</td>'+
-          '<td>€'+total+'</td>'+
-          '<td>'+
-            '<select class="order-status-select" onchange="updateOrderStatus('+idx+',this.value)">'+
-              ['processing','shipped','delivered','cancelled'].map(function(s){
-                return '<option value="'+s+'"'+(order.status===s?' selected':'')+'>'+s+'</option>';
-              }).join('')+
-            '</select>'+
-          '</td>';
-        tbody.appendChild(tr);
-      });
     }
 
-    function updateOrderStatus(idx, status) {
-      var orders = getOrders();
-      orders[idx].status = status;
-      localStorage.setItem('snr_orders', JSON.stringify(orders));
+    async function updateOrderStatus(orderId, status) {
+      try {
+        await apiFetch('/orders/admin/' + orderId + '/', {
+          method: 'PATCH',
+          body: JSON.stringify({status: status})
+        });
+      } catch (ex) {}
     }
 
     /* MODAL */
-    function openModal(idx) {
-      editingIdx = (idx !== undefined) ? idx : null;
-      var products = getProducts();
+    async function openModal(productId) {
+      editingProductId = productId || null;
       var title = document.getElementById('modalTitle');
-      if (editingIdx !== null) {
-        var p = products[editingIdx];
+      if (editingProductId) {
         title.textContent = 'Edit Product';
-        document.getElementById('fName').value      = p.name;
-        document.getElementById('fPrice').value     = p.price;
-        document.getElementById('fQty').value       = p.qty !== undefined ? p.qty : 99;
-        document.getElementById('fSalePrice').value = p.salePrice || '';
-        document.getElementById('fTag').value       = p.tag;
-        document.getElementById('fSizes').value = p.sizes;
-        document.getElementById('fImage').value = p.image;
-        document.getElementById('fDesc').value  = p.desc || '';
+        try {
+          var res2 = await apiFetch('/products/admin/' + editingProductId + '/');
+          if (res2 && res2.ok) {
+            var p = await res2.json();
+            document.getElementById('fName').value      = p.name;
+            document.getElementById('fPrice').value     = parseFloat(p.price);
+            document.getElementById('fQty').value       = p.stock || 0;
+            document.getElementById('fSalePrice').value = p.sale_price ? parseFloat(p.sale_price) : '';
+            document.getElementById('fTag').value       = '';
+            document.getElementById('fSizes').value     = (p.variants||[]).map(function(v){ return v.size; }).join(',');
+            document.getElementById('fDesc').value      = p.description || '';
+            if (p.image) {
+              var preview = document.getElementById('fImagePreview');
+              preview.src = p.image;
+              preview.style.display = 'block';
+            }
+          }
+        } catch (ex) {}
       } else {
         title.textContent = 'Add Product';
-        ['fName','fPrice','fQty','fSalePrice','fTag','fSizes','fImage','fDesc'].forEach(function(id){ document.getElementById(id).value=''; });
-        document.getElementById('fQty').value = '99';
+        ['fName','fPrice','fQty','fSalePrice','fTag','fSizes','fDesc'].forEach(function(id){ document.getElementById(id).value=''; });
+        document.getElementById('fQty').value = '0';
       }
       document.getElementById('productModal').classList.add('open');
     }
 
+    function previewImage(input) {
+      var preview = document.getElementById('fImagePreview');
+      if (input.files && input.files[0]) {
+        preview.src = URL.createObjectURL(input.files[0]);
+        preview.style.display = 'block';
+      }
+    }
+
     function closeModal() {
       document.getElementById('productModal').classList.remove('open');
-      editingIdx = null;
+      document.getElementById('fImagePreview').style.display = 'none';
+      document.getElementById('fImagePreview').src = '';
+      editingProductId = null;
     }
 
-    function saveProduct() {
-      var name      = document.getElementById('fName').value.trim();
-      var price     = parseFloat(document.getElementById('fPrice').value);
-      var qty       = parseInt(document.getElementById('fQty').value);
-      if (isNaN(qty) || qty < 0) qty = 0;
-      var salePriceRaw = parseFloat(document.getElementById('fSalePrice').value);
-      var salePrice = (!isNaN(salePriceRaw) && salePriceRaw > 0 && salePriceRaw < price) ? salePriceRaw : null;
-      var tag       = document.getElementById('fTag').value.trim();
-      var sizes     = document.getElementById('fSizes').value.trim();
-      var image     = document.getElementById('fImage').value.trim();
-      var desc      = document.getElementById('fDesc').value.trim();
-      if (!name || isNaN(price)) return;
-      var products = getProducts();
-      var product  = { name:name, price:price, salePrice:salePrice, qty:qty, tag:tag||'New', sizes:sizes, image:image, desc:desc };
-      if (editingIdx !== null) {
-        products[editingIdx] = product;
-      } else {
-        products.push(product);
+    async function saveProduct() {
+      var name  = document.getElementById('fName').value.trim();
+      var price = parseFloat(document.getElementById('fPrice').value);
+      if (!name || isNaN(price)) { alert('Name and price are required.'); return; }
+
+      try {
+        var saleRaw   = parseFloat(document.getElementById('fSalePrice').value);
+        var salePrice = (!isNaN(saleRaw) && saleRaw > 0 && saleRaw < price) ? saleRaw : null;
+        var stock     = parseInt(document.getElementById('fQty').value) || 0;
+        var desc      = document.getElementById('fDesc').value.trim();
+        var imageFile = document.getElementById('fImage').files[0];
+
+        var payload = new FormData();
+        payload.append('name', name);
+        payload.append('price', price);
+        payload.append('stock', stock);
+        payload.append('description', desc);
+        payload.append('is_active', 'true');
+        if (salePrice) payload.append('sale_price', salePrice);
+        if (imageFile) payload.append('image', imageFile);
+
+        var res;
+        if (editingProductId) {
+          res = await apiFetch('/products/admin/' + editingProductId + '/', {
+            method: 'PATCH',
+            body: payload
+          });
+        } else {
+          res = await apiFetch('/products/admin/', {
+            method: 'POST',
+            body: payload
+          });
+        }
+        if (res && res.ok) {
+          closeModal();
+          renderProducts();
+        } else {
+          var err = res ? await res.json() : {};
+          alert(JSON.stringify(err) || 'Save failed.');
+        }
+      } catch (ex) {
+        alert('Error: ' + ex.message);
       }
-      localStorage.setItem('snr_products', JSON.stringify(products));
-      closeModal();
-      renderProducts();
     }
 
-    function deleteProduct(idx) {
+    async function deleteProduct(productId) {
       if (!confirm('Delete this product?')) return;
-      var products = getProducts();
-      products.splice(idx, 1);
-      localStorage.setItem('snr_products', JSON.stringify(products));
-      renderProducts();
+      try {
+        var res = await apiFetch('/products/admin/' + productId + '/', { method: 'DELETE' });
+        if (res && (res.ok || res.status === 204)) renderProducts();
+      } catch (ex) {}
     }
 
-    /* CLOSE MODAL ON OVERLAY CLICK */
     document.getElementById('productModal').addEventListener('click', function(e){
       if (e.target === this) closeModal();
     });
 
-    /* INIT */
     renderOverview();
-
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
-      }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
-      }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
-      }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
   </script>
 
 </body>

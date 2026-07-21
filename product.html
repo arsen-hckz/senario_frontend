@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -22,17 +22,20 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     img  { display: block; max-width: 100%; }
     a    { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
 
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -56,7 +59,8 @@
     }
 
     .site-header__nav a {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-heading);
+      font-weight: 500;
       font-size: 13px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -76,7 +80,8 @@
     }
 
     .site-header__actions a {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-heading);
+      font-weight: 500;
       font-size: 13px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -97,16 +102,22 @@
     }
 
     @media (max-width: 640px) {
-      .site-header { padding: 20px 16px; }
-      .site-header__logo { width: 160px; }
-      .site-header__nav a,
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
       .site-header__actions a span { display: none; }
+      .breadcrumb { padding: 12px 16px; }
+      .product-details { padding: 28px 20px 48px; }
     }
 
     /* ─── BREADCRUMB ─────────────────────────────── */
     .breadcrumb {
       padding: 16px 40px;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -162,7 +173,7 @@
     }
 
     .product-details__eyebrow {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -179,7 +190,7 @@
     }
 
     .product-details__price {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 18px;
       letter-spacing: 0.1em;
       margin-bottom: 36px;
@@ -193,7 +204,7 @@
 
     /* Sizes */
     .product-details__label {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -213,7 +224,7 @@
       height: 48px;
       border: 1px solid var(--border);
       background: none;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.1em;
       cursor: pointer;
@@ -234,7 +245,7 @@
       background: var(--black);
       color: var(--white);
       border: none;
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -256,7 +267,7 @@
       background: none;
       color: var(--black);
       border: 1px solid var(--border);
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -271,9 +282,9 @@
 
     /* Description */
     .product-details__desc {
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       font-size: 15px;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.7;
       color: var(--gray);
       border-top: 1px solid var(--border);
@@ -295,7 +306,7 @@
     }
 
     .footer__slogan {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.14em;
       color: var(--gray);
@@ -324,7 +335,7 @@
     .social-btn:hover { border-color: var(--orange); color: var(--orange); }
 
     .footer__legal {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.18em;
       color: var(--border);
@@ -349,7 +360,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -464,64 +475,86 @@
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
+  <script src="api.js"></script>
   <script>
-    const products = {
-      1: { name: 'Item 01', price: '€59',  img: 'test images/TS01556BLK.jpg',                              sizes: ['XS','S','M','L','XL'], desc: 'Built for the streets — every piece worn with intention.' },
-      2: { name: 'Item 02', price: '€129', img: 'test images/d0e8fa2825a148d3b7cce5adac3a3901.webp',        sizes: ['S','M','L','XL'],     desc: 'Raw texture meets controlled expression.' },
-      3: { name: 'Item 03', price: '€89',  img: 'test images/0001s_0000_Curves12copy_0001_Layer2.avif',     sizes: ['XS','S','M','L'],     desc: 'Minimal composition. Silent dominance.' },
-      4: { name: 'Item 04', price: '€175', img: 'test images/46-04221_1_copy.webp',                         sizes: ['S','M','L','XL'],     desc: 'Industrial symmetry. Identity remains constant.' },
-      5: { name: 'Item 05', price: '€95',  img: 'test images/15-00247_1_copy.webp',                         sizes: ['One Size'],           desc: 'Presence without noise.' },
-      6: { name: 'Item 06', price: '€149', img: 'test images/01-01431_1_copy.webp',                         sizes: ['One Size'],           desc: 'Dark minimal tones. Orange as controlled energy.' },
-      7: { name: 'Item 07', price: '€65',  img: 'test images/mockup_sizescopy2.webp',                       sizes: ['XS','S','M','L','XL'], desc: 'Authenticity over perfection.' },
-    };
+    snrInitNav();
+    function logout() { snrLogout(); }
 
-    const id = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
-    const p = products[id] || products[1];
+    var slug = new URLSearchParams(window.location.search).get('slug');
 
-    document.getElementById('bc-name').textContent   = p.name;
-    document.getElementById('prod-name').textContent = p.name;
-    document.getElementById('prod-price').textContent = p.price;
-    document.getElementById('prod-img').src          = p.img;
-    document.getElementById('prod-img').alt          = p.name;
-    document.getElementById('prod-desc').textContent = p.desc;
-    document.title = p.name + ' — Σenario';
-
-    document.querySelector('.btn-atc').addEventListener('click', function() {
-      this.textContent = '✓ Added to Cart';
-      this.classList.add('added');
-      clearTimeout(this._t);
-      this._t = setTimeout(() => {
-        this.textContent = 'Add to Cart';
-        this.classList.remove('added');
-      }, 2000);
-    });
-
-    const sizeGrid = document.getElementById('size-grid');
-    p.sizes.forEach((s, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'size-btn' + (i === 0 ? ' selected' : '');
-      btn.textContent = s;
-      btn.addEventListener('click', () => {
-        sizeGrid.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      });
-      sizeGrid.appendChild(btn);
-    });
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
+    async function loadProduct() {
+      if (!slug) {
+        document.getElementById('prod-name').textContent = 'Product not found.';
+        return;
       }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
+      try {
+        var res = await fetch(API_BASE + '/products/' + slug + '/');
+        if (!res.ok) throw new Error();
+        var p = await res.json();
+
+        document.getElementById('bc-name').textContent    = p.name;
+        document.getElementById('prod-name').textContent  = p.name;
+        document.getElementById('prod-price').textContent = '€' + Math.round(parseFloat(p.effective_price || p.price));
+        document.getElementById('prod-img').src           = p.image || 'test images/TS01556BLK.jpg';
+        document.getElementById('prod-img').alt           = p.name;
+        document.getElementById('prod-desc').textContent  = p.description || '';
+        document.title = p.name + ' — Σenario';
+
+        var sizeGrid = document.getElementById('size-grid');
+        var variants = p.variants || [];
+        variants.forEach(function(v, i) {
+          var btn = document.createElement('button');
+          btn.className = 'size-btn' + (i === 0 && v.stock > 0 ? ' selected' : '');
+          btn.textContent = v.size;
+          btn.dataset.variantId = v.id;
+          if (v.stock === 0) { btn.classList.add('disabled'); btn.disabled = true; }
+          btn.addEventListener('click', function() {
+            if (btn.disabled) return;
+            sizeGrid.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
+            btn.classList.add('selected');
+          });
+          sizeGrid.appendChild(btn);
+        });
+
+        document.querySelector('.btn-atc').addEventListener('click', async function() {
+          if (!localStorage.getItem('snr_token')) {
+            window.location.href = 'login.html?next=product.html?slug=' + slug;
+            return;
+          }
+          var sel = sizeGrid.querySelector('.size-btn.selected');
+          var variantId = sel ? sel.dataset.variantId : null;
+          var self = this;
+          self.textContent = '...';
+          self.disabled = true;
+          try {
+            var payload = {product_id: p.id, qty: 1};
+            if (variantId) payload.variant_id = parseInt(variantId);
+            var r = await apiFetch('/cart/', {method: 'POST', body: JSON.stringify(payload)});
+            if (r && r.ok) {
+              self.textContent = '✓ Added to Cart';
+              self.classList.add('added');
+              clearTimeout(self._t);
+              self._t = setTimeout(function() {
+                self.textContent = 'Add to Cart';
+                self.classList.remove('added');
+                self.disabled = false;
+              }, 2000);
+            } else {
+              self.textContent = 'Add to Cart';
+              self.disabled = false;
+            }
+          } catch (ex) {
+            self.textContent = 'Add to Cart';
+            self.disabled = false;
+          }
+        });
+
+      } catch (ex) {
+        document.getElementById('prod-name').textContent = 'Product not found.';
       }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
-      }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
+    }
+
+    loadProduct();
   </script>
 
 </body>

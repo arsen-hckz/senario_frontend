@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -19,17 +19,20 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     img  { display: block; max-width: 100%; }
     a    { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
 
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       font-weight: 300;
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
@@ -82,7 +85,7 @@
 
     .photo-panel__quote {
       position: absolute; top: 40px; left: 40px; right: 40px;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.22em;
       text-transform: uppercase; color: rgba(255,255,255,0.4);
     }
 
@@ -106,7 +109,7 @@
     /* back link */
     .back-link {
       display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.2em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.2em;
       text-transform: uppercase; color: var(--gray);
       margin-bottom: 56px; transition: color 0.2s;
     }
@@ -122,7 +125,7 @@
     }
 
     .auth-tab {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.2em;
+      font-family: var(--ff-heading); font-size: 9px; letter-spacing: 0.2em;
       text-transform: uppercase; padding-bottom: 14px;
       margin-right: 28px; cursor: pointer; border: none;
       background: none; color: var(--gray);
@@ -138,13 +141,13 @@
 
     /* heading */
     .auth-heading {
-      font-family: var(--ff-condensed); font-weight: 300;
+      font-family: var(--ff-heading); font-weight: 500;
       font-size: clamp(36px, 4vw, 56px); line-height: 1;
       margin-bottom: 8px;
     }
 
     .auth-sub {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.16em;
       text-transform: uppercase; color: var(--gray); margin-bottom: 40px;
     }
 
@@ -155,7 +158,7 @@
     .field { display: flex; flex-direction: column; gap: 7px; }
 
     .field__label {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.2em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.2em;
       text-transform: uppercase; color: var(--gray);
     }
 
@@ -163,7 +166,7 @@
       padding: 13px 0;
       border: none; border-bottom: 1px solid var(--border);
       background: transparent;
-      font-family: var(--ff-condensed); font-weight: 300; font-size: 17px;
+      font-family: var(--ff-body); font-weight: 400; font-size: 17px;
       color: var(--black); outline: none;
       transition: border-color 0.2s;
     }
@@ -177,7 +180,7 @@
     }
 
     .field__link {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em;
       text-transform: uppercase; color: var(--gray); transition: color 0.2s;
     }
     .field__link:hover { color: var(--orange); }
@@ -186,7 +189,7 @@
       margin-top: 8px;
       padding: 15px;
       background: var(--black); color: var(--white);
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.24em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.24em;
       text-transform: uppercase; border: none; cursor: pointer;
       transition: background 0.2s;
     }
@@ -194,7 +197,7 @@
 
     .auth-divider {
       display: flex; align-items: center; gap: 14px; margin: 4px 0;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.14em;
       color: var(--border);
     }
     .auth-divider::before,
@@ -202,13 +205,13 @@
 
     .auth-switch {
       text-align: center;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em;
       text-transform: uppercase; color: var(--gray);
     }
 
     .auth-switch button {
       background: none; border: none; cursor: pointer;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em;
       text-transform: uppercase; color: var(--black);
       text-decoration: underline; text-underline-offset: 3px;
       transition: color 0.2s;
@@ -221,7 +224,7 @@
     .pass-toggle {
       position: absolute; right: 0; bottom: 13px;
       background: none; border: none; cursor: pointer;
-      font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.12em;
+      font-family: var(--ff-body); font-size: 7px; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--gray); transition: color 0.2s;
     }
     .pass-toggle:hover { color: var(--black); }
@@ -265,7 +268,7 @@
       <form class="auth-form" onsubmit="handleLogin(event)">
         <div class="field">
           <label class="field__label">Email</label>
-          <input class="field__input" type="email" placeholder="your@email.com" required>
+          <input class="field__input" id="loginEmail" type="email" placeholder="your@email.com" required>
         </div>
         <div class="field field--pass">
           <label class="field__label">Password</label>
@@ -275,6 +278,7 @@
         <div class="field__row">
           <a class="field__link" href="#">Forgot password?</a>
         </div>
+        <p id="loginErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
         <button class="auth-submit" type="submit">Sign in</button>
         <div class="auth-divider">or</div>
         <div class="auth-switch">
@@ -290,11 +294,11 @@
       <form class="auth-form" onsubmit="handleRegister(event)">
         <div class="field">
           <label class="field__label">Full name</label>
-          <input class="field__input" type="text" placeholder="Your name" required>
+          <input class="field__input" id="regName" type="text" placeholder="Your name" required>
         </div>
         <div class="field">
           <label class="field__label">Email</label>
-          <input class="field__input" type="email" placeholder="your@email.com" required>
+          <input class="field__input" id="regEmail" type="email" placeholder="your@email.com" required>
         </div>
         <div class="field field--pass">
           <label class="field__label">Password</label>
@@ -306,6 +310,7 @@
           <input class="field__input" type="password" id="regPassConfirm" placeholder="••••••••" required>
           <button type="button" class="pass-toggle" onclick="togglePass('regPassConfirm', this)">Show</button>
         </div>
+        <p id="regErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
         <button class="auth-submit" type="submit">Create account</button>
         <div class="auth-divider">or</div>
         <div class="auth-switch">
@@ -317,41 +322,101 @@
   </div>
 </div>
 
+<script src="api.js"></script>
 <script>
   function switchTab(tab) {
-    const isLogin = tab === 'login';
+    var isLogin = tab === 'login';
     document.getElementById('tabLogin').classList.toggle('active', isLogin);
     document.getElementById('tabRegister').classList.toggle('active', !isLogin);
     document.getElementById('panelLogin').style.display    = isLogin ? 'block' : 'none';
     document.getElementById('panelRegister').style.display = isLogin ? 'none'  : 'block';
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    localStorage.setItem('snr_loggedIn', '1');
-    window.location.href = 'index.html';
+    var email = document.getElementById('loginEmail').value.trim();
+    var pass  = document.getElementById('loginPass').value;
+    var err   = document.getElementById('loginErr');
+    err.style.display = 'none';
+    try {
+      var res = await fetch(API_BASE + '/auth/login/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email: email, password: pass})
+      });
+      if (!res.ok) {
+        var d = await res.json();
+        err.textContent = d.detail || 'Invalid email or password.';
+        err.style.display = 'block';
+        return;
+      }
+      var data = await res.json();
+      localStorage.setItem('snr_token', data.access);
+      localStorage.setItem('snr_refresh', data.refresh);
+      var pr = await fetch(API_BASE + '/auth/profile/', {
+        headers: {'Authorization': 'Bearer ' + data.access}
+      });
+      if (pr.ok) {
+        var user = await pr.json();
+        if (user.is_staff) localStorage.setItem('snr_is_staff', '1');
+        else localStorage.removeItem('snr_is_staff');
+      }
+      var next = new URLSearchParams(location.search).get('next') || 'index.html';
+      window.location.href = next;
+    } catch (ex) {
+      err.textContent = 'Network error. Please try again.';
+      err.style.display = 'block';
+    }
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
-    const pass    = document.getElementById('regPass').value;
-    const confirm = document.getElementById('regPassConfirm').value;
+    var name    = document.getElementById('regName').value.trim();
+    var email   = document.getElementById('regEmail').value.trim();
+    var pass    = document.getElementById('regPass').value;
+    var confirm = document.getElementById('regPassConfirm').value;
+    var err     = document.getElementById('regErr');
+    err.style.display = 'none';
     if (pass !== confirm) {
       document.getElementById('regPassConfirm').style.borderBottomColor = '#c0392b';
+      err.textContent = 'Passwords do not match.';
+      err.style.display = 'block';
       return;
     }
-    localStorage.setItem('snr_loggedIn', '1');
-    window.location.href = 'index.html';
+    var parts = name.split(' ');
+    var firstName = parts[0] || '';
+    var lastName  = parts.slice(1).join(' ') || '';
+    try {
+      var res = await fetch(API_BASE + '/auth/register/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email: email, password: pass, first_name: firstName, last_name: lastName})
+      });
+      if (!res.ok) {
+        var d = await res.json();
+        var msg = Object.values(d).flat().join(' ');
+        err.textContent = msg || 'Registration failed.';
+        err.style.display = 'block';
+        return;
+      }
+      var data = await res.json();
+      localStorage.setItem('snr_token', data.access);
+      localStorage.setItem('snr_refresh', data.refresh);
+      if (data.user && data.user.is_staff) localStorage.setItem('snr_is_staff', '1');
+      window.location.href = 'index.html';
+    } catch (ex) {
+      err.textContent = 'Network error. Please try again.';
+      err.style.display = 'block';
+    }
   }
 
   function togglePass(id, btn) {
-    const input = document.getElementById(id);
-    const show  = input.type === 'password';
-    input.type  = show ? 'text' : 'password';
+    var input = document.getElementById(id);
+    var show  = input.type === 'password';
+    input.type = show ? 'text' : 'password';
     btn.textContent = show ? 'Hide' : 'Show';
   }
 
-  // if URL has ?tab=register, open register tab
   if (new URLSearchParams(location.search).get('tab') === 'register') {
     switchTab('register');
   }

@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -22,17 +22,20 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     img  { display: block; max-width: 100%; }
     a    { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
 
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -56,7 +59,8 @@
     }
 
     .site-header__nav a {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-heading);
+      font-weight: 500;
       font-size: 13px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -76,7 +80,8 @@
     }
 
     .site-header__actions a {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-heading);
+      font-weight: 500;
       font-size: 13px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -97,10 +102,15 @@
     }
 
     @media (max-width: 640px) {
-      .site-header { padding: 20px 16px; }
-      .site-header__logo { width: 160px; }
-      .site-header__nav a,
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
       .site-header__actions a span { display: none; }
+      .collection-header { padding: 24px 16px 16px; }
     }
 
     /* ─── COLLECTION HEADER ──────────────────────── */
@@ -111,7 +121,7 @@
     }
 
     .collection-header__eyebrow {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -127,7 +137,7 @@
     }
 
     .collection-header__count {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 9px;
       letter-spacing: 0.18em;
       color: var(--gray);
@@ -196,7 +206,7 @@
       right: 0;
       background: var(--black);
       color: var(--white);
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -226,7 +236,7 @@
       left: 10px;
       background: var(--black);
       color: var(--white);
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 7px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -240,15 +250,15 @@
     }
 
     .product-card__name {
-      font-family: var(--ff-condensed);
-      font-size: 18px;
-      font-weight: 700;
+      font-family: var(--ff-heading);
+      font-size: 16px;
+      font-weight: 500;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
 
     .product-card__price {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 12px;
       letter-spacing: 0.1em;
       color: var(--gray);
@@ -257,7 +267,7 @@
     /* ─── STOCK STATES ──────────────────────────── */
     .stock-tag {
       position: absolute; top: 10px; right: 10px;
-      font-family: var(--ff-mono); font-size: 7px;
+      font-family: var(--ff-body); font-size: 7px;
       letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 7px;
       pointer-events: none;
     }
@@ -276,7 +286,7 @@
 
     .product-card__name-row { display: flex; align-items: center; gap: 8px; }
     .product-card__oos-label {
-      font-family: var(--ff-mono); font-size: 7px;
+      font-family: var(--ff-body); font-size: 7px;
       letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray);
       white-space: nowrap;
     }
@@ -287,11 +297,11 @@
       display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
     }
     .product-card__price--original {
-      font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.1em;
+      font-family: var(--ff-body); font-size: 10px; letter-spacing: 0.1em;
       color: var(--gray); text-decoration: line-through;
     }
     .product-card__price--sale {
-      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.1em;
+      font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.1em;
       color: var(--orange);
     }
 
@@ -310,7 +320,7 @@
     }
 
     .footer__slogan {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 11px;
       letter-spacing: 0.14em;
       color: var(--gray);
@@ -339,7 +349,7 @@
     .social-btn:hover { border-color: var(--orange); color: var(--orange); }
 
     .footer__legal {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 8px;
       letter-spacing: 0.18em;
       color: var(--border);
@@ -364,7 +374,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -468,148 +478,122 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="api.js"></script>
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    var defaultProducts = [
-      { name:'Item 01', price:59,  qty:25, sizes:'XS,S,M,L,XL', tag:'New',  image:'test images/TS01556BLK.jpg',                                 desc:'Essential tee in heavyweight cotton.' },
-      { name:'Item 02', price:129, qty:8,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/d0e8fa2825a148d3b7cce5adac3a3901.webp',           desc:'Relaxed fit overshirt.' },
-      { name:'Item 03', price:89,  qty:30, sizes:'XS,S,M,L',     tag:'New',  image:'test images/0001s_0000_Curves12copy_0001_Layer2.avif',        desc:'Curved-hem essential.' },
-      { name:'Item 04', price:175, qty:0,  sizes:'S,M,L,XL,XXL', tag:'New',  image:'test images/46-04221_1_copy.webp',                            desc:'Heavy cargo trousers.' },
-      { name:'Item 05', price:95,  qty:20, sizes:'XS,S,M,L',     tag:'New',  image:'test images/15-00247_1_copy.webp',                            desc:'Long-sleeve layering piece.' },
-      { name:'Item 06', price:149, qty:5,  sizes:'S,M,L,XL',     tag:'New',  image:'test images/01-01431_1_copy.webp',                            desc:'Technical outerwear jacket.' },
-      { name:'Item 07', price:65,  qty:15, sizes:'XS,S,M,L,XL',  tag:'New',  image:'test images/mockup_sizescopy2.webp',                         desc:'Graphic print tee.' }
-    ];
-
-    function getProducts() {
-      var stored = localStorage.getItem('snr_products');
-      if (!stored) {
-        localStorage.setItem('snr_products', JSON.stringify(defaultProducts));
-        return defaultProducts;
-      }
-      var products = JSON.parse(stored);
-      var migrated = false;
-      products.forEach(function(p) {
-        if (p.qty === undefined)       { p.qty = 99;   migrated = true; }
-        if (p.salePrice === undefined) { p.salePrice = null; migrated = true; }
-      });
-      if (migrated) localStorage.setItem('snr_products', JSON.stringify(products));
-      return products;
-    }
-
-    function renderGrid() {
-      var products = getProducts();
+    async function renderGrid() {
       var grid  = document.getElementById('productGrid');
       var count = document.querySelector('.collection-header__count');
-      if (count) count.textContent = products.length + ' Piece' + (products.length === 1 ? '' : 's');
-      grid.innerHTML = '';
+      grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Loading...</p>';
 
-      products.forEach(function(p, i) {
-        var oos    = p.qty === 0;
-        var low    = !oos && p.qty < 10;
-        var onSale = !oos && p.salePrice && p.salePrice > 0 && p.salePrice < p.price;
+      try {
+        var res = await fetch(API_BASE + '/products/');
+        if (!res.ok) throw new Error();
+        var products = await res.json();
 
-        // Stock tag (top-right corner of image)
-        var stockTag = oos ? '<span class="stock-tag stock-tag--oos">Out of Stock</span>'
-                    : low ? '<span class="stock-tag stock-tag--low">Low Stock</span>'
-                    : '';
+        if (count) count.textContent = products.length + ' Piece' + (products.length === 1 ? '' : 's');
+        grid.innerHTML = '';
 
-        // Product tag (top-left — "Sale" overrides "New" etc.)
-        var tagHtml = onSale
-          ? '<span class="product-card__tag product-card__tag--sale">Sale</span>'
-          : (p.tag ? '<span class="product-card__tag">' + p.tag + '</span>' : '');
+        products.forEach(function(p, i) {
+          var totalStock = p.variants && p.variants.length
+            ? p.variants.reduce(function(s, v) { return s + (v.stock || 0); }, 0)
+            : (p.stock || 0);
+          var oos    = totalStock === 0;
+          var low    = !oos && totalStock < 10;
+          var effPrice  = parseFloat(p.effective_price || p.price);
+          var origPrice = parseFloat(p.price);
+          var onSale    = p.sale_price && effPrice < origPrice;
 
-        var atcBtn = oos
-          ? '<button class="product-card__atc oos" onclick="event.stopPropagation()">Out of Stock</button>'
-          : '<button class="product-card__atc" onclick="addToCart(event, this, ' + i + ')">Add to Cart</button>';
+          var stockTag = oos ? '<span class="stock-tag stock-tag--oos">Out of Stock</span>'
+                       : low ? '<span class="stock-tag stock-tag--low">Low Stock</span>'
+                       : '';
 
-        var nameHtml = oos
-          ? '<div class="product-card__name-row"><span class="product-card__name">' + p.name + '</span><span class="product-card__oos-label">Out of Stock</span></div>'
-          : '<span class="product-card__name">' + p.name + '</span>';
+          var tagHtml = onSale
+            ? '<span class="product-card__tag product-card__tag--sale">Sale</span>'
+            : '<span class="product-card__tag">New</span>';
 
-        var priceHtml = onSale
-          ? '<div class="product-card__price-wrap"><span class="product-card__price--original">€' + p.price + '</span><span class="product-card__price--sale">€' + p.salePrice + '</span></div>'
-          : '<span class="product-card__price">€' + p.price + '</span>';
+          var atcBtn = oos
+            ? '<button class="product-card__atc oos" onclick="event.stopPropagation()">Out of Stock</button>'
+            : '<button class="product-card__atc" onclick="addToCart(event,this,' + p.id + ')">Add to Cart</button>';
 
-        var card = document.createElement('a');
-        card.className = 'product-card' + (oos ? ' product-card--oos' : '');
-        card.href = 'product.html?id=' + (i + 1);
-        card.innerHTML =
-          '<div class="product-card__image">' +
-            '<img src="' + p.image + '" alt="' + p.name + '">' +
-            tagHtml + stockTag + atcBtn +
-          '</div>' +
-          '<div class="product-card__info">' +
-            nameHtml + priceHtml +
-          '</div>';
+          var nameHtml = oos
+            ? '<div class="product-card__name-row"><span class="product-card__name">' + p.name + '</span><span class="product-card__oos-label">Out of Stock</span></div>'
+            : '<span class="product-card__name">' + p.name + '</span>';
 
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(24px)';
-        grid.appendChild(card);
+          var priceHtml = onSale
+            ? '<div class="product-card__price-wrap"><span class="product-card__price--original">€' + Math.round(origPrice) + '</span><span class="product-card__price--sale">€' + Math.round(effPrice) + '</span></div>'
+            : '<span class="product-card__price">€' + Math.round(effPrice) + '</span>';
 
-        gsap.to(card, {
-          opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-          delay: i * 0.08,
-          scrollTrigger: { trigger: card, start: 'top 88%' }
+          var imgSrc = p.image || 'test images/TS01556BLK.jpg';
+
+          var card = document.createElement('a');
+          card.className = 'product-card' + (oos ? ' product-card--oos' : '');
+          card.href = 'product.html?slug=' + p.slug;
+          card.innerHTML =
+            '<div class="product-card__image">' +
+              '<img src="' + imgSrc + '" alt="' + p.name + '">' +
+              tagHtml + stockTag + atcBtn +
+            '</div>' +
+            '<div class="product-card__info">' +
+              nameHtml + priceHtml +
+            '</div>';
+
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(24px)';
+          grid.appendChild(card);
         });
-      });
+
+        ScrollTrigger.refresh();
+        grid.querySelectorAll('.product-card').forEach(function(card, i) {
+          gsap.to(card, {
+            opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+            delay: i * 0.08,
+            scrollTrigger: { trigger: card, start: 'top 92%', toggleActions: 'play none none none' }
+          });
+        });
+      } catch (ex) {
+        grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Failed to load products. Make sure the server is running.</p>';
+      }
     }
 
-    function addToCart(e, btn, productIdx) {
+    async function addToCart(e, btn, productId) {
       e.preventDefault();
       e.stopPropagation();
       if (btn.classList.contains('added') || btn.classList.contains('oos')) return;
-
-      var products = getProducts();
-      if (products[productIdx] && products[productIdx].qty > 0) {
-        products[productIdx].qty -= 1;
-        localStorage.setItem('snr_products', JSON.stringify(products));
-
-        if (products[productIdx].qty === 0) {
-          btn.textContent = 'Out of Stock';
-          btn.classList.add('oos');
-          var card = btn.closest('.product-card');
-          if (card) {
-            card.classList.add('product-card--oos');
-            var infoDiv = card.querySelector('.product-card__info');
-            var nameEl = infoDiv && infoDiv.querySelector('.product-card__name');
-            if (nameEl) {
-              var row = document.createElement('div');
-              row.className = 'product-card__name-row';
-              row.innerHTML = '<span class="product-card__name">' + products[productIdx].name + '</span><span class="product-card__oos-label">Out of Stock</span>';
-              nameEl.replaceWith(row);
-            }
-          }
-          return;
-        }
+      if (!localStorage.getItem('snr_token')) {
+        window.location.href = 'login.html?next=collection.html';
+        return;
       }
-
-      btn.textContent = '✓ Added to Cart';
-      btn.classList.add('added');
-      setTimeout(function() {
-        btn.classList.remove('added');
-        btn.textContent = 'Add to Cart';
-      }, 2000);
+      var orig = btn.textContent;
+      btn.textContent = '...';
+      btn.disabled = true;
+      try {
+        var res = await apiFetch('/cart/', {
+          method: 'POST',
+          body: JSON.stringify({product_id: productId, qty: 1})
+        });
+        if (res && res.ok) {
+          btn.textContent = '✓ Added';
+          btn.classList.add('added');
+          setTimeout(function() {
+            btn.classList.remove('added');
+            btn.textContent = orig;
+            btn.disabled = false;
+          }, 2000);
+        } else {
+          btn.textContent = orig;
+          btn.disabled = false;
+        }
+      } catch (ex) {
+        btn.textContent = orig;
+        btn.disabled = false;
+      }
     }
 
+    snrInitNav();
+    function logout() { snrLogout(); }
     renderGrid();
-  </script>
-  <script>
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
-      }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
-      }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
-      }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
   </script>
 
 </body>

@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -19,16 +19,19 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
 
     body {
       background: var(--black);
       color: var(--white);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       display: flex;
@@ -48,7 +51,7 @@
     }
     .site-header__nav { display: flex; gap: 28px; padding-top: 22px; }
     .site-header__nav a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--white); transition: color 0.2s;
     }
     .site-header__nav a:hover { color: var(--orange); }
@@ -57,7 +60,7 @@
       justify-content: flex-end; padding-top: 22px;
     }
     .site-header__actions a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--white); transition: color 0.2s;
       display: flex; align-items: center; gap: 6px;
     }
@@ -87,7 +90,7 @@
     }
 
     .error-label {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
@@ -116,7 +119,7 @@
     }
 
     .error-link {
-      font-family: var(--ff-mono);
+      font-family: var(--ff-body);
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -148,7 +151,7 @@
       border-top: 1px solid rgba(255,255,255,0.08);
     }
     .footer__legal {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.18em;
       color: rgba(255,255,255,0.2); text-transform: uppercase;
     }
 
@@ -170,7 +173,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--white);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -183,6 +186,17 @@
     .account-menu__dropdown button:hover { background: rgba(255,255,255,0.08); color: var(--white); }
     .account-menu__dropdown .logout-btn { color: var(--gray); }
     .account-menu__dropdown .logout-btn:hover { color: var(--orange); background: rgba(255,255,255,0.05); }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
+      .site-header__actions a span { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -247,22 +261,10 @@
     gsap.to('.error-msg',   { opacity: 1, y: 0, duration: 0.8,  ease: 'power3.out', delay: 0.55 });
     gsap.to('.error-links', { opacity: 1,       duration: 0.8,  ease: 'power3.out', delay: 0.75 });
   </script>
+  <script src="api.js"></script>
   <script>
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
-      }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
-      }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
-      }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
+    snrInitNav();
+    function logout() { snrLogout(); }
   </script>
 
 </body>

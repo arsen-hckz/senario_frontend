@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -19,16 +19,19 @@
       --ff-display:   'Bebas Neue', sans-serif;
       --ff-condensed: 'Barlow Condensed', sans-serif;
       --ff-mono:      'DM Mono', monospace;
+      --ff-heading:   'Space Grotesk', sans-serif;
+      --ff-body:      'Suisse Intl', 'Inter', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     img { display: block; max-width: 100%; }
     a   { color: inherit; text-decoration: none; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--ff-heading); font-weight: 500; }
 
     body {
       background: var(--white);
       color: var(--black);
-      font-family: var(--ff-condensed);
+      font-family: var(--ff-body);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -45,7 +48,7 @@
     }
     .site-header__nav { display: flex; gap: 28px; padding-top: 22px; }
     .site-header__nav a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
     }
     .site-header__nav a:hover { color: var(--orange); }
@@ -54,7 +57,7 @@
       justify-content: flex-end; padding-top: 22px;
     }
     .site-header__actions a {
-      font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.18em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black); transition: color 0.2s;
       display: flex; align-items: center; gap: 6px;
     }
@@ -67,12 +70,12 @@
       border-bottom: 1px solid var(--border);
     }
     .page-title__eyebrow {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray); margin-bottom: 10px;
     }
     .page-title h1 {
-      font-family: var(--ff-display); font-size: clamp(48px, 6vw, 80px);
-      line-height: 1; letter-spacing: 0.02em;
+      font-family: var(--ff-heading); font-weight: 500; font-size: clamp(36px, 5vw, 64px);
+      line-height: 1; letter-spacing: -0.01em;
     }
 
     /* ─── CHECKOUT LAYOUT ────────────────────────── */
@@ -94,7 +97,7 @@
     .form-section { margin-bottom: 48px; }
 
     .form-section__title {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray);
       margin-bottom: 24px; padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
@@ -112,7 +115,7 @@
     .form-group { display: flex; flex-direction: column; gap: 6px; }
 
     .form-group label {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--gray);
     }
 
@@ -120,7 +123,7 @@
     .form-group select {
       height: 44px; padding: 0 14px;
       border: 1px solid var(--border); background: var(--white);
-      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.06em;
+      font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.06em;
       color: var(--black); outline: none;
       transition: border-color 0.2s;
       appearance: none;
@@ -154,14 +157,14 @@
 
     .btn-place-order {
       width: 100%; padding: 18px; background: var(--black); color: var(--white);
-      border: none; font-family: var(--ff-mono); font-size: 11px;
-      letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+      border: none; font-family: var(--ff-heading); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
       transition: background 0.2s; margin-top: 8px;
     }
     .btn-place-order:hover { background: var(--orange); }
 
     .form-note {
-      margin-top: 14px; font-family: var(--ff-mono); font-size: 8px;
+      margin-top: 14px; font-family: var(--ff-body); font-size: 8px;
       letter-spacing: 0.12em; color: var(--gray); line-height: 1.7;
     }
 
@@ -175,7 +178,7 @@
     }
 
     .order-summary__title {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray); margin-bottom: 28px;
     }
 
@@ -191,24 +194,24 @@
     .summary-item__info { flex: 1; }
 
     .summary-item__name {
-      font-family: var(--ff-condensed); font-size: 16px; font-weight: 700;
+      font-family: var(--ff-heading); font-size: 14px; font-weight: 500;
       text-transform: uppercase; letter-spacing: 0.04em;
     }
 
     .summary-item__meta {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--gray); margin-top: 4px;
     }
 
     .summary-item__price {
-      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.1em;
+      font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.1em;
     }
 
     .summary-totals { margin-top: 24px; }
 
     .summary-row {
       display: flex; justify-content: space-between;
-      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.1em;
+      font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.1em;
       padding: 10px 0; border-bottom: 1px solid var(--border);
     }
 
@@ -235,13 +238,13 @@
     }
 
     .auth-box__eyebrow {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--gray); margin-bottom: 12px;
     }
 
     .auth-box__title {
-      font-family: var(--ff-display); font-size: clamp(36px, 5vw, 56px);
-      line-height: 1; letter-spacing: 0.02em; margin-bottom: 40px;
+      font-family: var(--ff-heading); font-weight: 500; font-size: clamp(28px, 4vw, 48px);
+      line-height: 1; letter-spacing: -0.01em; margin-bottom: 40px;
     }
 
     .auth-options {
@@ -250,7 +253,7 @@
 
     .auth-btn {
       width: 100%; padding: 18px; border: none; cursor: pointer;
-      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.22em;
+      font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.22em;
       text-transform: uppercase; transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
 
@@ -264,7 +267,7 @@
 
     .auth-divider {
       display: flex; align-items: center; gap: 16px;
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em;
       color: var(--gray); text-transform: uppercase; margin: 4px 0;
     }
     .auth-divider::before,
@@ -276,7 +279,7 @@
     }
     .footer__logo { width: 200px; height: auto; margin: 0 auto 14px; display: block; }
     .footer__slogan {
-      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.14em;
+      font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.14em;
       color: var(--gray); text-transform: uppercase; line-height: 1.8; margin-bottom: 32px;
     }
     .footer__socials { display: flex; justify-content: center; gap: 7px; margin-bottom: 36px; }
@@ -286,7 +289,7 @@
     }
     .social-btn:hover { border-color: var(--orange); color: var(--orange); }
     .footer__legal {
-      font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.18em;
       color: var(--border); text-transform: uppercase;
     }
 
@@ -308,7 +311,7 @@
     .account-menu__dropdown.open { display: flex; }
     .account-menu__dropdown a,
     .account-menu__dropdown button {
-      font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.18em;
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.18em;
       text-transform: uppercase; color: var(--black);
       padding: 13px 16px; border: none; background: none;
       text-align: left; cursor: pointer;
@@ -321,6 +324,23 @@
     .account-menu__dropdown button:hover { background: var(--black); color: var(--white); }
     .account-menu__dropdown .logout-btn { color: var(--gray); }
     .account-menu__dropdown .logout-btn:hover { background: var(--black); color: var(--orange); }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding: 16px;
+        grid-template-columns: auto 1fr auto;
+      }
+      .site-header__nav { display: none; }
+      .site-header__logo { width: 160px; margin-top: 0; justify-self: start; }
+      .site-header__actions { padding-top: 0; gap: 14px; }
+      .site-header__actions a span { display: none; }
+      .page-title { padding: 32px 16px 20px; }
+      .checkout-form { padding: 28px 16px 48px; border-right: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .card-row { grid-template-columns: 1fr 1fr; }
+      .order-summary { padding: 24px 16px; }
+      .payment-methods { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
@@ -574,39 +594,124 @@
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
+  <script src="api.js"></script>
   <script>
+    snrInitNav();
+    function logout() { snrLogout(); }
+
     function loginCheckout() {
-      localStorage.setItem('snr_loggedIn', '1');
-      startCheckout();
+      window.location.href = 'login.html?next=checkout.html';
     }
 
     function startCheckout() {
       document.getElementById('authGate').style.display = 'none';
       document.getElementById('checkoutLayout').style.display = 'grid';
+      loadCartSummary();
     }
 
-    document.querySelectorAll('.pay-icon').forEach(icon => {
-      icon.addEventListener('click', () => {
-        document.querySelectorAll('.pay-icon').forEach(i => i.classList.remove('active'));
+    if (localStorage.getItem('snr_token')) {
+      startCheckout();
+    }
+
+    document.querySelectorAll('.pay-icon').forEach(function(icon) {
+      icon.addEventListener('click', function() {
+        document.querySelectorAll('.pay-icon').forEach(function(i) { i.classList.remove('active'); });
         icon.classList.add('active');
       });
     });
 
-    (function() {
-      if (localStorage.getItem('snr_loggedIn')) {
-        var l=document.getElementById('headerLogin'), m=document.getElementById('accountMenu');
-        if(l) l.style.display='none'; if(m) m.style.display='flex';
+    async function loadCartSummary() {
+      try {
+        var res = await apiFetch('/cart/');
+        if (!res || !res.ok) return;
+        var cart = await res.json();
+        var container = document.querySelector('.order-summary');
+        if (!container || !cart.items || !cart.items.length) return;
+
+        var existingItems = container.querySelectorAll('.summary-item');
+        existingItems.forEach(function(el) { el.remove(); });
+        var totalsEl = container.querySelector('.summary-totals');
+
+        cart.items.forEach(function(item) {
+          var price = parseFloat(item.product.effective_price || item.product.price);
+          var size  = item.variant ? item.variant.size : '';
+          var div   = document.createElement('div');
+          div.className = 'summary-item';
+          div.innerHTML =
+            '<img class="summary-item__img" src="' + (item.product.image || '') + '" alt="' + item.product.name + '">' +
+            '<div class="summary-item__info">' +
+              '<p class="summary-item__name">' + item.product.name + '</p>' +
+              '<p class="summary-item__meta">' + (size ? 'Size: ' + size + ' — ' : '') + 'Qty: ' + item.qty + '</p>' +
+            '</div>' +
+            '<span class="summary-item__price">€' + Math.round(price * item.qty) + '</span>';
+          container.insertBefore(div, totalsEl);
+        });
+
+        var total = parseFloat(cart.total || 0);
+        var rows = totalsEl ? totalsEl.querySelectorAll('.summary-row') : [];
+        if (rows.length >= 3) {
+          rows[0].lastElementChild.textContent = '€' + Math.round(total);
+          rows[2].lastElementChild.textContent = '€' + Math.round(total);
+        }
+      } catch (ex) {}
+    }
+
+    document.querySelector('.btn-place-order').addEventListener('click', async function() {
+      if (!localStorage.getItem('snr_token')) {
+        window.location.href = 'login.html?next=checkout.html';
+        return;
       }
-      if (localStorage.getItem('snr_admin')) {
-        var a=document.getElementById('adminLink'); if(a) a.style.display='block';
+      var btn = this;
+      var inputs = document.querySelectorAll('.checkout-form input, .checkout-form select');
+      var vals = {};
+      inputs.forEach(function(el) {
+        var lbl = el.previousElementSibling;
+        if (lbl) vals[lbl.textContent.trim()] = el.value.trim();
+      });
+
+      var firstName  = vals['First Name'] || '';
+      var lastName   = vals['Last Name']  || '';
+      var address    = vals['Address']    || '';
+      var city       = vals['City']       || '';
+      var postal     = vals['Postal Code']|| '';
+      var countryEl  = document.querySelector('.checkout-form select');
+      var country    = countryEl ? countryEl.value : 'Greece';
+
+      if (!firstName || !address || !city || !postal) {
+        alert('Please fill in all required shipping fields.');
+        return;
       }
-      var trigger=document.getElementById('accountTrigger'), drop=document.getElementById('accountDropdown');
-      if(trigger&&drop){
-        trigger.addEventListener('click',function(e){e.stopPropagation();drop.classList.toggle('open');});
-        document.addEventListener('click',function(){drop.classList.remove('open');});
+
+      btn.textContent = 'Placing order...';
+      btn.disabled = true;
+
+      try {
+        var res = await apiFetch('/orders/create/', {
+          method: 'POST',
+          body: JSON.stringify({
+            full_name:   firstName + ' ' + lastName,
+            address:     address,
+            city:        city,
+            country:     country,
+            postal_code: postal
+          })
+        });
+        if (res && res.ok) {
+          var order = await res.json();
+          window.location.href = 'account-orders.html';
+        } else {
+          var err = res ? await res.json() : {};
+          var msg = Object.values(err).flat().join(' ') || 'Order failed. Please try again.';
+          alert(msg);
+          btn.textContent = 'Place Order';
+          btn.disabled = false;
+        }
+      } catch (ex) {
+        alert('Network error. Please try again.');
+        btn.textContent = 'Place Order';
+        btn.disabled = false;
       }
-    })();
-    function logout(){localStorage.removeItem('snr_loggedIn');localStorage.removeItem('snr_admin');window.location.href='index.html';}
+    });
   </script>
 
 </body>
