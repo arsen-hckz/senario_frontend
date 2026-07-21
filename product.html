@@ -64,12 +64,12 @@
       font-size: 13px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--orange);
       transition: color 0.2s;
     }
 
     .site-header__nav a:hover,
-    .site-header__nav a.active { color: var(--orange); }
+    .site-header__nav a.active { color: var(--black); }
 
     .site-header__actions {
       display: flex;
@@ -93,6 +93,15 @@
     }
 
     .site-header__actions a:hover { color: var(--orange); }
+
+    .cart-link { position: relative; }
+    .cart-badge {
+      position: absolute; top: -8px; right: -10px;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      border-radius: 8px; background: var(--orange); color: var(--white);
+      font-family: var(--ff-body); font-size: 9px; line-height: 16px;
+      text-align: center; display: none; align-items: center; justify-content: center;
+    }
 
     .site-header__logo {
       width: 260px;
@@ -236,6 +245,37 @@
       background: var(--black);
       border-color: var(--black);
       color: var(--white);
+    }
+
+    /* Quantity */
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      width: 132px;
+      border: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+
+    .qty-btn {
+      width: 40px;
+      height: 44px;
+      border: none;
+      background: none;
+      font-family: var(--ff-body);
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .qty-btn:hover { background: var(--black); color: var(--white); }
+    .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+
+    .qty-value {
+      flex: 1;
+      text-align: center;
+      font-family: var(--ff-body);
+      font-size: 13px;
+      letter-spacing: 0.05em;
     }
 
     /* Add to Cart */
@@ -405,13 +445,14 @@
           <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
-      <a href="cart.html" aria-label="Cart">
+      <a href="cart.html" aria-label="Cart" class="cart-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
+        <span class="cart-badge" id="cartBadge"></span>
       </a>
     </div>
   </header>
@@ -435,6 +476,12 @@
       <div class="product-details__divider"></div>
       <p class="product-details__label">Size</p>
       <div class="size-grid" id="size-grid"></div>
+      <p class="product-details__label">Quantity</p>
+      <div class="qty-stepper" id="qty-stepper">
+        <button type="button" class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
+        <span class="qty-value" id="qty-value">1</span>
+        <button type="button" class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
+      </div>
       <button class="btn-atc">Add to Cart</button>
       <a class="btn-wishlist" href="checkout.html">Buy it Now</a>
       <p class="product-details__desc" id="prod-desc"></p>
@@ -516,6 +563,23 @@
           sizeGrid.appendChild(btn);
         });
 
+        var qty = 1;
+        var qtyValue = document.getElementById('qty-value');
+        var qtyMinus = document.getElementById('qty-minus');
+        var qtyPlus  = document.getElementById('qty-plus');
+
+        function renderQty() {
+          qtyValue.textContent = qty;
+          qtyMinus.disabled = qty <= 1;
+        }
+        qtyMinus.addEventListener('click', function() {
+          if (qty > 1) { qty--; renderQty(); }
+        });
+        qtyPlus.addEventListener('click', function() {
+          qty++; renderQty();
+        });
+        renderQty();
+
         document.querySelector('.btn-atc').addEventListener('click', async function() {
           if (!localStorage.getItem('snr_token')) {
             window.location.href = 'login.html?next=product.html?slug=' + slug;
@@ -527,12 +591,15 @@
           self.textContent = '...';
           self.disabled = true;
           try {
-            var payload = {product_id: p.id, qty: 1};
+            var payload = {product_id: p.id, qty: qty};
             if (variantId) payload.variant_id = parseInt(variantId);
             var r = await apiFetch('/cart/', {method: 'POST', body: JSON.stringify(payload)});
             if (r && r.ok) {
               self.textContent = '✓ Added to Cart';
               self.classList.add('added');
+              qty = 1;
+              renderQty();
+              snrUpdateCartBadge();
               clearTimeout(self._t);
               self._t = setTimeout(function() {
                 self.textContent = 'Add to Cart';

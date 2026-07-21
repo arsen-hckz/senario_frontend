@@ -49,9 +49,9 @@
     .site-header__nav { display: flex; gap: 28px; padding-top: 22px; }
     .site-header__nav a {
       font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+      text-transform: uppercase; color: var(--orange); transition: color 0.2s;
     }
-    .site-header__nav a:hover { color: var(--orange); }
+    .site-header__nav a:hover, .site-header__nav a.active { color: var(--black); }
     .site-header__actions {
       display: flex; align-items: center; gap: 18px;
       justify-content: flex-end; padding-top: 22px;
@@ -62,6 +62,15 @@
       display: flex; align-items: center; gap: 6px;
     }
     .site-header__actions a:hover { color: var(--orange); }
+
+    .cart-link { position: relative; }
+    .cart-badge {
+      position: absolute; top: -8px; right: -10px;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      border-radius: 8px; background: var(--orange); color: var(--white);
+      font-family: var(--ff-body); font-size: 9px; line-height: 16px;
+      text-align: center; display: none; align-items: center; justify-content: center;
+    }
     .site-header__logo { width: 260px; height: auto; justify-self: center; margin-top: -18px; }
 
     /* ─── PAGE TITLE ─────────────────────────────── */
@@ -371,13 +380,14 @@
           <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
-      <a href="cart.html" aria-label="Cart">
+      <a href="cart.html" aria-label="Cart" class="cart-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
+        <span class="cart-badge" id="cartBadge"></span>
       </a>
     </div>
   </header>
@@ -512,7 +522,7 @@
           </div>
           <div class="form-group">
             <label>Expiry</label>
-            <input type="text" placeholder="MM/YY">
+            <input type="text" placeholder="MM/YY" id="expiryInput" inputmode="numeric" maxlength="5">
           </div>
           <div class="form-group">
             <label>CVV</label>
@@ -599,6 +609,14 @@
     snrInitNav();
     function logout() { snrLogout(); }
 
+    var expiryInput = document.getElementById('expiryInput');
+    if (expiryInput) {
+      expiryInput.addEventListener('input', function() {
+        var digits = this.value.replace(/\D/g, '').slice(0, 4);
+        this.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
+      });
+    }
+
     function loginCheckout() {
       window.location.href = 'login.html?next=checkout.html';
     }
@@ -635,13 +653,15 @@
         cart.items.forEach(function(item) {
           var price = parseFloat(item.product.effective_price || item.product.price);
           var size  = item.variant ? item.variant.size : '';
+          var safeName = escHtml(item.product.name);
+          var safeSize = escHtml(size);
           var div   = document.createElement('div');
           div.className = 'summary-item';
           div.innerHTML =
-            '<img class="summary-item__img" src="' + (item.product.image || '') + '" alt="' + item.product.name + '">' +
+            '<img class="summary-item__img" src="' + (item.product.image || '') + '" alt="' + safeName + '">' +
             '<div class="summary-item__info">' +
-              '<p class="summary-item__name">' + item.product.name + '</p>' +
-              '<p class="summary-item__meta">' + (size ? 'Size: ' + size + ' — ' : '') + 'Qty: ' + item.qty + '</p>' +
+              '<p class="summary-item__name">' + safeName + '</p>' +
+              '<p class="summary-item__meta">' + (size ? 'Size: ' + safeSize + ' — ' : '') + 'Qty: ' + item.qty + '</p>' +
             '</div>' +
             '<span class="summary-item__price">€' + Math.round(price * item.qty) + '</span>';
           container.insertBefore(div, totalsEl);

@@ -69,7 +69,8 @@
       transition: color 0.2s;
     }
 
-    .site-header__nav a:hover { color: var(--black); }
+    .site-header__nav a:hover,
+    .site-header__nav a.active { color: var(--black); }
 
     .site-header__actions {
       display: flex;
@@ -93,6 +94,15 @@
     }
 
     .site-header__actions a:hover { color: var(--black); }
+
+    .cart-link { position: relative; }
+    .cart-badge {
+      position: absolute; top: -8px; right: -10px;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      border-radius: 8px; background: var(--orange); color: var(--white);
+      font-family: var(--ff-body); font-size: 9px; line-height: 16px;
+      text-align: center; display: none; align-items: center; justify-content: center;
+    }
 
     .site-header__logo {
       width: 340px;
@@ -720,7 +730,7 @@
   <header class="site-header">
     <nav class="site-header__nav">
       <a href="collection.html">Collection</a>
-      <a href="index.html">Moodboard</a>
+      <a href="index.html" class="active">Moodboard</a>
       <a href="concept.html">Concept</a>
     </nav>
 
@@ -746,13 +756,14 @@
           <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
-      <a href="#" aria-label="Cart">
+      <a href="cart.html" aria-label="Cart" class="cart-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
+        <span class="cart-badge" id="cartBadge"></span>
       </a>
     </div>
   </header>

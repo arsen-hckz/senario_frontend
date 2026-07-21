@@ -1,5 +1,14 @@
 var API_BASE = '/api';
 
+function escHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 async function apiFetch(path, opts) {
   opts = opts || {};
   var url = API_BASE + path;
@@ -37,6 +46,10 @@ async function apiFetch(path, opts) {
 }
 
 function snrLogout(redirect) {
+  var refresh = localStorage.getItem('snr_refresh');
+  if (refresh) {
+    apiFetch('/auth/logout/', {method: 'POST', body: JSON.stringify({refresh: refresh})}).catch(function() {});
+  }
   localStorage.removeItem('snr_token');
   localStorage.removeItem('snr_refresh');
   localStorage.removeItem('snr_is_staff');
@@ -65,4 +78,26 @@ function snrInitNav() {
       drop.classList.remove('open');
     });
   }
+  snrUpdateCartBadge();
+}
+
+async function snrUpdateCartBadge() {
+  var badge = document.getElementById('cartBadge');
+  if (!badge) return;
+  if (!localStorage.getItem('snr_token')) {
+    badge.style.display = 'none';
+    return;
+  }
+  try {
+    var res = await apiFetch('/cart/');
+    if (!res || !res.ok) return;
+    var cart = await res.json();
+    var count = cart.item_count || 0;
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch (ex) {}
 }

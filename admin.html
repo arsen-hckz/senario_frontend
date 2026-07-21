@@ -49,9 +49,9 @@
     .site-header__nav { display: flex; gap: 28px; padding-top: 32px; }
     .site-header__nav a {
       font-family: var(--ff-heading); font-weight: 500; font-size: 13px; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--black); transition: color 0.2s;
+      text-transform: uppercase; color: var(--orange); transition: color 0.2s;
     }
-    .site-header__nav a:hover { color: var(--orange); }
+    .site-header__nav a:hover, .site-header__nav a.active { color: var(--black); }
     .site-header__logo { width: 340px; height: auto; justify-self: center; margin-top: -24px; }
     .site-header__actions {
       display: flex; align-items: center; gap: 18px;
@@ -63,6 +63,15 @@
       display: flex; align-items: center; gap: 6px;
     }
     .site-header__actions a:hover { color: var(--orange); }
+
+    .cart-link { position: relative; }
+    .cart-badge {
+      position: absolute; top: -8px; right: -10px;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      border-radius: 8px; background: var(--orange); color: var(--white);
+      font-family: var(--ff-body); font-size: 9px; line-height: 16px;
+      text-align: center; display: none; align-items: center; justify-content: center;
+    }
 
     /* ACCOUNT MENU */
     .account-menu { position: relative; display: flex; align-items: center; }
@@ -469,13 +478,14 @@
           <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
-      <a href="cart.html" aria-label="Cart">
+      <a href="cart.html" aria-label="Cart" class="cart-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
+        <span class="cart-badge" id="cartBadge"></span>
       </a>
     </div>
   </header>
@@ -670,7 +680,7 @@
           topHtml += '<p class="analytics-empty">No sales data yet.</p>';
         } else {
           topItems.slice(0,6).forEach(function(item, i) {
-            topHtml += '<div class="top-item"><div style="display:flex;align-items:center;"><span class="top-item__rank">'+(i+1)+'.</span><span class="top-item__name">'+item.name+'</span></div><div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; €'+Math.round(item.revenue)+'</div></div>';
+            topHtml += '<div class="top-item"><div style="display:flex;align-items:center;"><span class="top-item__rank">'+(i+1)+'.</span><span class="top-item__name">'+escHtml(item.name)+'</span></div><div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; €'+Math.round(item.revenue)+'</div></div>';
           });
         }
         topHtml += '</div>';
@@ -735,15 +745,16 @@
           var priceCell = onSale
             ? '<span style="text-decoration:line-through;color:var(--gray);">€'+Math.round(parseFloat(p.price))+'</span> <span style="color:var(--orange);">€'+Math.round(parseFloat(p.sale_price))+'</span>'
             : '€'+Math.round(parseFloat(p.price));
-          var nameCell = p.name + (onSale ? '<span class="sale-badge">Sale</span>' : '');
+          var safeName = escHtml(p.name);
+          var nameCell = safeName + (onSale ? '<span class="sale-badge">Sale</span>' : '');
           var tr = document.createElement('tr');
           tr.innerHTML =
-            '<td><img class="product-thumb" src="'+(p.image||'')+'" alt="'+p.name+'"></td>'+
+            '<td><img class="product-thumb" src="'+(p.image||'')+'" alt="'+safeName+'"></td>'+
             '<td>'+nameCell+'</td>'+
             '<td style="font-family:var(--ff-mono);font-size:11px;">'+priceCell+'</td>'+
             '<td style="font-family:var(--ff-mono);font-size:11px;">'+stock+'</td>'+
             '<td>'+stockBadge(stock)+'</td>'+
-            '<td>'+(p.category ? p.category.name : '—')+'</td>'+
+            '<td>'+(p.category ? escHtml(p.category.name) : '—')+'</td>'+
             '<td>'+
               '<button class="action-btn action-btn--edit" onclick="openModal('+p.id+')">Edit</button>'+
               '<button class="action-btn action-btn--delete" onclick="deleteProduct('+p.id+')">Delete</button>'+
