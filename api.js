@@ -1,4 +1,4 @@
-var API_BASE = '/api';
+var API_BASE = 'https://snr.arsenidis.dev/api';
 
 function escHtml(str) {
   return String(str == null ? '' : str)
