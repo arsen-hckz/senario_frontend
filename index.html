@@ -113,37 +113,6 @@
       margin-top: -24px;
     }
 
-    @media (max-width: 768px) {
-      .grid-section { padding: 0 0 48px; }
-
-      /* one photo at a time, swipeable */
-      .photo-grid {
-        display: flex;
-        columns: unset;
-        column-rule: none;
-        gap: 0;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      .photo-grid::-webkit-scrollbar { display: none; }
-
-      .grid-cell {
-        flex: 0 0 100%;
-        max-width: 100%;
-        margin-bottom: 0;
-        scroll-snap-align: center;
-        scroll-snap-stop: always;
-      }
-
-      .grid-cell img {
-        width: 100%;
-        height: 78vh;
-        object-fit: cover;
-      }
-    }
-
     @media (max-width: 640px) {
       .site-header {
         padding: 14px 16px 12px;
@@ -380,6 +349,37 @@
     }
 
     .grid-cell img { cursor: default; }
+
+    @media (max-width: 768px) {
+      .grid-section { padding: 0 0 48px; }
+
+      /* one photo at a time, swipeable */
+      .photo-grid {
+        display: flex;
+        columns: unset;
+        column-gap: 0;
+        column-rule: none;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .photo-grid::-webkit-scrollbar { display: none; }
+
+      .grid-cell {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 0;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+      }
+
+      .grid-cell img {
+        width: 100%;
+        height: 78vh;
+        object-fit: cover;
+      }
+    }
 
     /* ─── FOOTER ─────────────────────────────────── */
     .site-footer {
@@ -1006,6 +1006,10 @@
         }
       );
     });
+
+    /* images shift layout as they load, which can leave ScrollTrigger
+       start positions stale (esp. the tall mobile carousel) */
+    window.addEventListener('load', () => ScrollTrigger.refresh());
 
     /* footer brand */
     gsap.to('.footer__logo', {
