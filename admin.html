@@ -415,6 +415,59 @@
       padding: 2px 6px; background: var(--orange); color: var(--white); margin-left: 6px;
     }
 
+    /* MOODBOARD */
+    .mb-note {
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.1em;
+      color: var(--gray); margin-bottom: 20px; max-width: 640px; line-height: 1.6;
+    }
+    .mb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .mb-card {
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .mb-card__img {
+      width: 100%; height: 140px;
+      object-fit: cover;
+      background: #f0f0f0;
+    }
+    .mb-card__body { padding: 12px 14px 14px; }
+    .mb-card__title {
+      font-family: var(--ff-heading); font-weight: 500; font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .mb-card__caption {
+      font-family: var(--ff-body); font-size: 9px; color: var(--gray);
+      line-height: 1.5; margin-bottom: 12px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .mb-card__row { display: flex; align-items: center; justify-content: space-between; }
+    .mb-card__order { display: flex; gap: 2px; }
+    .mb-order-btn {
+      width: 22px; height: 22px;
+      border: 1px solid var(--border);
+      background: none; cursor: pointer;
+      font-size: 10px; color: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .mb-order-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+    .mb-order-btn:disabled { color: var(--border); cursor: default; }
+    .mb-card__actions { display: flex; gap: 4px; }
+
+    .mb-source-toggle { display: flex; gap: 8px; }
+    .mb-source-btn {
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 8px 14px;
+      background: none; border: 1px solid var(--border); color: var(--gray);
+      cursor: pointer; transition: border-color 0.2s, color 0.2s;
+    }
+    .mb-source-btn.active { border-color: var(--black); color: var(--black); }
+
     /* FOOTER */
     .site-footer {
       padding: 32px 24px;
@@ -511,6 +564,7 @@
         <li><a href="#" class="active" data-page="overview" onclick="showPage('overview',this)">Overview</a></li>
         <li><a href="#" data-page="products" onclick="showPage('products',this)">Products</a></li>
         <li><a href="#" data-page="orders" onclick="showPage('orders',this)">Orders</a></li>
+        <li><a href="#" data-page="moodboard" onclick="showPage('moodboard',this)">Moodboard</a></li>
       </ul>
     </aside>
 
@@ -577,6 +631,17 @@
         </table>
       </div>
 
+      <!-- MOODBOARD -->
+      <div class="admin-page" id="page-moodboard">
+        <h1 class="page-title">Moodboard</h1>
+        <p class="mb-note" id="mbApiNote"></p>
+        <div class="table-header">
+          <p class="table-title" id="moodboardCount"></p>
+          <button class="btn-add" onclick="openMoodboardModal()">+ Add Photo</button>
+        </div>
+        <div class="mb-grid" id="moodboardGrid"></div>
+      </div>
+
     </main>
   </div>
 
@@ -626,11 +691,51 @@
     </div>
   </div>
 
+  <!-- MOODBOARD PHOTO MODAL -->
+  <div class="modal-overlay" id="moodboardModal">
+    <div class="modal">
+      <h2 class="modal-title" id="mbModalTitle">Add Photo</h2>
+      <div class="modal-grid">
+        <div class="form-field span2">
+          <label>Image Source</label>
+          <div class="mb-source-toggle">
+            <button type="button" class="mb-source-btn active" id="mbSrcUploadBtn" onclick="setMoodboardSource('upload')">Upload New</button>
+            <button type="button" class="mb-source-btn" id="mbSrcExistingBtn" onclick="setMoodboardSource('existing')">Choose Existing</button>
+          </div>
+        </div>
+        <div class="form-field span2" id="mbUploadField">
+          <label>Upload Image</label>
+          <input type="file" id="mbImageFile" accept="image/*" onchange="previewMoodboardUpload(this)">
+        </div>
+        <div class="form-field span2" id="mbExistingField" style="display:none">
+          <label>Choose Existing Image</label>
+          <select id="mbExistingSelect" onchange="previewMoodboardExisting(this.value)"></select>
+        </div>
+        <div class="form-field span2">
+          <img id="mbImagePreview" src="" alt="" style="display:none;margin-top:4px;max-height:160px;object-fit:cover;">
+        </div>
+        <div class="form-field span2">
+          <label>Title</label>
+          <input type="text" id="mbTitle" placeholder="e.g. Raw Reality">
+        </div>
+        <div class="form-field span2">
+          <label>Caption</label>
+          <textarea id="mbBody" rows="3" placeholder="Short caption line. Press Enter for a line break."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="saveMoodboardPhotoAdmin()">Save Photo</button>
+        <button class="btn-cancel" onclick="closeMoodboardModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
   <script src="api.js"></script>
+  <script src="moodboard-data.js"></script>
   <script>
     if (localStorage.getItem('snr_is_staff') !== '1') window.location.href = 'index.html';
 
@@ -645,8 +750,9 @@
       document.querySelectorAll('.sidebar-nav a').forEach(function(a) { a.classList.remove('active'); });
       document.getElementById('page-' + page).classList.add('active');
       if (link) link.classList.add('active');
-      if (page === 'products') renderProducts();
-      if (page === 'orders')   renderAllOrders();
+      if (page === 'products')   renderProducts();
+      if (page === 'orders')     renderAllOrders();
+      if (page === 'moodboard')  renderMoodboardAdmin();
     }
 
     /* OVERVIEW */
@@ -924,6 +1030,181 @@
 
     document.getElementById('productModal').addEventListener('click', function(e){
       if (e.target === this) closeModal();
+    });
+
+    /* MOODBOARD */
+    var MOODBOARD_LIBRARY_IMAGES = [
+      'extracted_images/page2_img1.jpeg', 'extracted_images/page3_img1.jpeg',
+      'extracted_images/page4_img1.jpeg', 'extracted_images/page5_img1.jpeg',
+      'extracted_images/page6_img1.jpeg', 'extracted_images/page7_img1.jpeg',
+      'extracted_images/page8_img1.jpeg',
+      '655308244_877927155229165_117727282973964430_n.jpg',
+      '664233845_1534089618121126_8397825813666279650_n.jpg',
+      '665278342_1746696659645517_6436919400386070473_n.jpg',
+      '678951775_1541941244170275_8788756879565237981_n.jpg',
+      '686153898_1459679375625397_5430363690105946194_n.jpg',
+      'new_img1.png', 'new_img2.png'
+    ];
+
+    var editingMoodboardId  = null;
+    var moodboardUploadFile = null;
+    var moodboardSrcPreview = null;
+
+    async function renderMoodboardAdmin() {
+      document.getElementById('mbApiNote').textContent = MOODBOARD_API_ENABLED
+        ? 'Synced to the moodboard API — visible to every visitor.'
+        : 'Saved to this browser only (local prototype) until the moodboard API is connected — see moodboard-data.js.';
+
+      var grid = document.getElementById('moodboardGrid');
+      grid.innerHTML = '<p style="color:var(--gray);font-size:11px;">Loading...</p>';
+      var photos = await getMoodboardPhotos();
+      document.getElementById('moodboardCount').textContent = photos.length + ' photo' + (photos.length === 1 ? '' : 's');
+
+      if (!photos.length) {
+        grid.innerHTML = '<p style="color:var(--gray);font-size:11px;">No photos yet — add one to populate the moodboard.</p>';
+        return;
+      }
+
+      grid.innerHTML = photos.map(function (p, i) {
+        var captionHtml = escHtml(p.body).replace(/\n/g, ' ');
+        return '<div class="mb-card">' +
+                 '<img class="mb-card__img" src="' + escHtml(p.src) + '" alt="">' +
+                 '<div class="mb-card__body">' +
+                   '<div class="mb-card__title">' + escHtml(p.title) + '</div>' +
+                   '<div class="mb-card__caption">' + captionHtml + '</div>' +
+                   '<div class="mb-card__row">' +
+                     '<div class="mb-card__order">' +
+                       '<button class="mb-order-btn" title="Move earlier" onclick="moveMoodboardPhoto(\'' + p.id + '\',-1)"' + (i === 0 ? ' disabled' : '') + '>&#8593;</button>' +
+                       '<button class="mb-order-btn" title="Move later" onclick="moveMoodboardPhoto(\'' + p.id + '\',1)"' + (i === photos.length - 1 ? ' disabled' : '') + '>&#8595;</button>' +
+                     '</div>' +
+                     '<div class="mb-card__actions">' +
+                       '<button class="action-btn action-btn--edit" onclick="openMoodboardModal(\'' + p.id + '\')">Edit</button>' +
+                       '<button class="action-btn action-btn--delete" onclick="deleteMoodboardPhotoAdmin(\'' + p.id + '\')">Delete</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>';
+      }).join('');
+    }
+
+    async function moveMoodboardPhoto(id, dir) {
+      var photos = await getMoodboardPhotos();
+      var idx = photos.findIndex(function (p) { return p.id === id; });
+      var swapWith = idx + dir;
+      if (idx < 0 || swapWith < 0 || swapWith >= photos.length) return;
+      var tmp = photos[idx];
+      photos[idx] = photos[swapWith];
+      photos[swapWith] = tmp;
+      await reorderMoodboardPhotos(photos.map(function (p) { return p.id; }));
+      renderMoodboardAdmin();
+    }
+
+    function setMoodboardSource(mode) {
+      document.getElementById('mbSrcUploadBtn').classList.toggle('active', mode === 'upload');
+      document.getElementById('mbSrcExistingBtn').classList.toggle('active', mode === 'existing');
+      document.getElementById('mbUploadField').style.display   = mode === 'upload'   ? '' : 'none';
+      document.getElementById('mbExistingField').style.display = mode === 'existing' ? '' : 'none';
+    }
+
+    function previewMoodboardUpload(input) {
+      if (input.files && input.files[0]) {
+        moodboardUploadFile = input.files[0];
+        moodboardSrcPreview = null;
+        var preview = document.getElementById('mbImagePreview');
+        preview.src = URL.createObjectURL(input.files[0]);
+        preview.style.display = 'block';
+      }
+    }
+
+    function previewMoodboardExisting(path) {
+      moodboardSrcPreview = path;
+      moodboardUploadFile = null;
+      var preview = document.getElementById('mbImagePreview');
+      if (path) {
+        preview.src = path;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    function populateMoodboardExistingSelect(selected) {
+      var select = document.getElementById('mbExistingSelect');
+      select.innerHTML = '<option value="">— choose an image —</option>' +
+        MOODBOARD_LIBRARY_IMAGES.map(function (src) {
+          return '<option value="' + escHtml(src) + '"' + (src === selected ? ' selected' : '') + '>' + escHtml(src) + '</option>';
+        }).join('');
+    }
+
+    async function openMoodboardModal(id) {
+      editingMoodboardId  = id || null;
+      moodboardUploadFile = null;
+      moodboardSrcPreview = null;
+      populateMoodboardExistingSelect(null);
+      document.getElementById('mbImagePreview').style.display = 'none';
+      document.getElementById('mbImageFile').value = '';
+
+      var title = document.getElementById('mbModalTitle');
+      if (editingMoodboardId) {
+        title.textContent = 'Edit Photo';
+        var photos = await getMoodboardPhotos();
+        var p = photos.find(function (ph) { return ph.id === editingMoodboardId; });
+        if (p) {
+          document.getElementById('mbTitle').value = p.title;
+          document.getElementById('mbBody').value  = p.body;
+          moodboardSrcPreview = p.src;
+          var isKnown = MOODBOARD_LIBRARY_IMAGES.indexOf(p.src) > -1;
+          setMoodboardSource(isKnown ? 'existing' : 'upload');
+          if (isKnown) {
+            populateMoodboardExistingSelect(p.src);
+          }
+          var preview = document.getElementById('mbImagePreview');
+          preview.src = p.src;
+          preview.style.display = 'block';
+        }
+      } else {
+        title.textContent = 'Add Photo';
+        document.getElementById('mbTitle').value = '';
+        document.getElementById('mbBody').value  = '';
+        setMoodboardSource('upload');
+      }
+      document.getElementById('moodboardModal').classList.add('open');
+    }
+
+    function closeMoodboardModal() {
+      document.getElementById('moodboardModal').classList.remove('open');
+      editingMoodboardId  = null;
+      moodboardUploadFile = null;
+      moodboardSrcPreview = null;
+    }
+
+    async function saveMoodboardPhotoAdmin() {
+      var title = document.getElementById('mbTitle').value.trim();
+      var body  = document.getElementById('mbBody').value.trim();
+      if (!title) { alert('Title is required.'); return; }
+      if (!moodboardUploadFile && !moodboardSrcPreview) { alert('Choose or upload an image.'); return; }
+
+      try {
+        var payload = { id: editingMoodboardId, title: title, body: body };
+        if (moodboardUploadFile) payload.file = moodboardUploadFile;
+        else payload.src = moodboardSrcPreview;
+
+        await saveMoodboardPhoto(payload);
+        closeMoodboardModal();
+        renderMoodboardAdmin();
+      } catch (ex) {
+        alert(ex.message || 'Save failed.');
+      }
+    }
+
+    async function deleteMoodboardPhotoAdmin(id) {
+      if (!confirm('Delete this photo?')) return;
+      await deleteMoodboardPhoto(id);
+      renderMoodboardAdmin();
+    }
+
+    document.getElementById('moodboardModal').addEventListener('click', function (e) {
+      if (e.target === this) closeMoodboardModal();
     });
 
     renderOverview();

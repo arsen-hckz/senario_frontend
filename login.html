@@ -350,10 +350,12 @@
 
   async function handleLogin(e) {
     e.preventDefault();
-    var email = document.getElementById('loginEmail').value.trim();
-    var pass  = document.getElementById('loginPass').value;
-    var err   = document.getElementById('loginErr');
+    var email  = document.getElementById('loginEmail').value.trim();
+    var pass   = document.getElementById('loginPass').value;
+    var err    = document.getElementById('loginErr');
+    var resend = document.getElementById('loginResend');
     err.style.display = 'none';
+    resend.style.display = 'none';
     try {
       var res = await fetch(API_BASE + '/auth/login/', {
         method: 'POST',
@@ -364,6 +366,9 @@
         var d = await res.json();
         err.textContent = d.detail || 'Invalid email or password.';
         err.style.display = 'block';
+        if (d.detail && d.detail.toLowerCase().indexOf('verify') !== -1) {
+          resend.style.display = 'block';
+        }
         return;
       }
       var data = await res.json();
@@ -415,15 +420,28 @@
         err.style.display = 'block';
         return;
       }
-      var data = await res.json();
-      localStorage.setItem('snr_token', data.access);
-      localStorage.setItem('snr_refresh', data.refresh);
-      if (data.user && data.user.is_staff) localStorage.setItem('snr_is_staff', '1');
-      window.location.href = 'index.html';
+      document.getElementById('regFormWrap').style.display = 'none';
+      document.getElementById('regDoneEmail').textContent = email;
+      document.getElementById('regDone').style.display = 'block';
     } catch (ex) {
       err.textContent = 'Network error. Please try again.';
       err.style.display = 'block';
     }
+  }
+
+  async function handleResend() {
+    var email = document.getElementById('loginEmail').value.trim();
+    var resend = document.getElementById('loginResend');
+    if (!email) return;
+    resend.querySelector('button').textContent = 'Sending…';
+    try {
+      await fetch(API_BASE + '/auth/resend-verification/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email: email})
+      });
+    } catch (ex) {}
+    resend.querySelector('button').textContent = 'Sent — check your inbox';
   }
 
   function togglePass(id, btn) {
