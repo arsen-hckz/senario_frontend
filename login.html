@@ -279,6 +279,9 @@
           <a class="field__link" href="#">Forgot password?</a>
         </div>
         <p id="loginErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
+        <p id="loginResend" style="font-size:11px;margin-top:4px;display:none;">
+          <button type="button" onclick="handleResend()" style="background:none;border:none;padding:0;cursor:pointer;color:var(--orange);text-decoration:underline;font-family:var(--ff-body);font-size:11px;">Resend verification email</button>
+        </p>
         <button class="auth-submit" type="submit">Sign in</button>
         <div class="auth-divider">or</div>
         <div class="auth-switch">
@@ -289,34 +292,47 @@
 
     <!-- REGISTER FORM -->
     <div id="panelRegister" style="display:none">
-      <h1 class="auth-heading">Join ΣΝΡ.</h1>
-      <p class="auth-sub">Create your account</p>
-      <form class="auth-form" onsubmit="handleRegister(event)">
-        <div class="field">
-          <label class="field__label">Full name</label>
-          <input class="field__input" id="regName" type="text" placeholder="Your name" required>
+      <div id="regFormWrap">
+        <h1 class="auth-heading">Join ΣΝΡ.</h1>
+        <p class="auth-sub">Create your account</p>
+        <form class="auth-form" onsubmit="handleRegister(event)">
+          <div class="field">
+            <label class="field__label">Full name</label>
+            <input class="field__input" id="regName" type="text" placeholder="Your name" required>
+          </div>
+          <div class="field">
+            <label class="field__label">Email</label>
+            <input class="field__input" id="regEmail" type="email" placeholder="your@email.com" required>
+          </div>
+          <div class="field field--pass">
+            <label class="field__label">Password</label>
+            <input class="field__input" type="password" id="regPass" placeholder="••••••••" required>
+            <button type="button" class="pass-toggle" onclick="togglePass('regPass', this)">Show</button>
+          </div>
+          <div class="field field--pass">
+            <label class="field__label">Confirm password</label>
+            <input class="field__input" type="password" id="regPassConfirm" placeholder="••••••••" required>
+            <button type="button" class="pass-toggle" onclick="togglePass('regPassConfirm', this)">Show</button>
+          </div>
+          <p id="regErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
+          <button class="auth-submit" type="submit">Create account</button>
+          <div class="auth-divider">or</div>
+          <div class="auth-switch">
+            Already have an account? <button type="button" onclick="switchTab('login')">Sign in</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- POST-REGISTER: CHECK EMAIL -->
+      <div id="regDone" style="display:none">
+        <h1 class="auth-heading">Check your inbox.</h1>
+        <p class="auth-sub" style="text-transform:none;letter-spacing:normal;font-size:13px;line-height:1.6;">
+          We sent a verification link to <strong id="regDoneEmail"></strong>. Click it to activate your account, then sign in.
+        </p>
+        <div class="auth-switch" style="margin-top:24px;">
+          <button type="button" onclick="switchTab('login')">Back to sign in</button>
         </div>
-        <div class="field">
-          <label class="field__label">Email</label>
-          <input class="field__input" id="regEmail" type="email" placeholder="your@email.com" required>
-        </div>
-        <div class="field field--pass">
-          <label class="field__label">Password</label>
-          <input class="field__input" type="password" id="regPass" placeholder="••••••••" required>
-          <button type="button" class="pass-toggle" onclick="togglePass('regPass', this)">Show</button>
-        </div>
-        <div class="field field--pass">
-          <label class="field__label">Confirm password</label>
-          <input class="field__input" type="password" id="regPassConfirm" placeholder="••••••••" required>
-          <button type="button" class="pass-toggle" onclick="togglePass('regPassConfirm', this)">Show</button>
-        </div>
-        <p id="regErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
-        <button class="auth-submit" type="submit">Create account</button>
-        <div class="auth-divider">or</div>
-        <div class="auth-switch">
-          Already have an account? <button type="button" onclick="switchTab('login')">Sign in</button>
-        </div>
-      </form>
+      </div>
     </div>
 
   </div>
