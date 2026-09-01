@@ -168,7 +168,7 @@
     .photo-grid {
       columns: 4;
       column-gap: var(--gap);
-      column-rule: 2px solid rgba(196, 98, 45, 0.55);
+      column-rule: 3px solid rgba(196, 98, 45, 0.55);
     }
 
     /* ─── EDITORIAL RAILS ────────────────────────── */
@@ -251,6 +251,34 @@
       white-space: nowrap;
     }
 
+    /* watermark — mirrored logo mark, stacked 3x to fill the gap between
+       the photo grid and the editorial rail lines (80px–200px on each side) */
+    .grid-watermark {
+      position: absolute;
+      top: 0;
+      bottom: 80px;
+      width: 120px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .grid-watermark--left  { left: 80px; }
+    .grid-watermark--right { right: 80px; }
+
+    .grid-watermark img {
+      flex: 1 1 20%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0.85;
+      mix-blend-mode: multiply;
+      filter: invert(1) blur(1.5px);
+    }
+
+    .grid-watermark--right img { transform: scaleX(-1); }
+
     /* horizontal connector at top of grid, linking both rails */
     .grid-section::before {
       content: '';
@@ -289,6 +317,7 @@
 
     @media (max-width: 900px) {
       .grid-rail { display: none; }
+      .grid-watermark { display: none; }
       .grid-section::before,
       .grid-section::after { display: none; }
     }
@@ -300,8 +329,8 @@
       opacity: 0;
       break-inside: avoid;
       margin-bottom: var(--gap);
-      border-bottom: 2px solid rgba(196, 98, 45, 0.6);
-      border-top: 2px solid rgba(196, 98, 45, 0.4);
+      border-bottom: 3px solid rgba(196, 98, 45, 0.6);
+      border-top: 3px solid rgba(196, 98, 45, 0.4);
     }
 
     .grid-caption {
@@ -350,34 +379,95 @@
 
     .grid-cell img { cursor: default; }
 
+    /* ─── MOBILE SLIDES (4 photos + shared caption) ── */
+    .mood-slides { display: none; }
+
     @media (max-width: 768px) {
       .grid-section { padding: 0 0 48px; }
 
-      /* one photo at a time, swipeable */
-      .photo-grid {
+      /* desktop masonry is replaced entirely by the grouped slides below */
+      .photo-grid { display: none; }
+
+      .mood-slides {
         display: flex;
-        columns: unset;
-        column-gap: 0;
-        column-rule: none;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
       }
-      .photo-grid::-webkit-scrollbar { display: none; }
+      .mood-slides::-webkit-scrollbar { display: none; }
 
-      .grid-cell {
+      .mood-slide {
         flex: 0 0 100%;
         max-width: 100%;
-        margin-bottom: 0;
         scroll-snap-align: center;
         scroll-snap-stop: always;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 2px;
+        height: 88vh;
       }
 
-      .grid-cell img {
+      .mood-slide__photo { overflow: hidden; }
+
+      /* the overlay caption spans all 4 cells, so auto-flow can't place the
+         photos around it — position them explicitly by DOM order */
+      .mood-slide__photo:nth-of-type(1) { grid-area: 1 / 1; }
+      .mood-slide__photo:nth-of-type(2) { grid-area: 1 / 2; }
+      .mood-slide__photo:nth-of-type(4) { grid-area: 2 / 1; }
+      .mood-slide__photo:nth-of-type(5) { grid-area: 2 / 2; }
+
+      .mood-slide__photo img {
         width: 100%;
-        height: 78vh;
+        height: 100%;
         object-fit: cover;
+        display: block;
+      }
+
+      .mood-slide__caption {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 18px;
+      }
+
+      .mood-slide__title {
+        display: block;
+        font-family: var(--ff-display);
+        font-size: 22px;
+        letter-spacing: 0.05em;
+        color: var(--orange);
+        line-height: 1.1;
+        margin-bottom: 10px;
+      }
+
+      .mood-slide__body {
+        display: block;
+        font-family: var(--ff-body);
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.75);
+      }
+
+      /* overlapping all 4 photos, centered, with a scrim so text stays legible */
+      .mood-slide__caption--overlay {
+        grid-column: 1 / 3;
+        grid-row: 1 / 3;
+        align-self: center;
+        justify-self: center;
+        z-index: 2;
+        background: rgba(13, 13, 13, 0.86);
+        max-width: 76%;
+        pointer-events: none;
+      }
+
+      /* fills the leftover 4th cell when a slide only has 3 photos */
+      .mood-slide__caption--cell {
+        background: var(--black);
       }
     }
 
@@ -758,8 +848,8 @@
   <!-- HEADER -->
   <header class="site-header">
     <nav class="site-header__nav">
-      <a href="collection.html">Collection</a>
       <a href="index.html" class="active">Moodboard</a>
+      <a href="collection.html">Collection</a>
       <a href="concept.html">Concept</a>
     </nav>
 
@@ -802,6 +892,21 @@
 
   <!-- PHOTO GRID -->
   <section class="grid-section">
+
+    <div class="grid-watermark grid-watermark--left" aria-hidden="true">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+    </div>
+    <div class="grid-watermark grid-watermark--right" aria-hidden="true">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+      <img src="logo_mark.jpg" alt="">
+    </div>
 
     <div class="grid-rail grid-rail--left" aria-hidden="true">
       <span class="grid-rail__gem grid-rail__gem--top"></span>
@@ -900,6 +1005,41 @@
         <img src="686153898_1459679375625397_5430363690105946194_n.jpg" alt="Σenario">
       </div>
 
+    </div>
+
+    <!-- MOBILE: 4-photo slides with a shared caption, swipeable -->
+    <div class="mood-slides">
+      <div class="mood-slide">
+        <div class="mood-slide__photo"><img src="extracted_images/page8_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="extracted_images/page2_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__caption mood-slide__caption--overlay">
+          <span class="mood-slide__title">The Observer</span>
+          <span class="mood-slide__body">Minimal compositions.<br>Silent dominance.</span>
+        </div>
+        <div class="mood-slide__photo"><img src="extracted_images/page3_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="extracted_images/page4_img1.jpeg" alt="Σenario"></div>
+      </div>
+
+      <div class="mood-slide">
+        <div class="mood-slide__photo"><img src="extracted_images/page5_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="extracted_images/page6_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__caption mood-slide__caption--overlay">
+          <span class="mood-slide__title">Movement</span>
+          <span class="mood-slide__body">Streets, cars, environments.<br>Identity remains constant.</span>
+        </div>
+        <div class="mood-slide__photo"><img src="extracted_images/page7_img1.jpeg" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="new_img1.png" alt="Σenario"></div>
+      </div>
+
+      <div class="mood-slide">
+        <div class="mood-slide__photo"><img src="678951775_1541941244170275_8788756879565237981_n.jpg" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="new_img2.png" alt="Σenario"></div>
+        <div class="mood-slide__photo"><img src="686153898_1459679375625397_5430363690105946194_n.jpg" alt="Σenario"></div>
+        <div class="mood-slide__caption mood-slide__caption--cell">
+          <span class="mood-slide__title">The Fit</span>
+          <span class="mood-slide__body">Every piece worn<br>with intention.</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1090,7 +1230,7 @@
     }
 
     /* open on grid-cell click */
-    document.querySelectorAll('.grid-cell img').forEach(function (img) {
+    document.querySelectorAll('.grid-cell img, .mood-slide__photo img').forEach(function (img) {
       img.addEventListener('click', function (e) {
         e.stopPropagation();
         var caption = img.closest('.grid-cell').dataset.caption || '';
