@@ -180,16 +180,15 @@
 
     (async function verify() {
       var params = new URLSearchParams(location.search);
-      var uid = params.get('uid');
       var token = params.get('token');
 
-      if (!uid || !token) {
+      if (!token) {
         showState('error');
         return;
       }
 
       try {
-        var res = await fetch(API_BASE + '/auth/verify-email/' + encodeURIComponent(uid) + '/' + encodeURIComponent(token) + '/');
+        var res = await fetch(API_BASE + '/auth/verify-email/' + encodeURIComponent(token) + '/');
         if (res.ok) {
           showState('success');
         } else {
