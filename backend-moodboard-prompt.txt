@@ -1,0 +1,34 @@
+I need new API endpoints on the Σenario backend (snr.arsenidis.dev) so the storefront's "Moodboard" page and the admin dashboard's new Moodboard tab can manage photos through a real database instead of a frontend-only prototype.
+
+Context: the storefront already has this exact public/admin split for products — GET /products/ is public and unauthenticated (storefront reads from it), while /products/admin/ requires staff auth and handles create/update/delete for the admin dashboard. I need the identical pattern for moodboard photos.
+
+Add a Moodboard model/table with these fields:
+- id (primary key)
+- src — image (either an uploaded file, stored the same way product images are stored, or a plain string path/URL to an existing static asset — see POST body below)
+- title — short string
+- body — text, may contain \n line breaks (store as-is, don't strip)
+- order — integer, used to sort photos for display
+
+Endpoints, mirroring the products public/admin split exactly:
+
+GET /moodboard/  (public, no auth required)
+  Returns all moodboard photos ordered by `order` ascending:
+  [{ "id": 1, "src": "...", "title": "...", "body": "...", "order": 0 }, ...]
+
+POST /moodboard/admin/  (staff auth required, same as POST /products/admin/)
+  Request: multipart/form-data with fields `title`, `body`, and either `image` (uploaded file) or `src` (string — reuse an existing image path instead of uploading a new file).
+  Creates a new photo, assigns it `order` = current max + 1, returns the created object (same shape as the GET list item).
+
+PATCH /moodboard/admin/:id/  (staff auth required)
+  Request: multipart/form-data, all fields optional (`title`, `body`, `image`). Partial update — only replace fields that are present. Returns the updated object.
+
+DELETE /moodboard/admin/:id/  (staff auth required)
+  Deletes the photo. 200 or 204 on success.
+
+POST /moodboard/admin/reorder/  (staff auth required)
+  Request body: JSON { "order": [id, id, id, ...] } — the full list of photo ids in their new display order.
+  Update each photo's `order` field to match its index in this array.
+
+Auth: same Bearer token / staff-permission check already used on /products/admin/ (the frontend sends `Authorization: Bearer <token>` from localStorage on admin calls, via the existing apiFetch helper). GET /moodboard/ must NOT require auth — the public storefront page calls it for every visitor, logged in or not.
+
+Frontend is already built and waiting on this — file is moodboard-data.js in the frontend repo, with a `MOODBOARD_API_ENABLED` flag currently set to false (using localStorage as a stand-in). Once these endpoints exist, I'll flip that flag to true and no other frontend code changes are needed. Let me know the endpoint shapes end up matching, or if anything here needs to change (e.g. if `order` should instead be implicit list position, or if image uploads need a different field name to match your existing product image handling).

@@ -5,17 +5,18 @@
    - false (default): photos live in localStorage. Works today with no
      backend changes, but only the browser that made the edit sees it —
      other visitors still see whatever was last synced/seeded.
-   - true: calls a REST API on snr.arsenidis.dev, same shape/auth pattern
-     as /products/admin/. That endpoint doesn't exist yet — see the
+   - true: calls a REST API on snr.arsenidis.dev, mirroring the public/admin
+     split already used for products (GET /products/ is public, writes go
+     through /products/admin/). That endpoint doesn't exist yet — see the
      contract below for what the backend needs to implement. Flip this
      flag once it does; no other code here needs to change.
 
-   Backend contract (mirrors /products/admin/):
-     GET    /moodboard/admin/            -> [{ id, src, title, body, order }, ...]
-     POST   /moodboard/admin/            <- FormData(title, body, image?, src?)
-     PATCH  /moodboard/admin/:id/        <- FormData(title?, body?, image?)
-     DELETE /moodboard/admin/:id/
-     POST   /moodboard/admin/reorder/    <- JSON { order: [id, id, id, ...] }
+   Backend contract (mirrors the products public/admin split):
+     GET    /moodboard/                  -> [{ id, src, title, body, order }, ...]  (public, no auth)
+     POST   /moodboard/admin/            <- FormData(title, body, image?, src?)     (staff only)
+     PATCH  /moodboard/admin/:id/        <- FormData(title?, body?, image?)         (staff only)
+     DELETE /moodboard/admin/:id/                                                   (staff only)
+     POST   /moodboard/admin/reorder/    <- JSON { order: [id, id, id, ...] }        (staff only)
    `body` may contain \n for line breaks; render layers convert to <br>. */
 
 var MOODBOARD_API_ENABLED = false;
@@ -65,7 +66,7 @@ function mbFileToDataUrl(file) {
 
 async function getMoodboardPhotos() {
   if (MOODBOARD_API_ENABLED) {
-    var res = await apiFetch('/moodboard/admin/');
+    var res = await apiFetch('/moodboard/');
     return res && res.ok ? await res.json() : [];
   }
   return mbLoadLocal();
