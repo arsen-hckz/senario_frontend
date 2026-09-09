@@ -426,8 +426,7 @@
     }
     .mb-micro {
       columns: 4;
-      column-gap: 10px;
-      max-width: 760px;
+      column-gap: 16px;
     }
     .mb-micro__tile {
       position: relative;
@@ -1225,8 +1224,9 @@
       var toIdx   = photos.findIndex(function (p) { return String(p.id) === String(targetId); });
       if (fromIdx < 0 || toIdx < 0) return;
 
-      var moved = photos.splice(fromIdx, 1)[0];
-      photos.splice(toIdx, 0, moved);
+      var tmp = photos[fromIdx];
+      photos[fromIdx] = photos[toIdx];
+      photos[toIdx] = tmp;
 
       await reorderMoodboardPhotos(photos.map(function (p) { return p.id; }));
       renderMoodboardAdmin();
@@ -1421,8 +1421,9 @@
       var toIdx   = posts.findIndex(function (p) { return String(p.id) === String(targetId); });
       if (fromIdx < 0 || toIdx < 0) return;
 
-      var moved = posts.splice(fromIdx, 1)[0];
-      posts.splice(toIdx, 0, moved);
+      var tmp = posts[fromIdx];
+      posts[fromIdx] = posts[toIdx];
+      posts[toIdx] = tmp;
 
       await reorderSalePosts(posts.map(function (p) { return p.id; }));
       renderSalePostsAdmin();
