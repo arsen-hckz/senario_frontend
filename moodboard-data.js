@@ -2,14 +2,16 @@
    (manages it).
 
    MOODBOARD_API_ENABLED toggles the persistence backend:
-   - false (default): photos live in localStorage. Works today with no
-     backend changes, but only the browser that made the edit sees it —
-     other visitors still see whatever was last synced/seeded.
-   - true: calls a REST API on snr.arsenidis.dev, mirroring the public/admin
-     split already used for products (GET /products/ is public, writes go
-     through /products/admin/). That endpoint doesn't exist yet — see the
-     contract below for what the backend needs to implement. Flip this
-     flag once it does; no other code here needs to change.
+   - true (default, live since the backend endpoints shipped): calls a REST
+     API on snr.arsenidis.dev, mirroring the public/admin split already used
+     for products (GET /products/ is public, writes go through
+     /products/admin/). Photos and uploaded images are stored server-side,
+     visible to every visitor.
+   - false: photos live in localStorage as base64 data URLs instead. Only
+     the browser that made the edit sees them, and a handful of images will
+     blow the ~5-10MB localStorage quota ("local storage is full"). Kept
+     only as a fallback for working offline against the backend; don't flip
+     back to this for normal use.
 
    Backend contract (mirrors the products public/admin split):
      GET    /moodboard/                  -> [{ id, src, title, body, order }, ...]  (public, no auth)
@@ -19,7 +21,7 @@
      POST   /moodboard/admin/reorder/    <- JSON { order: [id, id, id, ...] }        (staff only)
    `body` may contain \n for line breaks; render layers convert to <br>. */
 
-var MOODBOARD_API_ENABLED = false;
+var MOODBOARD_API_ENABLED = true;
 var MOODBOARD_STORAGE_KEY = 'snr_moodboard_photos';
 
 var MOODBOARD_DEFAULTS = [
@@ -95,7 +97,7 @@ async function saveMoodboardPhoto(photo) {
 
   var photos = mbLoadLocal();
   if (photo.id) {
-    var idx = photos.findIndex(function (p) { return p.id === photo.id; });
+    var idx = photos.findIndex(function (p) { return String(p.id) === String(photo.id); });
     if (idx > -1) photos[idx] = Object.assign({}, photos[idx], photo);
   } else {
     photo.id = 'p' + Date.now() + Math.random().toString(36).slice(2, 7);

@@ -1089,7 +1089,7 @@
 
     async function moveMoodboardPhoto(id, dir) {
       var photos = await getMoodboardPhotos();
-      var idx = photos.findIndex(function (p) { return p.id === id; });
+      var idx = photos.findIndex(function (p) { return String(p.id) === String(id); });
       var swapWith = idx + dir;
       if (idx < 0 || swapWith < 0 || swapWith >= photos.length) return;
       var tmp = photos[idx];
@@ -1148,7 +1148,7 @@
       if (editingMoodboardId) {
         title.textContent = 'Edit Photo';
         var photos = await getMoodboardPhotos();
-        var p = photos.find(function (ph) { return ph.id === editingMoodboardId; });
+        var p = photos.find(function (ph) { return String(ph.id) === String(editingMoodboardId); });
         if (p) {
           document.getElementById('mbTitle').value = p.title;
           document.getElementById('mbBody').value  = p.body;
