@@ -420,44 +420,101 @@
       font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.1em;
       color: var(--gray); margin-bottom: 20px; max-width: 640px; line-height: 1.6;
     }
-    .mb-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-    }
-    .mb-card {
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-    }
-    .mb-card__img {
-      width: 100%; height: 140px;
-      object-fit: cover;
-      background: #f0f0f0;
-    }
-    .mb-card__body { padding: 12px 14px 14px; }
-    .mb-card__title {
-      font-family: var(--ff-heading); font-weight: 500; font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .mb-card__caption {
+    .mb-micro-hint {
       font-family: var(--ff-body); font-size: 9px; color: var(--gray);
-      line-height: 1.5; margin-bottom: 12px;
+      letter-spacing: 0.08em; margin-bottom: 14px;
+    }
+    .mb-micro {
+      columns: 4;
+      column-gap: 10px;
+      max-width: 760px;
+    }
+    .mb-micro__tile {
+      position: relative;
+      break-inside: avoid;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      background: #f0f0f0;
+      cursor: grab;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .mb-micro__tile img { width: 100%; height: auto; display: block; pointer-events: none; }
+    .mb-micro__tile--dragging { opacity: 0.35; cursor: grabbing; }
+    .mb-micro__tile--over { border-color: var(--orange); box-shadow: 0 0 0 2px var(--orange) inset; }
+    .mb-micro__cap {
+      position: absolute; top: 0; left: 0;
+      background: var(--black); padding: 3px 6px 4px;
+      max-width: 90%; pointer-events: none;
+    }
+    .mb-micro__cap span {
+      display: block; font-family: var(--ff-display); font-size: 9px;
+      color: var(--orange); letter-spacing: 0.04em; line-height: 1.1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mb-micro__order {
+      position: absolute; bottom: 4px; right: 4px;
+      font-family: var(--ff-mono); font-size: 8px; color: var(--white);
+      background: rgba(0,0,0,0.55); padding: 1px 4px; pointer-events: none;
+    }
+    .mb-micro__actions {
+      position: absolute; top: 4px; right: 4px;
+      display: flex; gap: 2px;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .mb-micro__tile:hover .mb-micro__actions { opacity: 1; }
+    .mb-micro__act {
+      width: 18px; height: 18px;
+      border: none; background: rgba(13,13,13,0.75); color: var(--white);
+      font-size: 10px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .mb-micro__act:hover { background: var(--orange); }
+    .mb-micro__act--delete:hover { background: #c0392b; }
+
+    /* SALE POSTS */
+    .sp-list { display: flex; flex-wrap: wrap; gap: 14px; }
+    .sp-tile {
+      position: relative;
+      width: 180px;
+      border: 1px solid var(--border);
+      background: #f0f0f0;
+      cursor: grab;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .sp-tile--dragging { opacity: 0.35; cursor: grabbing; }
+    .sp-tile--over { border-color: var(--orange); box-shadow: 0 0 0 2px var(--orange) inset; }
+    .sp-tile__img { width: 100%; height: 130px; object-fit: cover; display: block; pointer-events: none; background: #e8e8e4; }
+    .sp-tile__body { padding: 8px 10px 10px; }
+    .sp-tile__headline {
+      font-family: var(--ff-heading); font-weight: 500; font-size: 11px; line-height: 1.3;
+      margin-bottom: 3px;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .mb-card__row { display: flex; align-items: center; justify-content: space-between; }
-    .mb-card__order { display: flex; gap: 2px; }
-    .mb-order-btn {
-      width: 22px; height: 22px;
-      border: 1px solid var(--border);
-      background: none; cursor: pointer;
-      font-size: 10px; color: var(--black);
-      display: flex; align-items: center; justify-content: center;
-      transition: border-color 0.2s, color 0.2s;
+    .sp-tile__product {
+      font-family: var(--ff-body); font-size: 8.5px; color: var(--gray);
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
-    .mb-order-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
-    .mb-order-btn:disabled { color: var(--border); cursor: default; }
-    .mb-card__actions { display: flex; gap: 4px; }
+    .sp-tile__order {
+      position: absolute; bottom: 4px; right: 4px;
+      font-family: var(--ff-mono); font-size: 8px; color: var(--white);
+      background: rgba(0,0,0,0.55); padding: 1px 4px; pointer-events: none;
+    }
+    .sp-tile__actions {
+      position: absolute; top: 4px; right: 4px;
+      display: flex; gap: 2px;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .sp-tile:hover .sp-tile__actions { opacity: 1; }
+    .sp-tile__act {
+      width: 18px; height: 18px;
+      border: none; background: rgba(13,13,13,0.75); color: var(--white);
+      font-size: 10px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .sp-tile__act:hover { background: var(--orange); }
+    .sp-tile__act--delete:hover { background: #c0392b; }
 
     .mb-source-toggle { display: flex; gap: 8px; }
     .mb-source-btn {
@@ -565,6 +622,7 @@
         <li><a href="#" data-page="products" onclick="showPage('products',this)">Products</a></li>
         <li><a href="#" data-page="orders" onclick="showPage('orders',this)">Orders</a></li>
         <li><a href="#" data-page="moodboard" onclick="showPage('moodboard',this)">Moodboard</a></li>
+        <li><a href="#" data-page="posts" onclick="showPage('posts',this)">Sale Posts</a></li>
       </ul>
     </aside>
 
@@ -639,7 +697,20 @@
           <p class="table-title" id="moodboardCount"></p>
           <button class="btn-add" onclick="openMoodboardModal()">+ Add Photo</button>
         </div>
-        <div class="mb-grid" id="moodboardGrid"></div>
+        <p class="mb-micro-hint">Drag a photo to reorder — this mirrors the column layout visitors see on the live moodboard.</p>
+        <div class="mb-micro" id="moodboardGrid"></div>
+      </div>
+
+      <!-- SALE POSTS -->
+      <div class="admin-page" id="page-posts">
+        <h1 class="page-title">Sale Posts</h1>
+        <p class="mb-note" id="spApiNote"></p>
+        <div class="table-header">
+          <p class="table-title" id="postCount"></p>
+          <button class="btn-add" onclick="openPostModal()">+ Add Post</button>
+        </div>
+        <p class="mb-micro-hint">Drag a post to reorder. The "Sale" nav link stays hidden on the live site until the first post exists.</p>
+        <div class="sp-list" id="postGrid"></div>
       </div>
 
     </main>
@@ -730,12 +801,42 @@
     </div>
   </div>
 
+  <!-- SALE POST MODAL -->
+  <div class="modal-overlay" id="postModal">
+    <div class="modal">
+      <h2 class="modal-title" id="spModalTitle">Add Post</h2>
+      <div class="modal-grid">
+        <div class="form-field span2">
+          <label>Product</label>
+          <select id="spProduct" onchange="previewPostProduct()"><option value="">— choose a product —</option></select>
+        </div>
+        <div class="form-field span2" id="spPreview" style="display:none">
+          <img id="spPreviewImg" src="" alt="" style="display:block;max-height:120px;object-fit:cover;margin-bottom:4px;">
+          <span id="spPreviewPrice" style="font-family:var(--ff-body);font-size:10px;color:var(--gray);"></span>
+        </div>
+        <div class="form-field span2">
+          <label>Headline</label>
+          <input type="text" id="spHeadline" placeholder="e.g. Take 20% off before it's gone">
+        </div>
+        <div class="form-field span2">
+          <label>Note (optional)</label>
+          <input type="text" id="spNote" placeholder="Short secondary line">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="savePostAdmin()">Save Post</button>
+        <button class="btn-cancel" onclick="closePostModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
   <script src="api.js"></script>
   <script src="moodboard-data.js"></script>
+  <script src="posts-data.js"></script>
   <script>
     if (localStorage.getItem('snr_is_staff') !== '1') window.location.href = 'index.html';
 
@@ -753,6 +854,7 @@
       if (page === 'products')   renderProducts();
       if (page === 'orders')     renderAllOrders();
       if (page === 'moodboard')  renderMoodboardAdmin();
+      if (page === 'posts')      renderSalePostsAdmin();
     }
 
     /* OVERVIEW */
@@ -1066,35 +1168,66 @@
       }
 
       grid.innerHTML = photos.map(function (p, i) {
-        var captionHtml = escHtml(p.body).replace(/\n/g, ' ');
-        return '<div class="mb-card">' +
-                 '<img class="mb-card__img" src="' + escHtml(p.src) + '" alt="">' +
-                 '<div class="mb-card__body">' +
-                   '<div class="mb-card__title">' + escHtml(p.title) + '</div>' +
-                   '<div class="mb-card__caption">' + captionHtml + '</div>' +
-                   '<div class="mb-card__row">' +
-                     '<div class="mb-card__order">' +
-                       '<button class="mb-order-btn" title="Move earlier" onclick="moveMoodboardPhoto(\'' + p.id + '\',-1)"' + (i === 0 ? ' disabled' : '') + '>&#8593;</button>' +
-                       '<button class="mb-order-btn" title="Move later" onclick="moveMoodboardPhoto(\'' + p.id + '\',1)"' + (i === photos.length - 1 ? ' disabled' : '') + '>&#8595;</button>' +
-                     '</div>' +
-                     '<div class="mb-card__actions">' +
-                       '<button class="action-btn action-btn--edit" onclick="openMoodboardModal(\'' + p.id + '\')">Edit</button>' +
-                       '<button class="action-btn action-btn--delete" onclick="deleteMoodboardPhotoAdmin(\'' + p.id + '\')">Delete</button>' +
-                     '</div>' +
-                   '</div>' +
+        return '<div class="mb-micro__tile" draggable="true" ' +
+                 'ondragstart="mbDragStart(event,\'' + p.id + '\')" ' +
+                 'ondragover="mbDragOver(event,\'' + p.id + '\')" ' +
+                 'ondragleave="mbDragLeave(event)" ' +
+                 'ondrop="mbDrop(event,\'' + p.id + '\')" ' +
+                 'ondragend="mbDragEnd(event)">' +
+                 '<img src="' + escHtml(p.src) + '" alt="">' +
+                 '<div class="mb-micro__cap"><span>' + escHtml(p.title) + '</span></div>' +
+                 '<div class="mb-micro__order">' + (i + 1) + '</div>' +
+                 '<div class="mb-micro__actions">' +
+                   '<button type="button" class="mb-micro__act" title="Edit" onclick="event.stopPropagation();openMoodboardModal(\'' + p.id + '\')">&#9998;</button>' +
+                   '<button type="button" class="mb-micro__act mb-micro__act--delete" title="Delete" onclick="event.stopPropagation();deleteMoodboardPhotoAdmin(\'' + p.id + '\')">&times;</button>' +
                  '</div>' +
                '</div>';
       }).join('');
     }
 
-    async function moveMoodboardPhoto(id, dir) {
+    var mbDragSrcId = null;
+
+    function mbDragStart(e, id) {
+      mbDragSrcId = String(id);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', mbDragSrcId);
+      e.currentTarget.classList.add('mb-micro__tile--dragging');
+    }
+
+    function mbDragOver(e, id) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (mbDragSrcId === String(id)) return;
+      e.currentTarget.classList.add('mb-micro__tile--over');
+    }
+
+    function mbDragLeave(e) {
+      e.currentTarget.classList.remove('mb-micro__tile--over');
+    }
+
+    function mbDragEnd(e) {
+      e.currentTarget.classList.remove('mb-micro__tile--dragging');
+      document.querySelectorAll('.mb-micro__tile--over').forEach(function (el) {
+        el.classList.remove('mb-micro__tile--over');
+      });
+      mbDragSrcId = null;
+    }
+
+    async function mbDrop(e, targetId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('mb-micro__tile--over');
+      var srcId = mbDragSrcId;
+      mbDragSrcId = null;
+      if (!srcId || srcId === String(targetId)) return;
+
       var photos = await getMoodboardPhotos();
-      var idx = photos.findIndex(function (p) { return String(p.id) === String(id); });
-      var swapWith = idx + dir;
-      if (idx < 0 || swapWith < 0 || swapWith >= photos.length) return;
-      var tmp = photos[idx];
-      photos[idx] = photos[swapWith];
-      photos[swapWith] = tmp;
+      var fromIdx = photos.findIndex(function (p) { return String(p.id) === srcId; });
+      var toIdx   = photos.findIndex(function (p) { return String(p.id) === String(targetId); });
+      if (fromIdx < 0 || toIdx < 0) return;
+
+      var moved = photos.splice(fromIdx, 1)[0];
+      photos.splice(toIdx, 0, moved);
+
       await reorderMoodboardPhotos(photos.map(function (p) { return p.id; }));
       renderMoodboardAdmin();
     }
@@ -1205,6 +1338,176 @@
 
     document.getElementById('moodboardModal').addEventListener('click', function (e) {
       if (e.target === this) closeMoodboardModal();
+    });
+
+    /* SALE POSTS */
+    var editingPostId    = null;
+    var postProductCache = [];
+
+    async function renderSalePostsAdmin() {
+      document.getElementById('spApiNote').textContent = POSTS_API_ENABLED
+        ? 'Synced to the sale-posts API — visible to every visitor.'
+        : 'Saved to this browser only (local prototype) until the sale-posts API is connected — see posts-data.js.';
+
+      var grid = document.getElementById('postGrid');
+      grid.innerHTML = '<p style="color:var(--gray);font-size:11px;">Loading...</p>';
+      var posts = await hydrateSalePosts(await getSalePosts());
+      document.getElementById('postCount').textContent = posts.length + ' post' + (posts.length === 1 ? '' : 's');
+
+      if (!posts.length) {
+        grid.innerHTML = '<p style="color:var(--gray);font-size:11px;">No posts yet — feature a product to populate the Sale page.</p>';
+        return;
+      }
+
+      grid.innerHTML = posts.map(function (post, i) {
+        var p = post.product;
+        return '<div class="sp-tile" draggable="true" ' +
+                 'ondragstart="spDragStart(event,\'' + post.id + '\')" ' +
+                 'ondragover="spDragOver(event,\'' + post.id + '\')" ' +
+                 'ondragleave="spDragLeave(event)" ' +
+                 'ondrop="spDrop(event,\'' + post.id + '\')" ' +
+                 'ondragend="spDragEnd(event)">' +
+                 '<img class="sp-tile__img" src="' + escHtml(p.image || '') + '" alt="">' +
+                 '<div class="sp-tile__body">' +
+                   '<div class="sp-tile__headline">' + escHtml(post.headline) + '</div>' +
+                   '<div class="sp-tile__product">' + escHtml(p.name) + '</div>' +
+                 '</div>' +
+                 '<div class="sp-tile__order">' + (i + 1) + '</div>' +
+                 '<div class="sp-tile__actions">' +
+                   '<button type="button" class="sp-tile__act" title="Edit" onclick="event.stopPropagation();openPostModal(\'' + post.id + '\')">&#9998;</button>' +
+                   '<button type="button" class="sp-tile__act sp-tile__act--delete" title="Delete" onclick="event.stopPropagation();deletePostAdmin(\'' + post.id + '\')">&times;</button>' +
+                 '</div>' +
+               '</div>';
+      }).join('');
+    }
+
+    var spDragSrcId = null;
+
+    function spDragStart(e, id) {
+      spDragSrcId = String(id);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', spDragSrcId);
+      e.currentTarget.classList.add('sp-tile--dragging');
+    }
+
+    function spDragOver(e, id) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (spDragSrcId === String(id)) return;
+      e.currentTarget.classList.add('sp-tile--over');
+    }
+
+    function spDragLeave(e) {
+      e.currentTarget.classList.remove('sp-tile--over');
+    }
+
+    function spDragEnd(e) {
+      e.currentTarget.classList.remove('sp-tile--dragging');
+      document.querySelectorAll('.sp-tile--over').forEach(function (el) {
+        el.classList.remove('sp-tile--over');
+      });
+      spDragSrcId = null;
+    }
+
+    async function spDrop(e, targetId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('sp-tile--over');
+      var srcId = spDragSrcId;
+      spDragSrcId = null;
+      if (!srcId || srcId === String(targetId)) return;
+
+      var posts = await getSalePosts();
+      var fromIdx = posts.findIndex(function (p) { return String(p.id) === srcId; });
+      var toIdx   = posts.findIndex(function (p) { return String(p.id) === String(targetId); });
+      if (fromIdx < 0 || toIdx < 0) return;
+
+      var moved = posts.splice(fromIdx, 1)[0];
+      posts.splice(toIdx, 0, moved);
+
+      await reorderSalePosts(posts.map(function (p) { return p.id; }));
+      renderSalePostsAdmin();
+    }
+
+    async function populatePostProductSelect(selectedSlug) {
+      var select = document.getElementById('spProduct');
+      select.innerHTML = '<option value="">Loading products...</option>';
+      try {
+        var res = await apiFetch('/products/admin/');
+        postProductCache = res && res.ok ? await res.json() : [];
+      } catch (ex) {
+        postProductCache = [];
+      }
+      select.innerHTML = '<option value="">— choose a product —</option>' +
+        postProductCache.map(function (p) {
+          return '<option value="' + escHtml(p.slug) + '"' + (p.slug === selectedSlug ? ' selected' : '') + '>' +
+                   escHtml(p.name) + ' — €' + parseFloat(p.effective_price || p.price) +
+                 '</option>';
+        }).join('');
+      previewPostProduct();
+    }
+
+    function previewPostProduct() {
+      var slug    = document.getElementById('spProduct').value;
+      var preview = document.getElementById('spPreview');
+      var product = postProductCache.find(function (p) { return p.slug === slug; });
+      if (!product) { preview.style.display = 'none'; return; }
+      document.getElementById('spPreviewImg').src = product.image || '';
+      var onSale = product.sale_price && parseFloat(product.effective_price || product.price) < parseFloat(product.price);
+      document.getElementById('spPreviewPrice').textContent = onSale
+        ? '€' + parseFloat(product.price) + ' → €' + parseFloat(product.effective_price)
+        : '€' + parseFloat(product.price);
+      preview.style.display = '';
+    }
+
+    async function openPostModal(id) {
+      editingPostId = id || null;
+      document.getElementById('spModalTitle').textContent = editingPostId ? 'Edit Post' : 'Add Post';
+      document.getElementById('spHeadline').value = '';
+      document.getElementById('spNote').value = '';
+
+      var selectedSlug = null;
+      if (editingPostId) {
+        var posts = await getSalePosts();
+        var post = posts.find(function (p) { return String(p.id) === String(editingPostId); });
+        if (post) {
+          document.getElementById('spHeadline').value = post.headline;
+          document.getElementById('spNote').value = post.note || '';
+          selectedSlug = post.product_slug;
+        }
+      }
+      await populatePostProductSelect(selectedSlug);
+      document.getElementById('postModal').classList.add('open');
+    }
+
+    function closePostModal() {
+      document.getElementById('postModal').classList.remove('open');
+      editingPostId = null;
+    }
+
+    async function savePostAdmin() {
+      var slug     = document.getElementById('spProduct').value;
+      var headline = document.getElementById('spHeadline').value.trim();
+      var note     = document.getElementById('spNote').value.trim();
+      if (!slug) { alert('Choose a product.'); return; }
+      if (!headline) { alert('Headline is required.'); return; }
+
+      try {
+        await saveSalePost({ id: editingPostId, product_slug: slug, headline: headline, note: note });
+        closePostModal();
+        renderSalePostsAdmin();
+      } catch (ex) {
+        alert(ex.message || 'Save failed.');
+      }
+    }
+
+    async function deletePostAdmin(id) {
+      if (!confirm('Delete this post?')) return;
+      await deleteSalePost(id);
+      renderSalePostsAdmin();
+    }
+
+    document.getElementById('postModal').addEventListener('click', function (e) {
+      if (e.target === this) closePostModal();
     });
 
     renderOverview();

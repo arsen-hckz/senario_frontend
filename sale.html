@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Collection — Σenario</title>
+  <title>Sale — Σenario</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -326,6 +326,41 @@
       color: var(--orange);
     }
 
+    /* ─── POST CAPTION ───────────────────────────── */
+    .post-card__caption {
+      position: absolute;
+      top: 0; left: 0;
+      background: var(--black);
+      padding: 8px 12px 9px;
+      max-width: 88%;
+      z-index: 2;
+    }
+    .post-card__headline {
+      display: block;
+      font-family: var(--ff-display);
+      font-size: 15px;
+      color: var(--orange);
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+    }
+    .post-card__note {
+      display: block;
+      font-family: var(--ff-body);
+      font-size: 9px;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.05em;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .sale-empty {
+      padding: 60px 40px 100px;
+      text-align: center;
+      font-family: var(--ff-body);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--gray);
+    }
+
     /* ─── FOOTER ─────────────────────────────────── */
     .site-footer {
       padding: 60px 24px 44px;
@@ -416,9 +451,9 @@
   <header class="site-header">
     <nav class="site-header__nav">
       <a href="index.html">Moodboard</a>
-      <a href="collection.html" class="active">Collection</a>
+      <a href="collection.html">Collection</a>
       <a href="concept.html">Concept</a>
-      <a href="sale.html" id="navSale" style="display:none">Sale</a>
+      <a href="sale.html" id="navSale" class="active">Sale</a>
     </nav>
 
     <a href="index.html">
@@ -453,16 +488,16 @@
     </div>
   </header>
 
-  <!-- COLLECTION HEADER -->
+  <!-- SALE HEADER -->
   <div class="collection-header">
-    <p class="collection-header__eyebrow">Σenario / SS 2025</p>
-    <h1 class="collection-header__title">Collection</h1>
-    <p class="collection-header__count">7 Pieces</p>
+    <p class="collection-header__eyebrow">Σenario / Sale</p>
+    <h1 class="collection-header__title">Sale</h1>
+    <p class="collection-header__count" id="postCount"></p>
   </div>
 
-  <!-- PRODUCT GRID -->
+  <!-- SALE POST GRID -->
   <section class="product-section">
-    <div class="product-grid" id="productGrid"></div>
+    <div class="product-grid" id="postGrid"></div>
   </section>
 
   <!-- FOOTER -->
@@ -506,20 +541,27 @@
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    async function renderGrid() {
-      var grid  = document.getElementById('productGrid');
-      var count = document.querySelector('.collection-header__count');
+    async function renderPosts() {
+      var grid  = document.getElementById('postGrid');
+      var count = document.getElementById('postCount');
       grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Loading...</p>';
 
       try {
-        var res = await fetch(API_BASE + '/products/');
-        if (!res.ok) throw new Error();
-        var products = await res.json();
+        var posts = await hydrateSalePosts(await getSalePosts());
 
-        if (count) count.textContent = products.length + ' Piece' + (products.length === 1 ? '' : 's');
+        if (!posts.length) {
+          if (count) count.textContent = '';
+          grid.innerHTML = '';
+          document.querySelector('.product-section').innerHTML =
+            '<p class="sale-empty">No sale posts yet — check back soon.</p>';
+          return;
+        }
+
+        if (count) count.textContent = posts.length + ' Post' + (posts.length === 1 ? '' : 's');
         grid.innerHTML = '';
 
-        products.forEach(function(p, i) {
+        posts.forEach(function(post, i) {
+          var p = post.product;
           var totalStock = p.variants && p.variants.length
             ? p.variants.reduce(function(s, v) { return s + (v.stock || 0); }, 0)
             : (p.stock || 0);
@@ -532,10 +574,6 @@
           var stockTag = oos ? '<span class="stock-tag stock-tag--oos">Out of Stock</span>'
                        : low ? '<span class="stock-tag stock-tag--low">Low Stock</span>'
                        : '';
-
-          var tagHtml = onSale
-            ? '<span class="product-card__tag product-card__tag--sale">Sale</span>'
-            : '<span class="product-card__tag">New</span>';
 
           var atcBtn = oos
             ? '<button class="product-card__atc oos" onclick="event.stopPropagation()">Out of Stock</button>'
@@ -550,6 +588,12 @@
             ? '<div class="product-card__price-wrap"><span class="product-card__price--original">€' + Math.round(origPrice) + '</span><span class="product-card__price--sale">€' + Math.round(effPrice) + '</span></div>'
             : '<span class="product-card__price">€' + Math.round(effPrice) + '</span>';
 
+          var captionHtml =
+            '<div class="post-card__caption">' +
+              '<span class="post-card__headline">' + escHtml(post.headline) + '</span>' +
+              (post.note ? '<span class="post-card__note">' + escHtml(post.note) + '</span>' : '') +
+            '</div>';
+
           var imgSrc = p.image || 'test images/TS01556BLK.jpg';
 
           var card = document.createElement('a');
@@ -558,7 +602,7 @@
           card.innerHTML =
             '<div class="product-card__image">' +
               '<img src="' + imgSrc + '" alt="' + safeName + '">' +
-              tagHtml + stockTag + atcBtn +
+              captionHtml + stockTag + atcBtn +
             '</div>' +
             '<div class="product-card__info">' +
               nameHtml + priceHtml +
@@ -578,7 +622,7 @@
           });
         });
       } catch (ex) {
-        grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Failed to load products. Make sure the server is running.</p>';
+        grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Failed to load sale posts. Make sure the server is running.</p>';
       }
     }
 
@@ -587,7 +631,7 @@
       e.stopPropagation();
       if (btn.classList.contains('added') || btn.classList.contains('oos')) return;
       if (!localStorage.getItem('snr_token')) {
-        window.location.href = 'login.html?next=collection.html';
+        window.location.href = 'login.html?next=sale.html';
         return;
       }
       var orig = btn.textContent;
@@ -618,7 +662,7 @@
 
     snrInitNav();
     function logout() { snrLogout(); }
-    renderGrid();
+    renderPosts();
   </script>
 
 </body>

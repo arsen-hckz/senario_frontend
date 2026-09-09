@@ -1,0 +1,38 @@
+I need new API endpoints on the Σenario backend (snr.arsenidis.dev) so the storefront and admin dashboard can manage "sale posts" — clickable promo cards that spotlight one product each, shown in a new "Sale" nav link/page once at least one exists.
+
+Context: this is the same public/admin split already used for products and moodboard photos — GET /products/ and GET /moodboard/ are public and unauthenticated, while /products/admin/ and /moodboard/admin/ require staff auth and handle create/update/delete. I need the identical pattern for sale posts.
+
+A sale post does NOT store its own image or price — it just references an existing product by slug. The frontend pulls that product's current image/price/sale_price at render time, so a post always reflects the product's live state.
+
+Add a SalePost model/table with these fields:
+- id (primary key)
+- product — foreign key to the existing Product model (or store product_slug directly, whichever fits your existing product lookup pattern better — see products/moodboard for what's already there)
+- headline — short string (the promo blurb, e.g. "Take 20% off before it's gone")
+- note — optional short string (secondary line, may be blank)
+- order — integer, used to sort posts for display
+
+Endpoints, mirroring the products/moodboard public/admin split exactly:
+
+GET /posts/  (public, no auth required)
+  Returns all sale posts ordered by `order` ascending:
+  [{ "id": 1, "product_slug": "sunglasses", "headline": "...", "note": "...", "order": 0 }, ...]
+
+POST /posts/admin/  (staff auth required, same as POST /products/admin/)
+  Request: JSON body { "product_slug": "...", "headline": "...", "note": "..." }.
+  Creates a new post, assigns it `order` = current max + 1, returns the created object (same shape as the GET list item).
+
+PATCH /posts/admin/:id/  (staff auth required)
+  Request: JSON body, all fields optional (`product_slug`, `headline`, `note`). Partial update — only replace fields that are present. Returns the updated object.
+
+DELETE /posts/admin/:id/  (staff auth required)
+  Deletes the post. 200 or 204 on success.
+
+POST /posts/admin/reorder/  (staff auth required)
+  Request body: JSON { "order": [id, id, id, ...] } — the full list of post ids in their new display order.
+  Update each post's `order` field to match its index in this array.
+
+Auth: same Bearer token / staff-permission check already used on /products/admin/ and /moodboard/admin/ (the frontend sends `Authorization: Bearer <token>` from localStorage on admin calls, via the existing apiFetch helper). GET /posts/ must NOT require auth — the public storefront calls it for every visitor, logged in or not, to decide whether to show the "Sale" nav link at all.
+
+Validation: reject a POST/PATCH whose product_slug doesn't match an existing product (400, not a 500) — the frontend already drops posts whose product was deleted, but it's cleaner if the write itself is rejected up front.
+
+Frontend is already built and waiting on this — file is posts-data.js in the frontend repo, with a `POSTS_API_ENABLED` flag currently set to false (using localStorage as a stand-in, same as moodboard-data.js was before). Once these endpoints exist, I'll flip that flag to true and no other frontend code changes are needed. Let me know if the endpoint shapes end up matching, or if anything here needs to change (e.g. if you'd rather key posts by product id than slug).

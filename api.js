@@ -79,6 +79,17 @@ function snrInitNav() {
     });
   }
   snrUpdateCartBadge();
+  snrRevealSaleNav();
+}
+
+/* "Sale" nav link starts hidden (see markup) and only appears once at
+   least one sale post exists, so an empty storefront never shows a dead link */
+function snrRevealSaleNav() {
+  var link = document.getElementById('navSale');
+  if (!link || typeof getSalePosts !== 'function') return;
+  getSalePosts().then(function(posts) {
+    if (posts.length) link.style.display = '';
+  }).catch(function() {});
 }
 
 async function snrUpdateCartBadge() {
