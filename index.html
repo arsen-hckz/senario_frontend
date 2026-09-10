@@ -1261,7 +1261,7 @@
                    '<span class="grid-caption__title">' + escHtml(p.title) + '</span>' +
                    '<span class="grid-caption__body">' + escHtml(p.body).replace(/\n/g, '<br>') + '</span>' +
                  '</div>' +
-                 '<img src="' + escHtml(p.src) + '" alt="Σenario">' +
+                 '<img src="' + escHtml(p.src) + '" alt="Σenario" loading="lazy" decoding="async">' +
                '</div>';
       }).join('');
     }
@@ -1283,7 +1283,7 @@
           '</div>';
 
         var photoDivs = group.map(function (p) {
-          return '<div class="mood-slide__photo"><img src="' + escHtml(p.src) + '" alt="Σenario"></div>';
+          return '<div class="mood-slide__photo"><img src="' + escHtml(p.src) + '" alt="Σenario" loading="lazy" decoding="async"></div>';
         });
 
         var slideInner;
