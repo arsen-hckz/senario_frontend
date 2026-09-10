@@ -493,7 +493,7 @@
       <!-- Payment -->
       <div class="form-section">
         <p class="form-section__title">Payment</p>
-        <div class="payment-methods">
+        <div class="payment-methods" style="pointer-events:none">
           <div class="pay-icon active" title="Card">
             <svg width="22" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
               <rect x="1" y="1" width="22" height="16" rx="2"/>
@@ -501,18 +501,12 @@
               <line x1="5" y1="12" x2="9" y2="12"/>
             </svg>
           </div>
-          <div class="pay-icon" title="PayPal">
-            <svg width="18" height="20" viewBox="0 0 24 28" fill="currentColor">
-              <path d="M7.6 26.4l.6-3.8H4.8L7.8 3.2c0-.2.2-.4.4-.4h7.2c2.4 0 4 .5 4.8 1.5.4.5.6 1 .7 1.6 0 .6 0 1.3-.2 2.1-.7 3.4-2.9 5.1-6.6 5.1h-1.6c-.5 0-.9.3-1 .8l-1 6.3-.1.4c0 .1-.1.2-.2.2H7.6z"/>
-              <path opacity=".5" d="M21 6.6c0 .2 0 .4-.1.6-.8 4.3-3.6 5.8-7.1 5.8H12c-.4 0-.8.3-.9.7l-1.3 8-.4 2.3c0 .3.2.6.5.6h3.6c.4 0 .7-.3.8-.6v-.2l.7-4.3v-.2c.1-.4.4-.6.8-.6h.5c3.1 0 5.5-1.3 6.2-4.9.3-1.5.1-2.7-.6-3.6-.2-.2-.4-.4-.6-.6z"/>
-            </svg>
-          </div>
-          <div class="pay-icon" title="Apple Pay">
+          <div class="pay-icon active" title="Apple Pay">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="16" viewBox="0 0 165.521 105.965" fill="currentColor">
               <path d="M9.14 16.305c-1.7 2.01-4.42 3.59-7.14 3.36-.34-2.72.99-5.62 2.55-7.4C6.25 10.225 9.21 8.785 11.63 8.645c.29 2.8-.82 5.56-2.49 7.66zm2.46 3.9c-3.95-.23-7.32 2.24-9.2 2.24-1.9 0-4.79-2.12-7.94-2.06-4.09.06-7.88 2.37-9.97 6.05-4.27 7.37-1.12 18.28 3.03 24.28 2.03 2.97 4.46 6.24 7.66 6.12 3.03-.12 4.21-1.96 7.9-1.96 3.7 0 4.75 1.96 7.96 1.9 3.32-.06 5.42-2.97 7.45-5.95 2.34-3.39 3.3-6.68 3.36-6.85-.07-.03-6.44-2.49-6.5-9.83-.06-6.15 5.02-9.1 5.25-9.26-2.87-4.26-7.34-4.73-8.96-4.79h-.04zM43.23 11.505v45.25h7.02v-15.47h9.71c8.87 0 15.1-6.08 15.1-14.91s-6.13-14.87-14.9-14.87zm7.02 5.95h8.09c6.09 0 9.57 3.25 9.57 8.95s-3.48 8.98-9.6 8.98h-8.06zm37.49 39.65c4.4 0 8.48-2.23 10.33-5.76h.14v5.41h6.5V32.765c0-6.53-5.23-10.74-13.28-10.74-7.47 0-13 4.27-13.22 10.13h6.33c.52-2.79 3.13-4.62 6.66-4.62 4.3 0 6.71 2 6.71 5.68v2.49l-8.77.52c-8.15.49-12.56 3.83-12.56 9.63 0 5.86 4.56 9.75 11.16 9.75zm1.89-5.52c-3.75 0-6.14-1.8-6.14-4.55 0-2.85 2.3-4.5 6.7-4.76l7.8-.49v2.55c0 4.16-3.52 7.25-8.36 7.25zm27.97 17.87c6.85 0 10.07-2.62 12.88-10.56l12.33-34.6h-7.17l-8.27 26.76h-.14l-8.27-26.76h-7.39l11.89 32.92-.64 2.01c-1.07 3.38-2.82 4.69-5.94 4.69-.55 0-1.63-.06-2.07-.12v5.45c.41.12 2.17.21 2.79.21z"/>
             </svg>
           </div>
-          <div class="pay-icon" title="Google Pay">
+          <div class="pay-icon active" title="Google Pay">
             <svg width="36" height="14" viewBox="0 0 56 24" fill="currentColor">
               <path d="M26.1 11.9v7h-2.2V2h5.8c1.4 0 2.6.5 3.6 1.4.9.9 1.4 2 1.4 3.3 0 1.3-.5 2.4-1.4 3.3-.9.9-2.1 1.4-3.6 1.4h-3.6v.5zm0-7.9v5.8h3.7c.8 0 1.5-.3 2-.8.5-.5.8-1.2.8-1.9 0-.8-.3-1.4-.8-1.9-.5-.5-1.2-.8-2-.8h-3.7v-.4zm13.7 3.4c1.5 0 2.7.4 3.6 1.2.9.8 1.3 1.9 1.3 3.3v6.8H42.7v-1.5h-.1c-.8 1.2-2 1.8-3.5 1.8-1.2 0-2.3-.4-3.1-1.1-.8-.7-1.2-1.7-1.2-2.8 0-1.2.4-2.1 1.3-2.8.9-.7 2.1-1 3.5-1 1.3 0 2.3.2 3.1.7v-.5c0-.7-.3-1.4-.8-1.9-.5-.5-1.2-.7-1.9-.7-1.1 0-2 .5-2.6 1.4l-2-.9c.8-1.4 2.2-2 4.4-2zm-.6 10.3c.7 0 1.3-.3 1.8-.8.5-.5.8-1.1.8-1.9-.5-.4-1.3-.7-2.5-.7-.9 0-1.6.2-2.1.6-.5.4-.8.9-.8 1.4 0 .5.2.9.7 1.2.4.3 1 .5 1.7.5h.4v-.3zM55.6 7.6l-7.3 16.7h-2.3l2.7-5.9L43.9 7.6h2.4l2.9 7.1h.1l2.8-7.1h2.5z" fill="#5f6368"/>
               <path d="M18.8 10.2c0-.7-.1-1.4-.2-2.1H10v3.9h5c-.2 1.1-.8 2-1.7 2.7v2.2h2.8c1.6-1.5 2.7-3.8 2.7-6.7z" fill="#4285f4"/>
@@ -522,26 +516,9 @@
             </svg>
           </div>
         </div>
-        <div class="form-row full">
-          <div class="form-group">
-            <label>Card Number</label>
-            <input type="text" placeholder="0000 0000 0000 0000">
-          </div>
-        </div>
-        <div class="card-row">
-          <div class="form-group">
-            <label>Name on Card</label>
-            <input type="text" placeholder="John Doe">
-          </div>
-          <div class="form-group">
-            <label>Expiry</label>
-            <input type="text" placeholder="MM/YY" id="expiryInput" inputmode="numeric" maxlength="5">
-          </div>
-          <div class="form-group">
-            <label>CVV</label>
-            <input type="text" placeholder="000">
-          </div>
-        </div>
+        <p class="form-note" style="margin-top:0">
+          You'll choose how to pay — card, Apple Pay or Google Pay — on the next, secure page. We never see or store your card number.
+        </p>
       </div>
 
       <button class="btn-place-order">Place Order</button>
@@ -623,14 +600,6 @@
     snrInitNav();
     function logout() { snrLogout(); }
 
-    var expiryInput = document.getElementById('expiryInput');
-    if (expiryInput) {
-      expiryInput.addEventListener('input', function() {
-        var digits = this.value.replace(/\D/g, '').slice(0, 4);
-        this.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
-      });
-    }
-
     function loginCheckout() {
       window.location.href = 'login.html?next=checkout.html';
     }
@@ -644,13 +613,6 @@
     if (localStorage.getItem('snr_token')) {
       startCheckout();
     }
-
-    document.querySelectorAll('.pay-icon').forEach(function(icon) {
-      icon.addEventListener('click', function() {
-        document.querySelectorAll('.pay-icon').forEach(function(i) { i.classList.remove('active'); });
-        icon.classList.add('active');
-      });
-    });
 
     async function loadCartSummary() {
       try {
@@ -690,12 +652,41 @@
       } catch (ex) {}
     }
 
+    /* Order creation and payment are separate steps against the API. We keep
+       the created order id in memory so a failed/retried "start payment"
+       call never creates a second order behind the customer's back. */
+    var createdOrderId = null;
+
+    async function startVivaCheckout(orderId) {
+      var res = await apiFetch('/payments/checkout/' + orderId + '/', { method: 'POST' });
+      if (res && res.ok) {
+        var data = await res.json();
+        sessionStorage.setItem('snr_pending_order_id', String(orderId));
+        window.location.href = data.checkout_url;
+        return true;
+      }
+      return false;
+    }
+
     document.querySelector('.btn-place-order').addEventListener('click', async function() {
       if (!localStorage.getItem('snr_token')) {
         window.location.href = 'login.html?next=checkout.html';
         return;
       }
       var btn = this;
+
+      if (createdOrderId) {
+        btn.textContent = 'Redirecting to payment...';
+        btn.disabled = true;
+        var retried = await startVivaCheckout(createdOrderId);
+        if (!retried) {
+          alert('Could not reach the payment page. Please try again in a moment.');
+          btn.textContent = 'Retry Payment';
+          btn.disabled = false;
+        }
+        return;
+      }
+
       var inputs = document.querySelectorAll('.checkout-form input, .checkout-form select');
       var vals = {};
       inputs.forEach(function(el) {
@@ -732,7 +723,14 @@
         });
         if (res && res.ok) {
           var order = await res.json();
-          window.location.href = 'account-orders.html';
+          createdOrderId = order.id;
+          btn.textContent = 'Redirecting to payment...';
+          var started = await startVivaCheckout(order.id);
+          if (!started) {
+            alert('Your order was placed, but we could not start payment. Click Retry Payment — your order is saved.');
+            btn.textContent = 'Retry Payment';
+            btn.disabled = false;
+          }
         } else {
           var err = res ? await res.json() : {};
           var msg = Object.values(err).flat().join(' ') || 'Order failed. Please try again.';

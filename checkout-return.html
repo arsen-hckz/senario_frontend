@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment — Σenario</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;700&family=DM+Mono:wght@300;400&family=Space+Grotesk:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --white:   #ffffff;
+      --black:   #0d0d0d;
+      --orange:  #C4622D;
+      --gray:    #9A9A9A;
+      --border:  #e8e8e4;
+      --green:   #2d7a3c;
+      --ff-heading: 'Space Grotesk', sans-serif;
+      --ff-body:    'Suisse Intl', 'Inter', sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    body {
+      background: var(--white); color: var(--black);
+      font-family: var(--ff-body); -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .site-header {
+      padding: 24px 40px; text-align: center; border-bottom: 1px solid var(--border);
+    }
+    .site-header__logo { width: 200px; height: auto; margin: 0 auto; }
+
+    .status-wrap {
+      max-width: 520px; margin: 0 auto;
+      padding: 90px 24px 100px;
+      text-align: center;
+    }
+    .status-eyebrow {
+      font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 20px;
+    }
+    .status-icon {
+      width: 56px; height: 56px; margin: 0 auto 28px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+    }
+    .status-icon svg { width: 24px; height: 24px; }
+    .status-icon--spin {
+      border-top-color: var(--black);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status-title {
+      font-family: var(--ff-heading); font-weight: 500; font-size: clamp(26px, 4vw, 36px);
+      line-height: 1.2; margin-bottom: 14px;
+    }
+    .status-body {
+      font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.03em;
+      color: var(--gray); line-height: 1.7; margin-bottom: 40px;
+    }
+    .status-order {
+      font-family: var(--ff-body); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 40px;
+    }
+    .status-actions { display: flex; flex-direction: column; gap: 12px; }
+    .btn {
+      display: inline-block; width: 100%; padding: 16px;
+      font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer; border: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn--primary { background: var(--black); color: var(--white); }
+    .btn--primary:hover { background: var(--orange); }
+    .btn--secondary { background: none; color: var(--black); border: 1px solid var(--border); }
+    .btn--secondary:hover { border-color: var(--black); }
+
+    .site-footer { padding: 32px 24px; border-top: 1px solid var(--border); text-align: center; }
+    .footer__legal { font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="index.html"><img class="site-header__logo" src="logo_combined.png" alt="Σenario"></a>
+  </header>
+
+  <div class="status-wrap">
+    <p class="status-eyebrow">Σenario / Payment</p>
+    <div class="status-icon status-icon--spin" id="statusIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9"/></svg>
+    </div>
+    <h1 class="status-title" id="statusTitle">Confirming your payment</h1>
+    <p class="status-body" id="statusBody">
+      This only takes a moment — please don't close this page.
+    </p>
+    <p class="status-order" id="statusOrder"></p>
+    <div class="status-actions" id="statusActions" style="display:none"></div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
+  </footer>
+
+  <script src="api.js"></script>
+  <script>
+    /* Viva redirects here after both successful and failed/cancelled
+       payments. We never infer the outcome from the redirect itself —
+       the only source of truth is our own backend, which independently
+       verified the payment via Viva's API in the webhook. So this page
+       just polls the order until the webhook has (or hasn't, yet) landed. */
+
+    var POLL_INTERVAL_MS = 2000;
+    var MAX_ATTEMPTS = 10;
+
+    function setState(iconSvg, spinning, title, body, actionsHtml) {
+      var icon = document.getElementById('statusIcon');
+      icon.classList.toggle('status-icon--spin', spinning);
+      icon.innerHTML = iconSvg;
+      document.getElementById('statusTitle').textContent = title;
+      document.getElementById('statusBody').textContent = body;
+      var actions = document.getElementById('statusActions');
+      if (actionsHtml) {
+        actions.innerHTML = actionsHtml;
+        actions.style.display = 'flex';
+      }
+    }
+
+    var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="' + 'currentColor' + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>';
+
+    async function pollOrder(orderId, attempt) {
+      var res = await apiFetch('/orders/' + orderId + '/');
+      if (res && res.ok) {
+        var order = await res.json();
+        if (order.status && order.status !== 'pending') {
+          document.getElementById('statusIcon').style.color = 'var(--green)';
+          document.getElementById('statusIcon').style.borderColor = 'var(--green)';
+          setState(
+            ICON_CHECK, false,
+            'Payment confirmed',
+            'Thank you — your order is confirmed and on its way to being packed.',
+            '<a class="btn btn--primary" href="account-orders.html">View My Orders</a>' +
+            '<a class="btn btn--secondary" href="collection.html">Continue Shopping</a>'
+          );
+          return;
+        }
+      }
+
+      if (attempt >= MAX_ATTEMPTS) {
+        setState(
+          ICON_CLOCK, false,
+          'Still confirming',
+          'Your payment is taking longer than usual to confirm. If you completed payment, it will appear shortly — otherwise you can try again.',
+          '<a class="btn btn--primary" href="account-orders.html">Check My Orders</a>' +
+          '<a class="btn btn--secondary" href="checkout.html">Try Payment Again</a>'
+        );
+        return;
+      }
+
+      setTimeout(function () { pollOrder(orderId, attempt + 1); }, POLL_INTERVAL_MS);
+    }
+
+    (function init() {
+      var orderId = sessionStorage.getItem('snr_pending_order_id');
+      if (!orderId) {
+        setState(
+          ICON_CLOCK, false,
+          'Payment status unknown',
+          'We couldn\'t find which order this was for. Check My Orders for the latest status.',
+          '<a class="btn btn--primary" href="account-orders.html">Check My Orders</a>'
+        );
+        return;
+      }
+      document.getElementById('statusOrder').textContent = 'Order #' + orderId;
+      sessionStorage.removeItem('snr_pending_order_id');
+      pollOrder(orderId, 1);
+    })();
+  </script>
+
+</body>
+</html>
