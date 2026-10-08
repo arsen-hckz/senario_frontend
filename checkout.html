@@ -639,15 +639,15 @@
               '<p class="summary-item__name">' + safeName + '</p>' +
               '<p class="summary-item__meta">' + (size ? 'Size: ' + safeSize + ' — ' : '') + 'Qty: ' + item.qty + '</p>' +
             '</div>' +
-            '<span class="summary-item__price">€' + Math.round(price * item.qty) + '</span>';
+            '<span class="summary-item__price">' + formatEuro(price * item.qty) + '</span>';
           container.insertBefore(div, totalsEl);
         });
 
         var total = parseFloat(cart.total || 0);
         var rows = totalsEl ? totalsEl.querySelectorAll('.summary-row') : [];
         if (rows.length >= 3) {
-          rows[0].lastElementChild.textContent = '€' + Math.round(total);
-          rows[2].lastElementChild.textContent = '€' + Math.round(total);
+          rows[0].lastElementChild.textContent = '' + formatEuro(total);
+          rows[2].lastElementChild.textContent = '' + formatEuro(total);
         }
       } catch (ex) {}
     }
@@ -656,17 +656,6 @@
        the created order id in memory so a failed/retried "start payment"
        call never creates a second order behind the customer's back. */
     var createdOrderId = null;
-
-    async function startVivaCheckout(orderId) {
-      var res = await apiFetch('/payments/checkout/' + orderId + '/', { method: 'POST' });
-      if (res && res.ok) {
-        var data = await res.json();
-        sessionStorage.setItem('snr_pending_order_id', String(orderId));
-        window.location.href = data.checkout_url;
-        return true;
-      }
-      return false;
-    }
 
     document.querySelector('.btn-place-order').addEventListener('click', async function() {
       if (!localStorage.getItem('snr_token')) {
@@ -678,9 +667,9 @@
       if (createdOrderId) {
         btn.textContent = 'Redirecting to payment...';
         btn.disabled = true;
-        var retried = await startVivaCheckout(createdOrderId);
-        if (!retried) {
-          alert('Could not reach the payment page. Please try again in a moment.');
+        var retryError = await snrStartPayment(createdOrderId);
+        if (retryError) {
+          alert(retryError);
           btn.textContent = 'Retry Payment';
           btn.disabled = false;
         }
@@ -725,9 +714,10 @@
           var order = await res.json();
           createdOrderId = order.id;
           btn.textContent = 'Redirecting to payment...';
-          var started = await startVivaCheckout(order.id);
-          if (!started) {
-            alert('Your order was placed, but we could not start payment. Click Retry Payment — your order is saved.');
+          var startError = await snrStartPayment(order.id);
+          if (startError) {
+            alert('Your order #' + order.id + ' is saved, but payment could not start: ' + startError +
+                  ' You can retry here or from My Orders.');
             btn.textContent = 'Retry Payment';
             btn.disabled = false;
           }

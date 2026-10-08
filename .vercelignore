@@ -1,0 +1,5 @@
+# Internal working files: kept in the repo, never served on the website.
+*.pdf
+*.txt
+*.py
+.claude

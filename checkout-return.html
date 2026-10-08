@@ -136,6 +136,16 @@
       var res = await apiFetch('/orders/' + orderId + '/');
       if (res && res.ok) {
         var order = await res.json();
+        if (order.status === 'cancelled') {
+          setState(
+            ICON_CLOCK, false,
+            'Order cancelled',
+            'This order was cancelled, so it can no longer be paid. If you were charged, we will refund you — contact us if you have any questions.',
+            '<a class="btn btn--primary" href="account-orders.html">View My Orders</a>' +
+            '<a class="btn btn--secondary" href="collection.html">Continue Shopping</a>'
+          );
+          return;
+        }
         if (order.status && order.status !== 'pending') {
           document.getElementById('statusIcon').style.color = 'var(--green)';
           document.getElementById('statusIcon').style.borderColor = 'var(--green)';
@@ -153,11 +163,21 @@
       if (attempt >= MAX_ATTEMPTS) {
         setState(
           ICON_CLOCK, false,
-          'Still confirming',
-          'Your payment is taking longer than usual to confirm. If you completed payment, it will appear shortly — otherwise you can try again.',
+          'Payment not confirmed yet',
+          'If you completed payment, it will show as confirmed in My Orders within a few minutes. If your card was declined or you cancelled, you can try again.',
           '<a class="btn btn--primary" href="account-orders.html">Check My Orders</a>' +
-          '<a class="btn btn--secondary" href="checkout.html">Try Payment Again</a>'
+          '<button class="btn btn--secondary" type="button" id="retryPayment">Try Payment Again</button>'
         );
+        document.getElementById('retryPayment').addEventListener('click', async function () {
+          this.disabled = true;
+          this.textContent = 'Redirecting...';
+          var error = await snrStartPayment(orderId);
+          if (error) {
+            alert(error);
+            this.disabled = false;
+            this.textContent = 'Try Payment Again';
+          }
+        });
         return;
       }
 

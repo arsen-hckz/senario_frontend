@@ -347,6 +347,19 @@
   <script>
     if (!localStorage.getItem('snr_token')) window.location.href = 'login.html';
 
+    /* An unpaid order (card declined, payment page closed) can be paid
+       from here — the cart was already emptied when the order was placed. */
+    async function payOrder(orderId, btn) {
+      btn.disabled = true;
+      btn.textContent = 'Redirecting...';
+      var error = await snrStartPayment(orderId);
+      if (error) {
+        alert(error);
+        btn.disabled = false;
+        btn.textContent = 'Complete Payment';
+      }
+    }
+
     function toggleOrder(header) {
       header.parentElement.classList.toggle('open');
     }
@@ -376,7 +389,7 @@
               '<div class="order-item__img"></div>' +
               '<div><div class="order-item__name">' + escHtml(item.product_name) + '</div>' +
               '<div class="order-item__meta">' + (item.size ? 'Size ' + escHtml(item.size) + ' &nbsp;·&nbsp; ' : '') + 'Qty ' + item.qty + '</div></div>' +
-              '<div class="order-item__price">€' + Math.round(parseFloat(item.price)) + '</div>' +
+              '<div class="order-item__price">' + formatEuro(parseFloat(item.price)) + '</div>' +
               '</div>';
           }).join('');
 
@@ -390,7 +403,10 @@
               '<div class="order-chevron">▾</div>' +
             '</div>' +
             '<div class="order-card__body">' + itemsHTML +
-              '<div class="order-total">Total &nbsp;<strong>€' + Math.round(total) + '</strong></div>' +
+              '<div class="order-total">Total &nbsp;<strong>' + formatEuro(total) + '</strong></div>' +
+              (order.status === 'pending'
+                ? '<div style="margin-top:16px;text-align:right;"><button class="btn-ghost" type="button" onclick="payOrder(' + order.id + ', this)">Complete Payment</button></div>'
+                : '') +
             '</div>';
           list.appendChild(card);
         });

@@ -585,8 +585,8 @@
             : '<span class="product-card__name">' + safeName + '</span>';
 
           var priceHtml = onSale
-            ? '<div class="product-card__price-wrap"><span class="product-card__price--original">€' + Math.round(origPrice) + '</span><span class="product-card__price--sale">€' + Math.round(effPrice) + '</span></div>'
-            : '<span class="product-card__price">€' + Math.round(effPrice) + '</span>';
+            ? '<div class="product-card__price-wrap"><span class="product-card__price--original">' + formatEuro(origPrice) + '</span><span class="product-card__price--sale">' + formatEuro(effPrice) + '</span></div>'
+            : '<span class="product-card__price">' + formatEuro(effPrice) + '</span>';
 
           var captionHtml =
             '<div class="post-card__caption">' +
