@@ -9,6 +9,13 @@ function escHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+/* Prices as charged: €25 for whole amounts, €24.50 otherwise — never rounded,
+   so what the customer sees always matches what Viva charges. */
+function formatEuro(value) {
+  var n = parseFloat(value || 0);
+  return '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2));
+}
+
 async function apiFetch(path, opts) {
   opts = opts || {};
   var url = API_BASE + path;
@@ -20,29 +27,48 @@ async function apiFetch(path, opts) {
   var res = await fetch(url, Object.assign({}, opts, {headers: headers}));
 
   if (res.status === 401) {
-    var refresh = localStorage.getItem('snr_refresh');
-    if (refresh) {
+    var access = await snrRefreshAccessToken();
+    if (!access) {
+      snrLogout(false);
+      return null;
+    }
+    headers['Authorization'] = 'Bearer ' + access;
+    res = await fetch(url, Object.assign({}, opts, {headers: headers}));
+  }
+
+  return res;
+}
+
+/* The backend rotates refresh tokens: every refresh returns a new one and
+   blacklists the old. So the new one must be saved, and parallel 401s must
+   share a single refresh call — otherwise the second call presents the
+   just-blacklisted token and logs the customer out. */
+var snrRefreshInFlight = null;
+
+function snrRefreshAccessToken() {
+  if (snrRefreshInFlight) return snrRefreshInFlight;
+  var refresh = localStorage.getItem('snr_refresh');
+  if (!refresh) return Promise.resolve(null);
+
+  snrRefreshInFlight = (async function() {
+    try {
       var rr = await fetch(API_BASE + '/auth/refresh/', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({refresh: refresh})
       });
-      if (rr.ok) {
-        var data = await rr.json();
-        localStorage.setItem('snr_token', data.access);
-        headers['Authorization'] = 'Bearer ' + data.access;
-        res = await fetch(url, Object.assign({}, opts, {headers: headers}));
-      } else {
-        snrLogout(false);
-        return null;
-      }
-    } else {
-      snrLogout(false);
+      if (!rr.ok) return null;
+      var data = await rr.json();
+      localStorage.setItem('snr_token', data.access);
+      if (data.refresh) localStorage.setItem('snr_refresh', data.refresh);
+      return data.access;
+    } catch (ex) {
       return null;
+    } finally {
+      snrRefreshInFlight = null;
     }
-  }
-
-  return res;
+  })();
+  return snrRefreshInFlight;
 }
 
 function snrLogout(redirect) {
