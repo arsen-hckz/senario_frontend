@@ -39,6 +39,23 @@ async function apiFetch(path, opts) {
   return res;
 }
 
+/* Start (or retry) payment for one of the customer's own orders: asks the
+   backend for a Viva checkout and redirects there. Returns null when the
+   redirect is under way, or a message to show when it couldn't start
+   (already paid, cancelled, an item sold out, Viva unreachable). */
+async function snrStartPayment(orderId) {
+  var res = await apiFetch('/payments/checkout/' + orderId + '/', {method: 'POST'});
+  if (res && res.ok) {
+    var data = await res.json();
+    sessionStorage.setItem('snr_pending_order_id', String(orderId));
+    window.location.href = data.checkout_url;
+    return null;
+  }
+  var detail = null;
+  try { detail = res ? (await res.json()).detail : null; } catch (ex) {}
+  return detail || 'Could not reach the payment page. Please try again in a moment.';
+}
+
 /* The backend rotates refresh tokens: every refresh returns a new one and
    blacklists the old. So the new one must be saved, and parallel 401s must
    share a single refresh call — otherwise the second call presents the

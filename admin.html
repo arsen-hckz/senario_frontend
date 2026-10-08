@@ -872,7 +872,7 @@
         var stats = [
           { label:'Products',   value: products.length },
           { label:'Orders',     value: orders.length },
-          { label:'Revenue',    value: '€'+Math.round(revenue) },
+          { label:'Revenue',    value: '' + formatEuro(revenue) },
           { label:'Units Sold', value: totalUnits },
           { label:'On Sale',    value: onSale }
         ];
@@ -900,7 +900,7 @@
           topHtml += '<p class="analytics-empty">No sales data yet.</p>';
         } else {
           topItems.slice(0,6).forEach(function(item, i) {
-            topHtml += '<div class="top-item"><div style="display:flex;align-items:center;"><span class="top-item__rank">'+(i+1)+'.</span><span class="top-item__name">'+escHtml(item.name)+'</span></div><div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; €'+Math.round(item.revenue)+'</div></div>';
+            topHtml += '<div class="top-item"><div style="display:flex;align-items:center;"><span class="top-item__rank">'+(i+1)+'.</span><span class="top-item__name">'+escHtml(item.name)+'</span></div><div class="top-item__stats">'+item.qty+' sold &nbsp;·&nbsp; ' + formatEuro(item.revenue)+'</div></div>';
           });
         }
         topHtml += '</div>';
@@ -936,7 +936,7 @@
         orders.slice(0,5).forEach(function(order){
           var date = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
           var tr = document.createElement('tr');
-          tr.innerHTML = '<td>#'+order.id+'</td><td>'+date+'</td><td>'+(order.items||[]).length+'</td><td>€'+Math.round(parseFloat(order.total||0))+'</td><td><span class="status-badge status-badge--'+order.status+'">'+order.status+'</span></td>';
+          tr.innerHTML = '<td>#'+order.id+'</td><td>'+date+'</td><td>'+(order.items||[]).length+'</td><td>' + formatEuro(parseFloat(order.total||0))+'</td><td><span class="status-badge status-badge--'+order.status+'">'+order.status+'</span></td>';
           tbody.appendChild(tr);
         });
       } catch (ex) {
@@ -963,8 +963,8 @@
           var stock  = p.stock || 0;
           var onSale = p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price);
           var priceCell = onSale
-            ? '<span style="text-decoration:line-through;color:var(--gray);">€'+Math.round(parseFloat(p.price))+'</span> <span style="color:var(--orange);">€'+Math.round(parseFloat(p.sale_price))+'</span>'
-            : '€'+Math.round(parseFloat(p.price));
+            ? '<span style="text-decoration:line-through;color:var(--gray);">' + formatEuro(parseFloat(p.price))+'</span> <span style="color:var(--orange);">' + formatEuro(parseFloat(p.sale_price))+'</span>'
+            : '' + formatEuro(parseFloat(p.price));
           var safeName = escHtml(p.name);
           var nameCell = safeName + (onSale ? '<span class="sale-badge">Sale</span>' : '');
           var tr = document.createElement('tr');
@@ -1000,13 +1000,13 @@
         }
         orders.forEach(function(order) {
           var date  = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
-          var total = Math.round(parseFloat(order.total||0));
+          var total = formatEuro(order.total);
           var tr    = document.createElement('tr');
           tr.innerHTML =
             '<td>#'+order.id+'</td>'+
             '<td>'+date+'</td>'+
             '<td>'+(order.items||[]).length+'</td>'+
-            '<td>€'+total+'</td>'+
+            '<td>'+total+'</td>'+
             '<td>'+
               '<select class="order-status-select" onchange="updateOrderStatus('+order.id+',this.value)">'+
                 ['pending','confirmed','shipped','delivered','cancelled'].map(function(s){

@@ -442,7 +442,7 @@
           '<div class="cart-item__details">' +
             '<span class="cart-item__name">' + safeName + '</span>' +
             (size ? '<span class="cart-item__meta">Size: ' + safeSize + '</span>' : '') +
-            '<span class="cart-item__price">€' + Math.round(price) + '</span>' +
+            '<span class="cart-item__price">' + formatEuro(price) + '</span>' +
           '</div>' +
           '<div class="cart-item__right">' +
             '<div class="qty-control">' +
@@ -456,8 +456,8 @@
       });
 
       var total = parseFloat(data.total || 0);
-      document.getElementById('subtotal').textContent = '€' + Math.round(total);
-      document.getElementById('total').textContent    = '€' + Math.round(total);
+      document.getElementById('subtotal').textContent = '' + formatEuro(total);
+      document.getElementById('total').textContent    = '' + formatEuro(total);
     }
 
     async function loadCart() {

@@ -555,7 +555,7 @@
 
         document.getElementById('bc-name').textContent    = p.name;
         document.getElementById('prod-name').textContent  = p.name;
-        document.getElementById('prod-price').textContent = '€' + Math.round(parseFloat(p.effective_price || p.price));
+        document.getElementById('prod-price').textContent = '' + formatEuro(parseFloat(p.effective_price || p.price));
         document.getElementById('prod-img').src           = p.image || 'test images/TS01556BLK.jpg';
         document.getElementById('prod-img').alt           = p.name;
         document.getElementById('prod-desc').textContent  = p.description || '';
