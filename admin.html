@@ -345,6 +345,36 @@
     .form-field input:focus,
     .form-field textarea:focus,
     .form-field select:focus { border-bottom-color: var(--black); }
+
+    /* product photo gallery editor */
+    .gallery-edit { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .gallery-edit:empty { display: none; }
+    .gallery-edit__tile {
+      position: relative;
+      width: 96px; height: 96px;
+      border: 1px solid var(--border);
+      background: #fafaf8;
+    }
+    .gallery-edit__tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-edit__cover {
+      position: absolute; top: 4px; left: 4px;
+      background: var(--black); color: var(--white);
+      font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 2px 5px;
+    }
+    .gallery-edit__bar {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      display: flex;
+      background: rgba(13,13,13,0.75);
+    }
+    .gallery-edit__bar button {
+      flex: 1;
+      border: none; background: transparent; color: var(--white);
+      font-size: 13px; padding: 3px 0; cursor: pointer;
+    }
+    .gallery-edit__bar button:hover:not(:disabled) { background: var(--orange); }
+    .gallery-edit__bar button:last-child:hover { background: #c0392b; }
+    .gallery-edit__bar button:disabled { opacity: 0.3; cursor: default; }
     .modal-actions {
       display: flex;
       gap: 12px;
@@ -746,9 +776,9 @@
           <input type="text" id="fSizes" placeholder="XS, S, M, L, XL">
         </div>
         <div class="form-field span2">
-          <label>Product Image</label>
-          <input type="file" id="fImage" accept="image/*" onchange="previewImage(this)">
-          <img id="fImagePreview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:4px;object-fit:cover;">
+          <label>Product Photos &mdash; first one is the cover (max 12)</label>
+          <input type="file" id="fImage" accept="image/*" multiple onchange="addGalleryFiles(this)">
+          <div class="gallery-edit" id="galleryEdit"></div>
         </div>
         <div class="form-field span2">
           <label>Description</label>
@@ -1047,33 +1077,95 @@
             document.getElementById('fTag').value       = '';
             document.getElementById('fSizes').value     = (p.variants||[]).map(function(v){ return v.size; }).join(',');
             document.getElementById('fDesc').value      = p.description || '';
-            if (p.image) {
-              var preview = document.getElementById('fImagePreview');
-              preview.src = p.image;
-              preview.style.display = 'block';
-            }
+            resetGallery(p.images);
           }
         } catch (ex) {}
       } else {
         title.textContent = 'Add Product';
         ['fName','fPrice','fQty','fSalePrice','fTag','fSizes','fDesc'].forEach(function(id){ document.getElementById(id).value=''; });
         document.getElementById('fQty').value = '0';
+        resetGallery([]);
       }
       document.getElementById('productModal').classList.add('open');
     }
 
-    function previewImage(input) {
-      var preview = document.getElementById('fImagePreview');
-      if (input.files && input.files[0]) {
-        preview.src = URL.createObjectURL(input.files[0]);
-        preview.style.display = 'block';
+    /* Product photo gallery being edited in the modal. Each entry is either
+       an existing photo {id, url} or a newly picked file {file, url}. */
+    var galleryItems = [];
+    var removedImageIds = [];
+    var MAX_PRODUCT_PHOTOS = 12;
+
+    function resetGallery(images) {
+      galleryItems = (images || []).map(function(img) { return {id: img.id, url: img.image}; });
+      removedImageIds = [];
+      renderGallery();
+    }
+
+    function addGalleryFiles(input) {
+      Array.prototype.forEach.call(input.files || [], function(file) {
+        if (galleryItems.length >= MAX_PRODUCT_PHOTOS) return;
+        galleryItems.push({file: file, url: URL.createObjectURL(file)});
+      });
+      if ((input.files || []).length && galleryItems.length >= MAX_PRODUCT_PHOTOS) {
+        alert('A product can have at most ' + MAX_PRODUCT_PHOTOS + ' photos.');
       }
+      input.value = '';
+      renderGallery();
+    }
+
+    function moveGalleryItem(i, delta) {
+      var j = i + delta;
+      if (j < 0 || j >= galleryItems.length) return;
+      var tmp = galleryItems[i]; galleryItems[i] = galleryItems[j]; galleryItems[j] = tmp;
+      renderGallery();
+    }
+
+    function removeGalleryItem(i) {
+      var item = galleryItems.splice(i, 1)[0];
+      if (item.id) removedImageIds.push(item.id);
+      if (item.file) URL.revokeObjectURL(item.url);
+      renderGallery();
+    }
+
+    function renderGallery() {
+      var wrap = document.getElementById('galleryEdit');
+      wrap.innerHTML = '';
+      galleryItems.forEach(function(item, i) {
+        var tile = document.createElement('div');
+        tile.className = 'gallery-edit__tile';
+        var img = document.createElement('img');
+        img.src = item.url;
+        img.alt = '';
+        tile.appendChild(img);
+        if (i === 0) {
+          var badge = document.createElement('span');
+          badge.className = 'gallery-edit__cover';
+          badge.textContent = 'Cover';
+          tile.appendChild(badge);
+        }
+        var bar = document.createElement('div');
+        bar.className = 'gallery-edit__bar';
+        [['\u2190', 'Move left', function() { moveGalleryItem(i, -1); }, i === 0],
+         ['\u2192', 'Move right', function() { moveGalleryItem(i, 1); }, i === galleryItems.length - 1],
+         ['\u00d7', 'Remove', function() { removeGalleryItem(i); }, false]
+        ].forEach(function(cfg) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = cfg[0];
+          b.title = cfg[1];
+          b.disabled = cfg[3];
+          b.addEventListener('click', cfg[2]);
+          bar.appendChild(b);
+        });
+        tile.appendChild(bar);
+        wrap.appendChild(tile);
+      });
     }
 
     function closeModal() {
       document.getElementById('productModal').classList.remove('open');
-      document.getElementById('fImagePreview').style.display = 'none';
-      document.getElementById('fImagePreview').src = '';
+      galleryItems.forEach(function(item) { if (item.file) URL.revokeObjectURL(item.url); });
+      resetGallery([]);
       editingProductId = null;
     }
 
@@ -1087,7 +1179,6 @@
         var salePrice = (!isNaN(saleRaw) && saleRaw > 0 && saleRaw < price) ? saleRaw : null;
         var stock     = parseInt(document.getElementById('fQty').value) || 0;
         var desc      = document.getElementById('fDesc').value.trim();
-        var imageFile = document.getElementById('fImage').files[0];
 
         var payload = new FormData();
         payload.append('name', name);
@@ -1096,7 +1187,18 @@
         payload.append('description', desc);
         payload.append('is_active', 'true');
         if (salePrice) payload.append('sale_price', salePrice);
-        if (imageFile) payload.append('image', imageFile);
+        // Gallery: the full order as shown, where new files are "new-<n>" in
+        // the order they are uploaded, plus any removed existing photos.
+        var newCount = 0;
+        galleryItems.forEach(function(item) {
+          if (item.id) {
+            payload.append('image_order', item.id);
+          } else {
+            payload.append('image_order', 'new-' + newCount++);
+            payload.append('uploaded_images', item.file);
+          }
+        });
+        removedImageIds.forEach(function(id) { payload.append('remove_image_ids', id); });
 
         var res;
         if (editingProductId) {
