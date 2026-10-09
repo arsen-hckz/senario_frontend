@@ -185,6 +185,61 @@
       }
     }
 
+    /* gallery controls: only shown when a product has more than one photo */
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px; height: 40px;
+      border: none;
+      background: rgba(255,255,255,0.85);
+      color: var(--black);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .gallery-nav:hover { background: var(--black); color: var(--white); }
+    .gallery-nav--prev { left: 16px; }
+    .gallery-nav--next { right: 16px; }
+
+    /* Desktop: the panel is a full viewport tall and starts below the header,
+       so its bottom edge is off-screen until you scroll; keep thumbs on top. */
+    .gallery-thumbs {
+      position: absolute;
+      left: 0; right: 0; top: 16px;
+      display: flex; justify-content: center; gap: 8px;
+      padding: 0 16px;
+      overflow-x: auto;
+    }
+    .gallery-thumbs button {
+      flex: 0 0 auto;
+      width: 52px; height: 52px;
+      padding: 0;
+      border: 1px solid transparent;
+      background: var(--white);
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+    .gallery-thumbs button.active,
+    .gallery-thumbs button:hover { opacity: 1; border-color: var(--black); }
+    .product-images.has-thumbs > img { padding-top: 84px; }
+    .product-images .gallery-thumbs img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      padding: 0;
+    }
+
+    @media (max-width: 768px) {
+      .gallery-nav { width: 32px; height: 32px; font-size: 15px; }
+      .gallery-nav--prev { left: 8px; }
+      .gallery-nav--next { right: 8px; }
+      .gallery-thumbs { top: auto; bottom: 8px; }
+      .product-images.has-thumbs > img { padding-top: 40px; padding-bottom: 56px; }
+      .gallery-thumbs button { width: 40px; height: 40px; }
+    }
+
     /* ─── DETAILS SIDE ───────────────────────────── */
     .product-details {
       padding: 56px 56px 80px;
@@ -479,8 +534,11 @@
 
   <!-- PRODUCT VIEW -->
   <div class="product-view">
-    <div class="product-images">
+    <div class="product-images" id="gallery">
       <img id="prod-img" src="" alt="">
+      <button type="button" class="gallery-nav gallery-nav--prev" id="galleryPrev" aria-label="Previous photo" hidden>&larr;</button>
+      <button type="button" class="gallery-nav gallery-nav--next" id="galleryNext" aria-label="Next photo" hidden>&rarr;</button>
+      <div class="gallery-thumbs" id="galleryThumbs" hidden></div>
     </div>
     <div class="product-details">
       <p class="product-details__eyebrow">Σenario / SS 2025</p>
@@ -543,6 +601,63 @@
 
     var slug = new URLSearchParams(window.location.search).get('slug');
 
+    function initGallery(p) {
+      var urls = (p.images || []).map(function(img) { return img.image; });
+      if (!urls.length) urls = [p.image || 'test images/TS01556BLK.jpg'];
+
+      var main   = document.getElementById('prod-img');
+      var prev   = document.getElementById('galleryPrev');
+      var next   = document.getElementById('galleryNext');
+      var thumbs = document.getElementById('galleryThumbs');
+      var current = 0;
+
+      function show(i) {
+        current = (i + urls.length) % urls.length;
+        main.src = urls[current];
+        main.alt = p.name + (urls.length > 1 ? ' — photo ' + (current + 1) + ' of ' + urls.length : '');
+        Array.prototype.forEach.call(thumbs.children, function(t, j) {
+          t.classList.toggle('active', j === current);
+        });
+      }
+
+      if (urls.length > 1) {
+        urls.forEach(function(url, i) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.setAttribute('aria-label', 'Show photo ' + (i + 1));
+          var img = document.createElement('img');
+          img.src = url;
+          img.alt = '';
+          img.loading = 'lazy';
+          b.appendChild(img);
+          b.addEventListener('click', function() { show(i); });
+          thumbs.appendChild(b);
+        });
+        prev.hidden = next.hidden = thumbs.hidden = false;
+        document.getElementById('gallery').classList.add('has-thumbs');
+        prev.addEventListener('click', function() { show(current - 1); });
+        next.addEventListener('click', function() { show(current + 1); });
+
+        document.addEventListener('keydown', function(e) {
+          if (e.target.closest && e.target.closest('input, textarea, select')) return;
+          if (e.key === 'ArrowLeft')  show(current - 1);
+          if (e.key === 'ArrowRight') show(current + 1);
+        });
+
+        // Swipe on phones
+        var startX = null;
+        var gallery = document.getElementById('gallery');
+        gallery.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, {passive: true});
+        gallery.addEventListener('touchend', function(e) {
+          if (startX === null) return;
+          var dx = e.changedTouches[0].clientX - startX;
+          if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+          startX = null;
+        });
+      }
+      show(0);
+    }
+
     async function loadProduct() {
       if (!slug) {
         document.getElementById('prod-name').textContent = 'Product not found.';
@@ -556,8 +671,7 @@
         document.getElementById('bc-name').textContent    = p.name;
         document.getElementById('prod-name').textContent  = p.name;
         document.getElementById('prod-price').textContent = '' + formatEuro(parseFloat(p.effective_price || p.price));
-        document.getElementById('prod-img').src           = p.image || 'test images/TS01556BLK.jpg';
-        document.getElementById('prod-img').alt           = p.name;
+        initGallery(p);
         document.getElementById('prod-desc').textContent  = p.description || '';
         document.title = p.name + ' — Σenario';
 
