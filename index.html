@@ -384,6 +384,7 @@
 
     /* ─── MOBILE SLIDES (4 photos + shared caption) ── */
     .mood-slides { display: none; }
+    .mood-dots { display: none; }
 
     @media (max-width: 768px) {
       .grid-section { padding: 0 0 48px; }
@@ -475,6 +476,28 @@
       }
       .mood-slide__caption--cell .mood-slide__body {
         color: rgba(13, 13, 13, 0.7);
+      }
+
+      /* page dots under the slides, like a multi-photo Instagram post */
+      .mood-dots:not(:empty) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        padding: 14px 16px 0;
+      }
+      .mood-dots button {
+        width: 6px; height: 6px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);  /* sits on the black page background */
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+      }
+      .mood-dots button.active {
+        background: var(--orange);
+        transform: scale(1.25);
       }
     }
 
@@ -936,6 +959,7 @@
 
     <!-- MOBILE: 4-photo slides with a shared caption, swipeable -->
     <div class="mood-slides" id="moodSlides"></div>
+    <div class="mood-dots" id="moodDots" role="tablist" aria-label="Moodboard pages"></div>
   </section>
 
   <div class="divider divider--orange" style="margin-top:0; margin-bottom:0;">
@@ -1306,6 +1330,48 @@
         html += '<div class="mood-slide">' + slideInner + '</div>';
       }
       el.innerHTML = html;
+      renderMoodDots();
+    }
+
+    function renderMoodDots() {
+      var slides = document.getElementById('moodSlides');
+      var dots = document.getElementById('moodDots');
+      var count = slides.children.length;
+      dots.innerHTML = '';
+      if (count < 2) return;
+
+      for (var i = 0; i < count; i++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-label', 'Page ' + (i + 1) + ' of ' + count);
+        b.addEventListener('click', (function (index) {
+          return function () {
+            slides.scrollTo({ left: index * slides.clientWidth, behavior: 'smooth' });
+          };
+        })(i));
+        dots.appendChild(b);
+      }
+
+      function update() {
+        var current = Math.round(slides.scrollLeft / Math.max(slides.clientWidth, 1));
+        Array.prototype.forEach.call(dots.children, function (d, j) {
+          d.classList.toggle('active', j === current);
+          d.setAttribute('aria-selected', j === current ? 'true' : 'false');
+        });
+      }
+
+      if (!slides.dataset.dotsWired) {
+        var ticking = false;
+        slides.addEventListener('scroll', function () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () { ticking = false; update(); });
+        }, { passive: true });
+        window.addEventListener('resize', update);
+        slides.dataset.dotsWired = '1';
+      }
+      update();
     }
 
     (async function initMoodboard() {
