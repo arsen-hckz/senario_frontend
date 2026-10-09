@@ -276,7 +276,7 @@
           <button type="button" class="pass-toggle" onclick="togglePass('loginPass', this)">Show</button>
         </div>
         <div class="field__row">
-          <a class="field__link" href="#">Forgot password?</a>
+          <a class="field__link" href="forgot-password.html" id="forgotLink">Forgot password?</a>
         </div>
         <p id="loginErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
         <p id="loginResend" style="font-size:11px;margin-top:4px;display:none;">
@@ -450,6 +450,12 @@
     input.type = show ? 'text' : 'password';
     btn.textContent = show ? 'Hide' : 'Show';
   }
+
+  // Carry over whatever was typed in the email field to the reset page.
+  document.getElementById('forgotLink').addEventListener('click', function() {
+    var email = document.getElementById('loginEmail').value.trim();
+    this.href = 'forgot-password.html' + (email ? '?email=' + encodeURIComponent(email) : '');
+  });
 
   if (new URLSearchParams(location.search).get('tab') === 'register') {
     switchTab('register');
