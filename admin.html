@@ -1287,7 +1287,7 @@
                  'ondragleave="mbDragLeave(event)" ' +
                  'ondrop="mbDrop(event,\'' + p.id + '\')" ' +
                  'ondragend="mbDragEnd(event)">' +
-                 '<img src="' + escHtml(p.src) + '" alt="">' +
+                 '<img src="' + escHtml(p.thumb || p.src) + '" alt="">' +
                  '<div class="mb-micro__cap"><span>' + escHtml(p.title) + '</span></div>' +
                  '<div class="mb-micro__order">' + (i + 1) + '</div>' +
                  '<div class="mb-micro__actions">' +

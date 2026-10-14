@@ -1162,7 +1162,7 @@
           e.stopPropagation();
           var cell = img.closest('.grid-cell');
           var caption = cell ? (cell.dataset.caption || '') : '';
-          openLightbox(img.src, caption);
+          openLightbox(img.dataset.full || img.src, caption);
         });
       });
     };
@@ -1282,6 +1282,13 @@
 
   <!-- MOODBOARD RENDER — builds the grid + mobile slides from moodboard-data.js -->
   <script>
+    /* Grid tiles load the small version (`thumb`, ~1000px); the full photo
+       (`src`) only loads when one is opened in the lightbox. */
+    function moodImg(p) {
+      return '<img src="' + escHtml(p.thumb || p.src) + '" data-full="' + escHtml(p.src) + '"' +
+             ' alt="Σenario" loading="lazy" decoding="async">';
+    }
+
     function renderDesktopGrid(photos) {
       var el = document.getElementById('photoGrid');
       if (!photos.length) {
@@ -1294,7 +1301,7 @@
                    '<span class="grid-caption__title">' + escHtml(p.title) + '</span>' +
                    '<span class="grid-caption__body">' + escHtml(p.body).replace(/\n/g, '<br>') + '</span>' +
                  '</div>' +
-                 '<img src="' + escHtml(p.src) + '" alt="Σenario" loading="lazy" decoding="async">' +
+                 moodImg(p) +
                '</div>';
       }).join('');
     }
@@ -1316,7 +1323,7 @@
           '</div>';
 
         var photoDivs = group.map(function (p) {
-          return '<div class="mood-slide__photo"><img src="' + escHtml(p.src) + '" alt="Σenario" loading="lazy" decoding="async"></div>';
+          return '<div class="mood-slide__photo">' + moodImg(p) + '</div>';
         });
 
         var slideInner;
