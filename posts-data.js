@@ -6,12 +6,11 @@
 
    POSTS_API_ENABLED toggles the persistence backend, same pattern as
    moodboard-data.js:
-   - false (default): posts live in localStorage. Works today with no
-     backend changes, but only the browser that made the edit sees them.
-   - true: calls a REST API on snr.arsenidis.dev, mirroring the public/admin
-     split already used for products and the moodboard. That endpoint
-     doesn't exist yet — see backend-posts-prompt.txt for the contract.
-     Flip this flag once it does; no other code here needs to change.
+   - true (default, live since the backend endpoints shipped): calls a REST
+     API on snr.arsenidis.dev, mirroring the public/admin split already used
+     for products and the moodboard. Posts are visible to every visitor.
+   - false: posts live in localStorage — only the browser that made the
+     edit sees them. Kept only as an offline fallback.
 
    Backend contract (mirrors products/moodboard public/admin split):
      GET    /posts/                  -> [{ id, product_slug, headline, note, order }, ...]  (public, no auth)
@@ -20,7 +19,7 @@
      DELETE /posts/admin/:id/                                                                 (staff only)
      POST   /posts/admin/reorder/    <- JSON { order: [id, id, id, ...] }                     (staff only) */
 
-var POSTS_API_ENABLED = false;
+var POSTS_API_ENABLED = true;
 var POSTS_STORAGE_KEY = 'snr_sale_posts';
 
 function spLoadLocal() {

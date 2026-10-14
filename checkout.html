@@ -608,6 +608,17 @@
       document.getElementById('authGate').style.display = 'none';
       document.getElementById('checkoutLayout').style.display = 'grid';
       loadCartSummary();
+      prefillEmail();
+    }
+
+    /* Order confirmations go to the account email unless another is typed. */
+    async function prefillEmail() {
+      var input = document.querySelector('.checkout-form input[type="email"]');
+      if (!input || input.value) return;
+      try {
+        var res = await apiFetch('/auth/profile/');
+        if (res && res.ok && !input.value) input.value = (await res.json()).email || '';
+      } catch (ex) {}
     }
 
     if (localStorage.getItem('snr_token')) {
@@ -688,11 +699,13 @@
       var address    = vals['Address']    || '';
       var city       = vals['City']       || '';
       var postal     = vals['Postal Code']|| '';
+      var email      = vals['Email']      || '';
+      var phone      = vals['Phone']      || '';
       var countryEl  = document.querySelector('.checkout-form select');
       var country    = countryEl ? countryEl.value : 'Greece';
 
-      if (!firstName || !address || !city || !postal) {
-        alert('Please fill in all required shipping fields.');
+      if (!firstName || !phone || !address || !city || !postal) {
+        alert('Please fill in your name, phone and shipping address.');
         return;
       }
 
@@ -704,6 +717,8 @@
           method: 'POST',
           body: JSON.stringify({
             full_name:   firstName + ' ' + lastName,
+            email:       email,
+            phone:       phone,
             address:     address,
             city:        city,
             country:     country,

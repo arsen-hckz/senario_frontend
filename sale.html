@@ -577,6 +577,9 @@
 
           var atcBtn = oos
             ? '<button class="product-card__atc oos" onclick="event.stopPropagation()">Out of Stock</button>'
+            : (p.variants && p.variants.length)
+            /* Sized products need a size, which only the product page asks for. */
+            ? '<button class="product-card__atc" data-slug="' + escHtml(p.slug) + '" onclick="chooseSize(event,this)">Choose Size</button>'
             : '<button class="product-card__atc" onclick="addToCart(event,this,' + p.id + ')">Add to Cart</button>';
 
           var safeName = escHtml(p.name);
@@ -624,6 +627,12 @@
       } catch (ex) {
         grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:60px 0;font-family:var(--ff-body);">Failed to load sale posts. Make sure the server is running.</p>';
       }
+    }
+
+    function chooseSize(e, btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = 'product.html?slug=' + encodeURIComponent(btn.dataset.slug);
     }
 
     async function addToCart(e, btn, productId) {

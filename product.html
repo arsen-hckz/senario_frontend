@@ -716,6 +716,12 @@
           var sel = sizeGrid.querySelector('.size-btn.selected');
           var variantId = sel ? sel.dataset.variantId : null;
           var self = this;
+          if (variants.length && !variantId) {
+            self.textContent = 'Choose a size';
+            clearTimeout(self._t);
+            self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2000);
+            return;
+          }
           self.textContent = '...';
           self.disabled = true;
           try {
@@ -735,8 +741,13 @@
                 self.disabled = false;
               }, 2000);
             } else {
-              self.textContent = 'Add to Cart';
+              // e.g. "Only 2 left in stock." Shown on the button briefly.
+              var detail = null;
+              try { detail = r ? (await r.json()).detail : null; } catch (ex) {}
+              self.textContent = detail || 'Add to Cart';
               self.disabled = false;
+              clearTimeout(self._t);
+              if (detail) self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2500);
             }
           } catch (ex) {
             self.textContent = 'Add to Cart';

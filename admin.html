@@ -235,6 +235,8 @@
       vertical-align: middle;
     }
     .data-table tr:last-child td { border-bottom: none; }
+    .data-table td.order-cell { line-height: 1.7; text-transform: none; letter-spacing: 0.03em; }
+    .data-table td.order-cell a { color: inherit; }
     .data-table tr:hover td { background: #fafafa; }
 
     .product-thumb {
@@ -710,6 +712,8 @@
             <tr>
               <th>Order ID</th>
               <th>Date</th>
+              <th>Customer</th>
+              <th>Ship To</th>
               <th>Items</th>
               <th>Total</th>
               <th>Status</th>
@@ -1019,13 +1023,13 @@
     /* ALL ORDERS */
     async function renderAllOrders() {
       var tbody = document.getElementById('allOrdersBody');
-      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
       try {
         var res = await apiFetch('/orders/admin/');
         var orders = res && res.ok ? await res.json() : [];
         tbody.innerHTML = '';
         if (!orders.length) {
-          tbody.innerHTML = '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">No orders yet.</td></tr>';
           return;
         }
         orders.forEach(function(order) {
@@ -1035,7 +1039,14 @@
           tr.innerHTML =
             '<td>#'+order.id+'</td>'+
             '<td>'+date+'</td>'+
-            '<td>'+(order.items||[]).length+'</td>'+
+            '<td class="order-cell">'+escHtml(order.full_name)+
+              (order.email ? '<br><a href="mailto:'+escHtml(order.email)+'">'+escHtml(order.email)+'</a>' : '')+
+              (order.phone ? '<br><a href="tel:'+escHtml(order.phone.replace(/[^+0-9]/g, ''))+'">'+escHtml(order.phone)+'</a>' : '')+
+            '</td>'+
+            '<td class="order-cell">'+escHtml(order.address)+'<br>'+escHtml(order.postal_code)+' '+escHtml(order.city)+'<br>'+escHtml(order.country)+'</td>'+
+            '<td class="order-cell">'+(order.items||[]).map(function(item) {
+              return escHtml(item.qty+'× '+item.product_name+(item.size ? ' ('+item.size+')' : ''));
+            }).join('<br>')+'</td>'+
             '<td>'+total+'</td>'+
             '<td>'+
               '<select class="order-status-select" onchange="updateOrderStatus('+order.id+',this.value)">'+

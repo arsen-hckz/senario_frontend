@@ -348,6 +348,14 @@
     document.getElementById('panelRegister').style.display = isLogin ? 'none'  : 'block';
   }
 
+  /* Where to go after signing in. Only a page of this site, like
+     "product.html?slug=tee": a link with ?next=javascript:... or
+     ?next=https://evil.example would otherwise run code here, with the
+     fresh tokens in localStorage, or send the customer off-site. */
+  function safeNext(next) {
+    return /^[A-Za-z0-9_-]+\.html(\?[^#\s]*)?$/.test(next || '') ? next : 'index.html';
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
     var email  = document.getElementById('loginEmail').value.trim();
@@ -382,8 +390,7 @@
         if (user.is_staff) localStorage.setItem('snr_is_staff', '1');
         else localStorage.removeItem('snr_is_staff');
       }
-      var next = new URLSearchParams(location.search).get('next') || 'index.html';
-      window.location.href = next;
+      window.location.href = safeNext(new URLSearchParams(location.search).get('next'));
     } catch (ex) {
       err.textContent = 'Network error. Please try again.';
       err.style.display = 'block';
