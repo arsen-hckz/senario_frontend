@@ -1465,7 +1465,9 @@
 
       var grid = document.getElementById('postGrid');
       grid.innerHTML = '<p style="color:var(--gray);font-size:11px;">Loading...</p>';
-      var posts = await hydrateSalePosts(await getSalePosts());
+      var imported = await importLocalSalePosts();
+      if (imported) alert(imported + ' sale post(s) saved only in this browser were uploaded — every visitor sees them now.');
+      var posts = await hydrateSalePostsAdmin(await getSalePostsAdmin());
       document.getElementById('postCount').textContent = posts.length + ' post' + (posts.length === 1 ? '' : 's');
 
       if (!posts.length) {
@@ -1484,7 +1486,7 @@
                  '<img class="sp-tile__img" src="' + escHtml(p.image || '') + '" alt="">' +
                  '<div class="sp-tile__body">' +
                    '<div class="sp-tile__headline">' + escHtml(post.headline) + '</div>' +
-                   '<div class="sp-tile__product">' + escHtml(p.name) + '</div>' +
+                   '<div class="sp-tile__product">' + escHtml(p.name) + (p.is_active === false ? ' — hidden, not on the Sale page' : '') + '</div>' +
                  '</div>' +
                  '<div class="sp-tile__order">' + (i + 1) + '</div>' +
                  '<div class="sp-tile__actions">' +
@@ -1530,7 +1532,7 @@
       spDragSrcId = null;
       if (!srcId || srcId === String(targetId)) return;
 
-      var posts = await getSalePosts();
+      var posts = await getSalePostsAdmin();
       var fromIdx = posts.findIndex(function (p) { return String(p.id) === srcId; });
       var toIdx   = posts.findIndex(function (p) { return String(p.id) === String(targetId); });
       if (fromIdx < 0 || toIdx < 0) return;
@@ -1582,7 +1584,7 @@
 
       var selectedSlug = null;
       if (editingPostId) {
-        var posts = await getSalePosts();
+        var posts = await getSalePostsAdmin();
         var post = posts.find(function (p) { return String(p.id) === String(editingPostId); });
         if (post) {
           document.getElementById('spHeadline').value = post.headline;

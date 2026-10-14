@@ -442,6 +442,9 @@
           '<div class="cart-item__details">' +
             '<span class="cart-item__name">' + safeName + '</span>' +
             (size ? '<span class="cart-item__meta">Size: ' + safeSize + '</span>' : '') +
+            /* added before sizes were required: checkout refuses it until fixed */
+            (item.needs_size ? '<a class="cart-item__meta" style="color:var(--orange);" href="product.html?slug=' +
+              encodeURIComponent(item.product.slug) + '">Size needed — remove and add again with a size</a>' : '') +
             '<span class="cart-item__price">' + formatEuro(price) + '</span>' +
           '</div>' +
           '<div class="cart-item__right">' +

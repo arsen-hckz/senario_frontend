@@ -108,3 +108,47 @@ async function hydrateSalePosts(posts) {
     })
     .filter(Boolean);
 }
+
+/* Admin view: every post, including ones whose product is hidden (the
+   public list leaves those out), hydrated from the staff product list. */
+async function getSalePostsAdmin() {
+  if (!POSTS_API_ENABLED) return spLoadLocal();
+  var res = await apiFetch('/posts/admin/');
+  return res && res.ok ? await res.json() : [];
+}
+
+async function hydrateSalePostsAdmin(posts) {
+  if (!posts.length) return [];
+  var res = await apiFetch('/products/admin/');
+  var products = res && res.ok ? await res.json() : [];
+  var bySlug = {};
+  products.forEach(function (p) { bySlug[p.slug] = p; });
+  return posts
+    .map(function (post) {
+      var product = bySlug[post.product_slug];
+      return product ? Object.assign({}, post, { product: product }) : null;
+    })
+    .filter(Boolean);
+}
+
+/* Before the API existed, posts were saved in the admin's own browser. Upload
+   any left there (once), then clear them. Returns how many were imported. */
+async function importLocalSalePosts() {
+  if (!POSTS_API_ENABLED) return 0;
+  var local = spLoadLocal();
+  if (!local.length) return 0;
+  var imported = 0;
+  var left = [];
+  for (var i = 0; i < local.length; i++) {
+    var post = local[i];
+    var res = await apiFetch('/posts/admin/', {
+      method: 'POST',
+      body: JSON.stringify({ product_slug: post.product_slug, headline: post.headline, note: post.note || '' })
+    });
+    if (res && res.ok) imported++;
+    else if (!res || res.status >= 500) left.push(post);  // retry next time; a 400 (product gone) is dropped
+  }
+  if (left.length) spSaveLocal(left);
+  else localStorage.removeItem(POSTS_STORAGE_KEY);
+  return imported;
+}
