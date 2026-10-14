@@ -1,0 +1,2 @@
+snrInitNav();
+function logout() { snrLogout(); }

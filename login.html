@@ -257,15 +257,15 @@
     </a>
 
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
-      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      <button class="auth-tab active" id="tabLogin" data-click="switchTab" data-tab="login">Login</button>
+      <button class="auth-tab" id="tabRegister" data-click="switchTab" data-tab="register">Register</button>
     </div>
 
     <!-- LOGIN FORM -->
     <div id="panelLogin">
       <h1 class="auth-heading">Welcome back.</h1>
       <p class="auth-sub">Sign in to your account</p>
-      <form class="auth-form" onsubmit="handleLogin(event)">
+      <form class="auth-form" data-submit="handleLogin">
         <div class="field">
           <label class="field__label">Email</label>
           <input class="field__input" id="loginEmail" type="email" placeholder="your@email.com" required>
@@ -273,19 +273,19 @@
         <div class="field field--pass">
           <label class="field__label">Password</label>
           <input class="field__input" type="password" id="loginPass" placeholder="••••••••" required>
-          <button type="button" class="pass-toggle" onclick="togglePass('loginPass', this)">Show</button>
+          <button type="button" class="pass-toggle" data-click="togglePass" data-target="loginPass">Show</button>
         </div>
         <div class="field__row">
           <a class="field__link" href="forgot-password.html" id="forgotLink">Forgot password?</a>
         </div>
         <p id="loginErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
         <p id="loginResend" style="font-size:11px;margin-top:4px;display:none;">
-          <button type="button" onclick="handleResend()" style="background:none;border:none;padding:0;cursor:pointer;color:var(--orange);text-decoration:underline;font-family:var(--ff-body);font-size:11px;">Resend verification email</button>
+          <button type="button" data-click="handleResend" style="background:none;border:none;padding:0;cursor:pointer;color:var(--orange);text-decoration:underline;font-family:var(--ff-body);font-size:11px;">Resend verification email</button>
         </p>
         <button class="auth-submit" type="submit">Sign in</button>
         <div class="auth-divider">or</div>
         <div class="auth-switch">
-          No account? <button type="button" onclick="switchTab('register')">Create one</button>
+          No account? <button type="button" data-click="switchTab" data-tab="register">Create one</button>
         </div>
       </form>
     </div>
@@ -295,7 +295,7 @@
       <div id="regFormWrap">
         <h1 class="auth-heading">Join ΣΝΡ.</h1>
         <p class="auth-sub">Create your account</p>
-        <form class="auth-form" onsubmit="handleRegister(event)">
+        <form class="auth-form" data-submit="handleRegister">
           <div class="field">
             <label class="field__label">Full name</label>
             <input class="field__input" id="regName" type="text" placeholder="Your name" required>
@@ -307,18 +307,18 @@
           <div class="field field--pass">
             <label class="field__label">Password</label>
             <input class="field__input" type="password" id="regPass" placeholder="••••••••" required>
-            <button type="button" class="pass-toggle" onclick="togglePass('regPass', this)">Show</button>
+            <button type="button" class="pass-toggle" data-click="togglePass" data-target="regPass">Show</button>
           </div>
           <div class="field field--pass">
             <label class="field__label">Confirm password</label>
             <input class="field__input" type="password" id="regPassConfirm" placeholder="••••••••" required>
-            <button type="button" class="pass-toggle" onclick="togglePass('regPassConfirm', this)">Show</button>
+            <button type="button" class="pass-toggle" data-click="togglePass" data-target="regPassConfirm">Show</button>
           </div>
           <p id="regErr" style="color:#c0392b;font-size:12px;margin-top:8px;display:none;"></p>
           <button class="auth-submit" type="submit">Create account</button>
           <div class="auth-divider">or</div>
           <div class="auth-switch">
-            Already have an account? <button type="button" onclick="switchTab('login')">Sign in</button>
+            Already have an account? <button type="button" data-click="switchTab" data-tab="login">Sign in</button>
           </div>
         </form>
       </div>
@@ -330,7 +330,7 @@
           We sent a verification link to <strong id="regDoneEmail"></strong>. Click it to activate your account, then sign in.
         </p>
         <div class="auth-switch" style="margin-top:24px;">
-          <button type="button" onclick="switchTab('login')">Back to sign in</button>
+          <button type="button" data-click="switchTab" data-tab="login">Back to sign in</button>
         </div>
       </div>
     </div>
@@ -338,136 +338,9 @@
   </div>
 </div>
 
+<script src="actions.js"></script>
 <script src="api.js"></script>
-<script>
-  function switchTab(tab) {
-    var isLogin = tab === 'login';
-    document.getElementById('tabLogin').classList.toggle('active', isLogin);
-    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
-    document.getElementById('panelLogin').style.display    = isLogin ? 'block' : 'none';
-    document.getElementById('panelRegister').style.display = isLogin ? 'none'  : 'block';
-  }
-
-  /* Where to go after signing in. Only a page of this site, like
-     "product.html?slug=tee": a link with ?next=javascript:... or
-     ?next=https://evil.example would otherwise run code here, with the
-     fresh tokens in localStorage, or send the customer off-site. */
-  function safeNext(next) {
-    return /^[A-Za-z0-9_-]+\.html(\?[^#\s]*)?$/.test(next || '') ? next : 'index.html';
-  }
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    var email  = document.getElementById('loginEmail').value.trim();
-    var pass   = document.getElementById('loginPass').value;
-    var err    = document.getElementById('loginErr');
-    var resend = document.getElementById('loginResend');
-    err.style.display = 'none';
-    resend.style.display = 'none';
-    try {
-      var res = await fetch(API_BASE + '/auth/login/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email, password: pass})
-      });
-      if (!res.ok) {
-        var d = await res.json();
-        err.textContent = d.detail || 'Invalid email or password.';
-        err.style.display = 'block';
-        if (d.detail && d.detail.toLowerCase().indexOf('verify') !== -1) {
-          resend.style.display = 'block';
-        }
-        return;
-      }
-      var data = await res.json();
-      localStorage.setItem('snr_token', data.access);
-      localStorage.setItem('snr_refresh', data.refresh);
-      var pr = await fetch(API_BASE + '/auth/profile/', {
-        headers: {'Authorization': 'Bearer ' + data.access}
-      });
-      if (pr.ok) {
-        var user = await pr.json();
-        if (user.is_staff) localStorage.setItem('snr_is_staff', '1');
-        else localStorage.removeItem('snr_is_staff');
-      }
-      window.location.href = safeNext(new URLSearchParams(location.search).get('next'));
-    } catch (ex) {
-      err.textContent = 'Network error. Please try again.';
-      err.style.display = 'block';
-    }
-  }
-
-  async function handleRegister(e) {
-    e.preventDefault();
-    var name    = document.getElementById('regName').value.trim();
-    var email   = document.getElementById('regEmail').value.trim();
-    var pass    = document.getElementById('regPass').value;
-    var confirm = document.getElementById('regPassConfirm').value;
-    var err     = document.getElementById('regErr');
-    err.style.display = 'none';
-    if (pass !== confirm) {
-      document.getElementById('regPassConfirm').style.borderBottomColor = '#c0392b';
-      err.textContent = 'Passwords do not match.';
-      err.style.display = 'block';
-      return;
-    }
-    var parts = name.split(' ');
-    var firstName = parts[0] || '';
-    var lastName  = parts.slice(1).join(' ') || '';
-    try {
-      var res = await fetch(API_BASE + '/auth/register/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email, password: pass, first_name: firstName, last_name: lastName})
-      });
-      if (!res.ok) {
-        var d = await res.json();
-        var msg = Object.values(d).flat().join(' ');
-        err.textContent = msg || 'Registration failed.';
-        err.style.display = 'block';
-        return;
-      }
-      document.getElementById('regFormWrap').style.display = 'none';
-      document.getElementById('regDoneEmail').textContent = email;
-      document.getElementById('regDone').style.display = 'block';
-    } catch (ex) {
-      err.textContent = 'Network error. Please try again.';
-      err.style.display = 'block';
-    }
-  }
-
-  async function handleResend() {
-    var email = document.getElementById('loginEmail').value.trim();
-    var resend = document.getElementById('loginResend');
-    if (!email) return;
-    resend.querySelector('button').textContent = 'Sending…';
-    try {
-      await fetch(API_BASE + '/auth/resend-verification/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email})
-      });
-    } catch (ex) {}
-    resend.querySelector('button').textContent = 'Sent — check your inbox';
-  }
-
-  function togglePass(id, btn) {
-    var input = document.getElementById(id);
-    var show  = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    btn.textContent = show ? 'Hide' : 'Show';
-  }
-
-  // Carry over whatever was typed in the email field to the reset page.
-  document.getElementById('forgotLink').addEventListener('click', function() {
-    var email = document.getElementById('loginEmail').value.trim();
-    this.href = 'forgot-password.html' + (email ? '?email=' + encodeURIComponent(email) : '');
-  });
-
-  if (new URLSearchParams(location.search).get('tab') === 'register') {
-    switchTab('register');
-  }
-</script>
+<script src="js/login.js"></script>
 
 </body>
 </html>
