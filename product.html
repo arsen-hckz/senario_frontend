@@ -545,7 +545,7 @@
       <h1 class="product-details__name" id="prod-name">—</h1>
       <p class="product-details__price" id="prod-price">€—</p>
       <div class="product-details__divider"></div>
-      <p class="product-details__label">Size</p>
+      <p class="product-details__label" id="size-label">Size</p>
       <div class="size-grid" id="size-grid"></div>
       <p class="product-details__label">Quantity</p>
       <div class="qty-stepper" id="qty-stepper">
@@ -677,9 +677,16 @@
 
         var sizeGrid = document.getElementById('size-grid');
         var variants = p.variants || [];
+        if (!variants.length) {
+          // One-size product: no empty "Size" heading.
+          document.getElementById('size-label').style.display = 'none';
+          sizeGrid.style.display = 'none';
+        }
+        // Pre-select the first size that's in stock (sold-out ones come first sometimes).
+        var firstInStock = variants.findIndex(function(v) { return v.stock > 0; });
         variants.forEach(function(v, i) {
           var btn = document.createElement('button');
-          btn.className = 'size-btn' + (i === 0 && v.stock > 0 ? ' selected' : '');
+          btn.className = 'size-btn' + (i === firstInStock ? ' selected' : '');
           btn.textContent = v.size;
           btn.dataset.variantId = v.id;
           if (v.stock === 0) { btn.classList.add('disabled'); btn.disabled = true; }

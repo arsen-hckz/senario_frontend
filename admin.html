@@ -320,6 +320,10 @@
       gap: 20px 24px;
     }
     .modal-grid .span2 { grid-column: 1/-1; }
+    .size-stock { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+    .size-stock label { display: flex; flex-direction: column; gap: 4px; font-size: 10px; letter-spacing: 0.12em; }
+    .size-stock input { width: 100%; text-align: center; }
+    #fQty:disabled { opacity: 0.4; }
     .form-field { display: flex; flex-direction: column; }
     .form-field label {
       font-family: var(--ff-body);
@@ -764,7 +768,7 @@
           <input type="number" id="fPrice" placeholder="99">
         </div>
         <div class="form-field">
-          <label>Quantity</label>
+          <label>Quantity <span id="fQtyNote">(products without sizes)</span></label>
           <input type="number" id="fQty" placeholder="50" min="0">
         </div>
         <div class="form-field">
@@ -776,8 +780,8 @@
           <input type="text" id="fTag" placeholder="New / Sale / Limited">
         </div>
         <div class="form-field span2">
-          <label>Sizes (comma separated)</label>
-          <input type="text" id="fSizes" placeholder="XS, S, M, L, XL">
+          <label>Sizes &amp; stock &mdash; leave a size blank if you don't sell it, 0 = sold out</label>
+          <div class="size-stock" id="fSizeStock"></div>
         </div>
         <div class="form-field span2">
           <label>Product Photos &mdash; first one is the cover (max 12)</label>
@@ -994,7 +998,9 @@
         document.getElementById('productCount').textContent = products.length + ' product' + (products.length===1?'':'s');
         tbody.innerHTML = '';
         products.forEach(function(p) {
-          var stock  = p.stock || 0;
+          var stock  = (p.variants && p.variants.length)
+            ? p.variants.reduce(function(sum, v) { return sum + (v.stock || 0); }, 0)
+            : (p.stock || 0);
           var onSale = p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price);
           var priceCell = onSale
             ? '<span style="text-decoration:line-through;color:var(--gray);">' + formatEuro(parseFloat(p.price))+'</span> <span style="color:var(--orange);">' + formatEuro(parseFloat(p.sale_price))+'</span>'
@@ -1072,6 +1078,53 @@
     }
 
     /* MODAL */
+    /* One stock box per size. The standard sizes are always offered; any
+       other size a product already has (e.g. "One Size") is kept as well, so
+       saving never drops it. Blank = not sold in that size. */
+    var STANDARD_SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+    function renderSizeInputs(variants) {
+      var wrap = document.getElementById('fSizeStock');
+      var stockBySize = {};
+      variants.forEach(function(v) { stockBySize[v.size] = v.stock; });
+      var sizes = STANDARD_SIZES.slice();
+      variants.forEach(function(v) { if (sizes.indexOf(v.size) === -1) sizes.push(v.size); });
+      wrap.innerHTML = '';
+      sizes.forEach(function(size) {
+        var label = document.createElement('label');
+        var name = document.createElement('span');
+        name.textContent = size;
+        var input = document.createElement('input');
+        input.type = 'number';
+        input.min = '0';
+        input.step = '1';
+        input.placeholder = '—';
+        input.dataset.size = size;
+        if (stockBySize[size] !== undefined) input.value = stockBySize[size];
+        input.addEventListener('input', syncQtyField);
+        label.appendChild(name);
+        label.appendChild(input);
+        wrap.appendChild(label);
+      });
+      syncQtyField();
+    }
+
+    /* With sizes, stock is counted per size, so the overall quantity is unused. */
+    function syncQtyField() {
+      var sized = collectSizes().length > 0;
+      document.getElementById('fQty').disabled = sized;
+      document.getElementById('fQtyNote').textContent = sized ? '(set per size below)' : '(products without sizes)';
+    }
+
+    function collectSizes() {
+      var sizes = [];
+      document.querySelectorAll('#fSizeStock input').forEach(function(input) {
+        if (input.value.trim() === '') return;
+        sizes.push({size: input.dataset.size, stock: parseInt(input.value, 10)});
+      });
+      return sizes;
+    }
+
     async function openModal(productId) {
       editingProductId = productId || null;
       var title = document.getElementById('modalTitle');
@@ -1086,15 +1139,16 @@
             document.getElementById('fQty').value       = p.stock || 0;
             document.getElementById('fSalePrice').value = p.sale_price ? parseFloat(p.sale_price) : '';
             document.getElementById('fTag').value       = '';
-            document.getElementById('fSizes').value     = (p.variants||[]).map(function(v){ return v.size; }).join(',');
+            renderSizeInputs(p.variants || []);
             document.getElementById('fDesc').value      = p.description || '';
             resetGallery(p.images);
           }
         } catch (ex) {}
       } else {
         title.textContent = 'Add Product';
-        ['fName','fPrice','fQty','fSalePrice','fTag','fSizes','fDesc'].forEach(function(id){ document.getElementById(id).value=''; });
+        ['fName','fPrice','fQty','fSalePrice','fTag','fDesc'].forEach(function(id){ document.getElementById(id).value=''; });
         document.getElementById('fQty').value = '0';
+        renderSizeInputs([]);
         resetGallery([]);
       }
       document.getElementById('productModal').classList.add('open');
@@ -1190,6 +1244,11 @@
         var salePrice = (!isNaN(saleRaw) && saleRaw > 0 && saleRaw < price) ? saleRaw : null;
         var stock     = parseInt(document.getElementById('fQty').value) || 0;
         var desc      = document.getElementById('fDesc').value.trim();
+        var sizes     = collectSizes();
+        if (sizes.some(function(s) { return isNaN(s.stock) || s.stock < 0; })) {
+          alert('Size stock must be a whole number, 0 or more.');
+          return;
+        }
 
         var payload = new FormData();
         payload.append('name', name);
@@ -1197,6 +1256,7 @@
         payload.append('stock', stock);
         payload.append('description', desc);
         payload.append('is_active', 'true');
+        payload.append('sizes', JSON.stringify(sizes));
         if (salePrice) payload.append('sale_price', salePrice);
         // Gallery: the full order as shown, where new files are "new-<n>" in
         // the order they are uploaded, plus any removed existing photos.
