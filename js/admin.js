@@ -25,8 +25,11 @@ async function renderOverview() {
     var products = pRes && pRes.ok ? await pRes.json() : [];
     var orders   = oRes && oRes.ok ? await oRes.json() : [];
 
-    var revenue    = orders.reduce(function(s,o){ return s + parseFloat(o.total||0); }, 0);
-    var totalUnits = orders.reduce(function(s,o){ return s + (o.items||[]).reduce(function(ss,i){ return ss+(i.qty||1); },0); }, 0);
+    /* Revenue and sales only count orders that were paid and not cancelled;
+       pending ones may never be paid. */
+    var sold       = orders.filter(function(o){ return ['confirmed','shipped','delivered'].indexOf(o.status) !== -1; });
+    var revenue    = sold.reduce(function(s,o){ return s + parseFloat(o.total||0); }, 0);
+    var totalUnits = sold.reduce(function(s,o){ return s + (o.items||[]).reduce(function(ss,i){ return ss+(i.qty||1); },0); }, 0);
     var onSale     = products.filter(function(p){ return p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price); }).length;
 
     var stats = [
@@ -44,7 +47,7 @@ async function renderOverview() {
 
     /* top products */
     var itemSales = {};
-    orders.forEach(function(order) {
+    sold.forEach(function(order) {
       (order.items||[]).forEach(function(item) {
         var key = item.product_name;
         if (!itemSales[key]) itemSales[key] = { qty:0, revenue:0 };
@@ -191,12 +194,22 @@ async function renderAllOrders() {
 }
 
 async function updateOrderStatus(orderId, status) {
+  /* Stock follows the status: confirmed/shipped/delivered hold it,
+     pending/cancelled give it back. */
   try {
-    await apiFetch('/orders/admin/' + orderId + '/', {
+    var res = await apiFetch('/orders/admin/' + orderId + '/', {
       method: 'PATCH',
       body: JSON.stringify({status: status})
     });
-  } catch (ex) {}
+    if (!res || !res.ok) throw new Error();
+    var data = await res.json();
+    if (data.refund_needed) {
+      alert('Order #' + orderId + ' was paid through Viva. Its stock is back on sale; refund the customer in the Viva portal.');
+    }
+  } catch (ex) {
+    alert('Could not change the status of order #' + orderId + '.');
+    renderAllOrders();
+  }
 }
 
 /* MODAL */
@@ -362,8 +375,12 @@ async function saveProduct() {
   if (!name || isNaN(price)) { alert('Name and price are required.'); return; }
 
   try {
-    var saleRaw   = parseFloat(document.getElementById('fSalePrice').value);
-    var salePrice = (!isNaN(saleRaw) && saleRaw > 0 && saleRaw < price) ? saleRaw : null;
+    var saleText  = document.getElementById('fSalePrice').value.trim();
+    var salePrice = saleText === '' ? '' : parseFloat(saleText);
+    if (salePrice !== '' && (isNaN(salePrice) || salePrice <= 0 || salePrice >= price)) {
+      alert('The sale price must be more than 0 and less than the price. Leave it empty for no sale.');
+      return;
+    }
     var stock     = parseInt(document.getElementById('fQty').value) || 0;
     var desc      = document.getElementById('fDesc').value.trim();
     var sizes     = collectSizes();
@@ -377,9 +394,12 @@ async function saveProduct() {
     payload.append('price', price);
     payload.append('stock', stock);
     payload.append('description', desc);
-    payload.append('is_active', 'true');
+    // New products start visible; an edit leaves visibility alone, so a
+    // product hidden in the Django admin stays hidden.
+    if (!editingProductId) payload.append('is_active', 'true');
     payload.append('sizes', JSON.stringify(sizes));
-    if (salePrice) payload.append('sale_price', salePrice);
+    // Always sent: an empty value ends the sale.
+    payload.append('sale_price', salePrice);
     // Gallery: the full order as shown, where new files are "new-<n>" in
     // the order they are uploaded, plus any removed existing photos.
     var newCount = 0;
