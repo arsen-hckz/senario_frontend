@@ -2,7 +2,7 @@ snrInitNav();
 function logout() { snrLogout(); }
 
 function loginCheckout() {
-  window.location.href = 'login.html?next=checkout.html';
+  window.location.href = 'login?next=checkout';
 }
 
 function startCheckout() {
@@ -71,7 +71,7 @@ var createdOrderId = null;
 
 document.querySelector('.btn-place-order').addEventListener('click', async function() {
   if (!localStorage.getItem('snr_token')) {
-    window.location.href = 'login.html?next=checkout.html';
+    window.location.href = 'login?next=checkout';
     return;
   }
   var btn = this;

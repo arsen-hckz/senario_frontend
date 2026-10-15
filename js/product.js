@@ -119,7 +119,7 @@ async function loadProduct() {
 
     document.querySelector('.btn-atc').addEventListener('click', async function() {
       if (!localStorage.getItem('snr_token')) {
-        window.location.href = 'login.html?next=product.html?slug=' + slug;
+        window.location.href = 'login?next=' + encodeURIComponent('product?slug=' + slug);
         return;
       }
       var sel = sizeGrid.querySelector('.size-btn.selected');

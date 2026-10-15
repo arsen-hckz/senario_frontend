@@ -1,4 +1,4 @@
-if (localStorage.getItem('snr_is_staff') !== '1') window.location.href = 'index.html';
+if (localStorage.getItem('snr_is_staff') !== '1') window.location.href = '/';
 
 snrInitNav();
 function logout() { snrLogout(); }

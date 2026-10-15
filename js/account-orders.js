@@ -1,4 +1,4 @@
-if (!localStorage.getItem('snr_token')) window.location.href = 'login.html';
+if (!localStorage.getItem('snr_token')) window.location.href = 'login';
 
 /* An unpaid order (card declined, payment page closed) can be paid
    from here — the cart was already emptied when the order was placed. */
@@ -29,7 +29,7 @@ async function renderOrders() {
     list.innerHTML = '';
 
     if (!orders.length) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9781;</div><p class="empty-state__text">No orders yet</p><a class="btn-ghost" href="collection.html">Shop the Collection</a></div>';
+      list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9781;</div><p class="empty-state__text">No orders yet</p><a class="btn-ghost" href="collection">Shop the Collection</a></div>';
       return;
     }
 

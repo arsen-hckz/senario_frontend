@@ -32,8 +32,8 @@ async function pollOrder(orderId, attempt) {
         ICON_CLOCK, false,
         'Order cancelled',
         'This order was cancelled, so it can no longer be paid. If you were charged, we will refund you — contact us if you have any questions.',
-        '<a class="btn btn--primary" href="account-orders.html">View My Orders</a>' +
-        '<a class="btn btn--secondary" href="collection.html">Continue Shopping</a>'
+        '<a class="btn btn--primary" href="account-orders">View My Orders</a>' +
+        '<a class="btn btn--secondary" href="collection">Continue Shopping</a>'
       );
       return;
     }
@@ -44,8 +44,8 @@ async function pollOrder(orderId, attempt) {
         ICON_CHECK, false,
         'Payment confirmed',
         'Thank you — your order is confirmed and on its way to being packed.',
-        '<a class="btn btn--primary" href="account-orders.html">View My Orders</a>' +
-        '<a class="btn btn--secondary" href="collection.html">Continue Shopping</a>'
+        '<a class="btn btn--primary" href="account-orders">View My Orders</a>' +
+        '<a class="btn btn--secondary" href="collection">Continue Shopping</a>'
       );
       return;
     }
@@ -56,7 +56,7 @@ async function pollOrder(orderId, attempt) {
       ICON_CLOCK, false,
       'Payment not confirmed yet',
       'If you completed payment, it will show as confirmed in My Orders within a few minutes. If your card was declined or you cancelled, you can try again.',
-      '<a class="btn btn--primary" href="account-orders.html">Check My Orders</a>' +
+      '<a class="btn btn--primary" href="account-orders">Check My Orders</a>' +
       '<button class="btn btn--secondary" type="button" id="retryPayment">Try Payment Again</button>'
     );
     document.getElementById('retryPayment').addEventListener('click', async function () {
@@ -82,7 +82,7 @@ async function pollOrder(orderId, attempt) {
       ICON_CLOCK, false,
       'Payment status unknown',
       'We couldn\'t find which order this was for. Check My Orders for the latest status.',
-      '<a class="btn btn--primary" href="account-orders.html">Check My Orders</a>'
+      '<a class="btn btn--primary" href="account-orders">Check My Orders</a>'
     );
     return;
   }

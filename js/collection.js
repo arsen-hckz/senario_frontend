@@ -51,7 +51,7 @@ async function renderGrid() {
 
       var card = document.createElement('a');
       card.className = 'product-card' + (oos ? ' product-card--oos' : '');
-      card.href = 'product.html?slug=' + p.slug;
+      card.href = 'product?slug=' + p.slug;
       card.innerHTML =
         '<div class="product-card__image">' +
           '<img src="' + imgSrc + '" alt="' + safeName + '">' +
@@ -82,7 +82,7 @@ async function renderGrid() {
 function chooseSize(e, btn) {
   e.preventDefault();
   e.stopPropagation();
-  window.location.href = 'product.html?slug=' + encodeURIComponent(btn.dataset.slug);
+  window.location.href = 'product?slug=' + encodeURIComponent(btn.dataset.slug);
 }
 
 async function addToCart(e, btn, productId) {
@@ -90,7 +90,7 @@ async function addToCart(e, btn, productId) {
   e.stopPropagation();
   if (btn.classList.contains('added') || btn.classList.contains('oos')) return;
   if (!localStorage.getItem('snr_token')) {
-    window.location.href = 'login.html?next=collection.html';
+    window.location.href = 'login?next=collection';
     return;
   }
   var orig = btn.textContent;

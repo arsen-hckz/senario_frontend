@@ -1,4 +1,4 @@
-if (!localStorage.getItem('snr_token')) window.location.href = 'login.html';
+if (!localStorage.getItem('snr_token')) window.location.href = 'login';
 
 // An earlier prototype of this page kept demo "saved cards" and wallet
 // toggles in the browser; clear them out of returning customers' storage.

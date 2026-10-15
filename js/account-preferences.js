@@ -1,4 +1,4 @@
-if (!localStorage.getItem('snr_token')) window.location.href = 'login.html';
+if (!localStorage.getItem('snr_token')) window.location.href = 'login';
 
 function loadPrefs() {
   var prefs = JSON.parse(localStorage.getItem('snr_prefs') || '{}');

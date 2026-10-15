@@ -7,11 +7,12 @@ function switchTab(tab) {
 }
 
 /* Where to go after signing in. Only a page of this site, like
-   "product.html?slug=tee": a link with ?next=javascript:... or
-   ?next=https://evil.example would otherwise run code here, with the
-   fresh tokens in localStorage, or send the customer off-site. */
+   "product?slug=tee" (or the old "product.html?slug=tee"): a link with
+   ?next=javascript:... or ?next=https://evil.example would otherwise run
+   code here, with the fresh tokens in localStorage, or send the customer
+   off-site. No ":" or "/" gets through, so it always stays on this site. */
 function safeNext(next) {
-  return /^[A-Za-z0-9_-]+\.html(\?[^#\s]*)?$/.test(next || '') ? next : 'index.html';
+  return /^[A-Za-z0-9_-]+(\.html)?(\?[^#\s]*)?$/.test(next || '') ? next : '/';
 }
 
 async function handleLogin(e) {
@@ -119,7 +120,7 @@ function togglePass(id, btn) {
 // Carry over whatever was typed in the email field to the reset page.
 document.getElementById('forgotLink').addEventListener('click', function() {
   var email = document.getElementById('loginEmail').value.trim();
-  this.href = 'forgot-password.html' + (email ? '?email=' + encodeURIComponent(email) : '');
+  this.href = 'forgot-password' + (email ? '?email=' + encodeURIComponent(email) : '');
 });
 
 if (new URLSearchParams(location.search).get('tab') === 'register') {

@@ -40,7 +40,7 @@ function renderCart(data) {
         '<span class="cart-item__name">' + safeName + '</span>' +
         (size ? '<span class="cart-item__meta">Size: ' + safeSize + '</span>' : '') +
         /* added before sizes were required: checkout refuses it until fixed */
-        (item.needs_size ? '<a class="cart-item__meta" style="color:var(--orange);" href="product.html?slug=' +
+        (item.needs_size ? '<a class="cart-item__meta" style="color:var(--orange);" href="product?slug=' +
           encodeURIComponent(item.product.slug) + '">Size needed — remove and add again with a size</a>' : '') +
         '<span class="cart-item__price">' + formatEuro(price) + '</span>' +
       '</div>' +

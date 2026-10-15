@@ -96,7 +96,7 @@ function snrLogout(redirect) {
   localStorage.removeItem('snr_token');
   localStorage.removeItem('snr_refresh');
   localStorage.removeItem('snr_is_staff');
-  if (redirect !== false) window.location.href = 'index.html';
+  if (redirect !== false) window.location.href = '/';
 }
 
 function snrInitNav() {
