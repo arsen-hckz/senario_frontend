@@ -39,7 +39,9 @@ async function renderOrders() {
       var badge  = 'order-badge--' + order.status;
       var itemsHTML = (order.items || []).map(function(item) {
         return '<div class="order-item">' +
-          '<div class="order-item__img"></div>' +
+          (item.image
+            ? '<img class="order-item__img" src="' + escHtml(item.image) + '" alt="" loading="lazy">'
+            : '<div class="order-item__img"></div>') +
           '<div><div class="order-item__name">' + escHtml(item.product_name) + '</div>' +
           '<div class="order-item__meta">' + (item.size ? 'Size ' + escHtml(item.size) + ' &nbsp;·&nbsp; ' : '') + 'Qty ' + item.qty + '</div></div>' +
           '<div class="order-item__price">' + formatEuro(parseFloat(item.price)) + '</div>' +
