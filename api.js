@@ -90,8 +90,16 @@ function snrRefreshAccessToken() {
 
 function snrLogout(redirect) {
   var refresh = localStorage.getItem('snr_refresh');
+  /* Plain fetch, no access token: after an idle hour it has expired, and
+     apiFetch's 401 handling would give up before the refresh token is revoked.
+     keepalive lets the request finish while the page redirects. */
   if (refresh) {
-    apiFetch('/auth/logout/', {method: 'POST', body: JSON.stringify({refresh: refresh})}).catch(function() {});
+    fetch(API_BASE + '/auth/logout/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({refresh: refresh}),
+      keepalive: true
+    }).catch(function() {});
   }
   localStorage.removeItem('snr_token');
   localStorage.removeItem('snr_refresh');
