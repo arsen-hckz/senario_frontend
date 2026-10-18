@@ -23,8 +23,29 @@ function setState(iconSvg, spinning, title, body, actionsHtml) {
 var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="' + 'currentColor' + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 var ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>';
 
+/* Guest orders have no account: they're read with their secret, and the
+   buttons lead to the order's own page instead of My Orders. */
+var guestToken = null;
+
+function ordersLink(orderId, label) {
+  return guestToken
+    ? '<a class="btn btn--primary" href="order?id=' + encodeURIComponent(orderId) + '#t=' + encodeURIComponent(guestToken) + '">' + (label || 'View Your Order') + '</a>'
+    : '<a class="btn btn--primary" href="account-orders">' + (label || 'View My Orders') + '</a>';
+}
+
+async function fetchOrder(orderId) {
+  try {
+    if (guestToken) {
+      return await fetch(API_BASE + '/orders/guest/' + encodeURIComponent(orderId) + '/', {
+        headers: {'X-Order-Token': guestToken}
+      });
+    }
+    return await apiFetch('/orders/' + orderId + '/');
+  } catch (ex) { return null; }
+}
+
 async function pollOrder(orderId, attempt) {
-  var res = await apiFetch('/orders/' + orderId + '/');
+  var res = await fetchOrder(orderId);
   if (res && res.ok) {
     var order = await res.json();
     if (order.status === 'cancelled') {
@@ -32,7 +53,7 @@ async function pollOrder(orderId, attempt) {
         ICON_CLOCK, false,
         'Order cancelled',
         'This order was cancelled, so it can no longer be paid. If you were charged, we will refund you — contact us if you have any questions.',
-        '<a class="btn btn--primary" href="account-orders">View My Orders</a>' +
+        ordersLink(orderId) +
         '<a class="btn btn--secondary" href="collection">Continue Shopping</a>'
       );
       return;
@@ -43,8 +64,9 @@ async function pollOrder(orderId, attempt) {
       setState(
         ICON_CHECK, false,
         'Payment confirmed',
-        'Thank you — your order is confirmed and on its way to being packed.',
-        '<a class="btn btn--primary" href="account-orders">View My Orders</a>' +
+        'Thank you — your order is confirmed and on its way to being packed.' +
+          (guestToken ? ' Your receipt and a link to this order are on their way to your email.' : ''),
+        ordersLink(orderId) +
         '<a class="btn btn--secondary" href="collection">Continue Shopping</a>'
       );
       return;
@@ -55,14 +77,15 @@ async function pollOrder(orderId, attempt) {
     setState(
       ICON_CLOCK, false,
       'Payment not confirmed yet',
-      'If you completed payment, it will show as confirmed in My Orders within a few minutes. If your card was declined or you cancelled, you can try again.',
-      '<a class="btn btn--primary" href="account-orders">Check My Orders</a>' +
+      'If you completed payment, it will show as confirmed ' + (guestToken ? 'on your order page' : 'in My Orders') +
+        ' within a few minutes. If your card was declined or you cancelled, you can try again.',
+      ordersLink(orderId, guestToken ? 'Check Your Order' : 'Check My Orders') +
       '<button class="btn btn--secondary" type="button" id="retryPayment">Try Payment Again</button>'
     );
     document.getElementById('retryPayment').addEventListener('click', async function () {
       this.disabled = true;
       this.textContent = 'Redirecting...';
-      var error = await snrStartPayment(orderId);
+      var error = await snrStartPayment(orderId, guestToken);
       if (error) {
         alert(error);
         this.disabled = false;
@@ -77,6 +100,7 @@ async function pollOrder(orderId, attempt) {
 
 (function init() {
   var orderId = sessionStorage.getItem('snr_pending_order_id');
+  guestToken = sessionStorage.getItem('snr_pending_order_token');
   if (!orderId) {
     setState(
       ICON_CLOCK, false,
@@ -88,5 +112,6 @@ async function pollOrder(orderId, attempt) {
   }
   document.getElementById('statusOrder').textContent = 'Order #' + orderId;
   sessionStorage.removeItem('snr_pending_order_id');
+  sessionStorage.removeItem('snr_pending_order_token');
   pollOrder(orderId, 1);
 })();

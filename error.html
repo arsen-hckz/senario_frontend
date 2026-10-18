@@ -218,6 +218,9 @@
       .site-header__actions { grid-area: actions; padding-top: 0; gap: 14px; }
       .site-header__actions a span { display: none; }
     }
+      .footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin: 0 0 12px; }
+    .footer__links a { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray, #9A9A9A); text-decoration: none; }
+    .footer__links a:hover { color: var(--orange, #C4622D); }
   </style>
 </head>
 <body>
@@ -274,6 +277,7 @@
 
   <!-- FOOTER -->
   <footer class="site-footer">
+    <nav class="footer__links"><a href="terms">Terms</a><a href="shipping-returns">Shipping &amp; Returns</a><a href="privacy">Privacy</a><a href="terms-el">Ελληνικά</a></nav>
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 

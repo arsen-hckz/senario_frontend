@@ -170,7 +170,7 @@ async function renderAllOrders() {
       tr.innerHTML =
         '<td>#'+order.id+'</td>'+
         '<td>'+date+'</td>'+
-        '<td class="order-cell">'+escHtml(order.full_name)+
+        '<td class="order-cell">'+escHtml(order.full_name)+(order.is_guest ? ' <span style="color:var(--gray);">(guest)</span>' : '')+
           (order.email ? '<br><a href="mailto:'+escHtml(order.email)+'">'+escHtml(order.email)+'</a>' : '')+
           (order.phone ? '<br><a href="tel:'+escHtml(order.phone.replace(/[^+0-9]/g, ''))+'">'+escHtml(order.phone)+'</a>' : '')+
         '</td>'+

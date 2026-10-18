@@ -98,33 +98,26 @@ async function addToCart(e, btn, productId) {
   e.preventDefault();
   e.stopPropagation();
   if (btn.classList.contains('added') || btn.classList.contains('oos')) return;
-  if (!localStorage.getItem('snr_token')) {
-    window.location.href = 'login?next=sale';
-    return;
-  }
   var orig = btn.textContent;
   btn.textContent = '...';
   btn.disabled = true;
-  try {
-    var res = await apiFetch('/cart/', {
-      method: 'POST',
-      body: JSON.stringify({product_id: productId, qty: 1})
-    });
-    if (res && res.ok) {
-      btn.textContent = '✓ Added';
-      btn.classList.add('added');
-      setTimeout(function() {
-        btn.classList.remove('added');
-        btn.textContent = orig;
-        btn.disabled = false;
-      }, 2000);
-    } else {
+  // Signed in or not: guests get a cart in the browser (see api.js).
+  var error = await snrCartAdd(productId, null, 1);
+  if (!error) {
+    btn.textContent = '✓ Added';
+    btn.classList.add('added');
+    snrUpdateCartBadge();
+    setTimeout(function() {
+      btn.classList.remove('added');
       btn.textContent = orig;
       btn.disabled = false;
-    }
-  } catch (ex) {
-    btn.textContent = orig;
-    btn.disabled = false;
+    }, 2000);
+  } else {
+    btn.textContent = error;
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }, 2500);
   }
 }
 

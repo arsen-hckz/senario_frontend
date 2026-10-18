@@ -118,10 +118,6 @@ async function loadProduct() {
     renderQty();
 
     document.querySelector('.btn-atc').addEventListener('click', async function() {
-      if (!localStorage.getItem('snr_token')) {
-        window.location.href = 'login?next=' + encodeURIComponent('product?slug=' + slug);
-        return;
-      }
       var sel = sizeGrid.querySelector('.size-btn.selected');
       var variantId = sel ? sel.dataset.variantId : null;
       var self = this;
@@ -133,34 +129,25 @@ async function loadProduct() {
       }
       self.textContent = '...';
       self.disabled = true;
-      try {
-        var payload = {product_id: p.id, qty: qty};
-        if (variantId) payload.variant_id = parseInt(variantId);
-        var r = await apiFetch('/cart/', {method: 'POST', body: JSON.stringify(payload)});
-        if (r && r.ok) {
-          self.textContent = '✓ Added to Cart';
-          self.classList.add('added');
-          qty = 1;
-          renderQty();
-          snrUpdateCartBadge();
-          clearTimeout(self._t);
-          self._t = setTimeout(function() {
-            self.textContent = 'Add to Cart';
-            self.classList.remove('added');
-            self.disabled = false;
-          }, 2000);
-        } else {
-          // e.g. "Only 2 left in stock." Shown on the button briefly.
-          var detail = null;
-          try { detail = r ? (await r.json()).detail : null; } catch (ex) {}
-          self.textContent = detail || 'Add to Cart';
+      // Signed in or not: guests get a cart in the browser (see api.js).
+      var error = await snrCartAdd(p.id, variantId, qty);
+      clearTimeout(self._t);
+      if (!error) {
+        self.textContent = '✓ Added to Cart';
+        self.classList.add('added');
+        qty = 1;
+        renderQty();
+        snrUpdateCartBadge();
+        self._t = setTimeout(function() {
+          self.textContent = 'Add to Cart';
+          self.classList.remove('added');
           self.disabled = false;
-          clearTimeout(self._t);
-          if (detail) self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2500);
-        }
-      } catch (ex) {
-        self.textContent = 'Add to Cart';
+        }, 2000);
+      } else {
+        // e.g. "Only 2 left in stock." Shown on the button briefly.
+        self.textContent = error;
         self.disabled = false;
+        self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2500);
       }
     });
 

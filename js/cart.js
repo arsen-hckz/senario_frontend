@@ -18,6 +18,7 @@ function renderCart(data) {
   if (!data || !data.items || data.items.length === 0) {
     emptyMsg.style.display = 'block';
     document.getElementById('subtotal').textContent = '€0';
+    document.getElementById('shipping').textContent = '—';
     document.getElementById('total').textContent    = '€0';
     return;
   }
@@ -42,6 +43,8 @@ function renderCart(data) {
         /* added before sizes were required: checkout refuses it until fixed */
         (item.needs_size ? '<a class="cart-item__meta" style="color:var(--orange);" href="product?slug=' +
           encodeURIComponent(item.product.slug) + '">Size needed — remove and add again with a size</a>' : '') +
+        /* guest carts: priced live, so a line can have sold out since */
+        (item.problem && !item.needs_size ? '<span class="cart-item__meta" style="color:var(--orange);">' + escHtml(item.problem) + '</span>' : '') +
         '<span class="cart-item__price">' + formatEuro(price) + '</span>' +
       '</div>' +
       '<div class="cart-item__right">' +
@@ -55,58 +58,41 @@ function renderCart(data) {
     container.insertBefore(div, emptyMsg);
   });
 
-  var total = parseFloat(data.total || 0);
-  document.getElementById('subtotal').textContent = '' + formatEuro(total);
-  document.getElementById('total').textContent    = '' + formatEuro(total);
+  var shipping = parseFloat(data.shipping || 0);
+  document.getElementById('subtotal').textContent = formatEuro(parseFloat(data.total || 0));
+  document.getElementById('shipping').textContent = shipping > 0 ? formatEuro(shipping) : 'Free';
+  document.getElementById('total').textContent    = formatEuro(parseFloat(data.grand_total || data.total || 0));
 }
 
 async function loadCart() {
-  if (!localStorage.getItem('snr_token')) {
-    renderCart(null);
-    return;
-  }
-  try {
-    var res = await apiFetch('/cart/');
-    if (res && res.ok) {
-      renderCart(await res.json());
-    } else {
-      renderCart(null);
-    }
-  } catch (ex) {
-    renderCart(null);
-  }
+  renderCart(await snrCartGet());
 }
 
 async function changeQty(btn, delta) {
   var row    = btn.closest('.cart-item');
-  var itemId = row.dataset.itemId;
   var input  = row.querySelector('.qty-val');
-  var newQty = Math.max(1, parseInt(input.value) + delta);
+  var oldQty = parseInt(input.value);
+  var newQty = Math.max(1, oldQty + delta);
+  if (newQty === oldQty) return;
   input.value = newQty;
-  try {
-    var res = await apiFetch('/cart/' + itemId + '/', {
-      method: 'PATCH',
-      body: JSON.stringify({qty: newQty})
-    });
-    if (res && res.ok) renderCart(await res.json());
-  } catch (ex) {}
+  var result = await snrCartSetQty(row.dataset.itemId, newQty);
+  if (result.cart) renderCart(result.cart);
+  else {
+    input.value = oldQty;
+    if (result.error) alert(result.error);
+  }
 }
 
 async function removeItem(btn) {
-  var row    = btn.closest('.cart-item');
-  var itemId = row.dataset.itemId;
+  var row = btn.closest('.cart-item');
   row.style.opacity = '0.4';
-  try {
-    var res = await apiFetch('/cart/', {
-      method: 'DELETE',
-      body: JSON.stringify({item_id: parseInt(itemId)})
-    });
-    if (res && res.ok) renderCart(await res.json());
-    else row.style.opacity = '';
-  } catch (ex) { row.style.opacity = ''; }
+  var result = await snrCartSetQty(row.dataset.itemId, 0);
+  if (result.cart) renderCart(result.cart);
+  else row.style.opacity = '';
 }
 
 loadCart();
+snrShowShippingRule(document.getElementById('shippingNote'));
 
 /* Handlers for this page's data-click / data-change / data-submit
    attributes (see actions.js). */

@@ -58,6 +58,7 @@ async function renderOrders() {
           '<div class="order-chevron">▾</div>' +
         '</div>' +
         '<div class="order-card__body">' + itemsHTML +
+          (parseFloat(order.shipping || 0) > 0 ? '<div class="order-total">Shipping &nbsp;' + formatEuro(order.shipping) + '</div>' : '') +
           '<div class="order-total">Total &nbsp;<strong>' + formatEuro(total) + '</strong></div>' +
           (order.status === 'pending'
             ? '<div style="margin-top:16px;text-align:right;"><button class="btn-ghost" type="button" data-click="payOrder" data-order-id="' + order.id + '">Complete Payment</button></div>'

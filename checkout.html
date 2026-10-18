@@ -225,6 +225,10 @@
     }
 
     .summary-row__label { color: var(--gray); text-transform: uppercase; }
+    .summary-note { margin: 12px 0 0; font-size: 11px; color: var(--gray); letter-spacing: 0.04em; }
+    .summary-note:empty { display: none; }
+    .summary-empty { font-size: 12px; color: var(--gray); margin: 0 0 16px; }
+    .summary-empty a, .form-note a { color: var(--orange); }
 
     .summary-row--total {
       font-size: 14px; padding: 18px 0 0; border-top: 1px solid var(--black);
@@ -362,6 +366,9 @@
       .order-summary { padding: 24px 16px; }
       .payment-methods { flex-wrap: wrap; }
     }
+      .footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin: 0 0 12px; }
+    .footer__links a { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray, #9A9A9A); text-decoration: none; }
+    .footer__links a:hover { color: var(--orange, #C4622D); }
   </style>
 </head>
 <body>
@@ -523,7 +530,7 @@
 
       <button class="btn-place-order">Place Order</button>
       <p class="form-note">
-        By placing your order you agree to our Terms & Conditions and Privacy Policy.<br>
+        By placing your order you agree to our <a href="terms">Terms &amp; Conditions</a>, <a href="shipping-returns">Shipping &amp; Returns</a> and <a href="privacy">Privacy Policy</a>.<br>
         All transactions are secured and encrypted.
       </p>
 
@@ -533,37 +540,22 @@
     <div class="order-summary">
       <p class="order-summary__title">Your Order</p>
 
-      <div class="summary-item">
-        <img class="summary-item__img" src="test images/TS01556BLK.jpg" alt="Item 01">
-        <div class="summary-item__info">
-          <p class="summary-item__name">Item 01</p>
-          <p class="summary-item__meta">Size: S — Qty: 1</p>
-        </div>
-        <span class="summary-item__price">€59</span>
-      </div>
-
-      <div class="summary-item">
-        <img class="summary-item__img" src="test images/46-04221_1_copy.webp" alt="Item 04">
-        <div class="summary-item__info">
-          <p class="summary-item__name">Item 04</p>
-          <p class="summary-item__meta">Size: M — Qty: 1</p>
-        </div>
-        <span class="summary-item__price">€175</span>
-      </div>
+      <p class="summary-empty" id="summaryEmpty">Loading your cart…</p>
 
       <div class="summary-totals">
         <div class="summary-row">
           <span class="summary-row__label">Subtotal</span>
-          <span>€234</span>
+          <span id="sumSubtotal">—</span>
         </div>
         <div class="summary-row">
           <span class="summary-row__label">Shipping</span>
-          <span>€0</span>
+          <span id="sumShipping">—</span>
         </div>
         <div class="summary-row summary-row--total">
           <span>Total</span>
-          <span>€234</span>
+          <span id="sumTotal">—</span>
         </div>
+        <p class="summary-note" id="shippingNote"></p>
       </div>
     </div>
 
@@ -591,6 +583,7 @@
         </svg>
       </a>
     </div>
+    <nav class="footer__links"><a href="terms">Terms</a><a href="shipping-returns">Shipping &amp; Returns</a><a href="privacy">Privacy</a><a href="terms-el">Ελληνικά</a></nav>
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 

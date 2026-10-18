@@ -1,0 +1,56 @@
+/* Terms, Privacy, Shipping & Returns — English and Greek pages. */
+:root {
+  --white:   #ffffff;
+  --black:   #0d0d0d;
+  --orange:  #C4622D;
+  --gray:    #9A9A9A;
+  --border:  #e8e8e4;
+  --ff-heading: 'Space Grotesk', sans-serif;
+  --ff-body:    'Suisse Intl', 'Inter', sans-serif;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+body {
+  background: var(--white); color: var(--black);
+  font-family: var(--ff-body); -webkit-font-smoothing: antialiased;
+}
+
+.site-header { padding: 24px 40px; text-align: center; border-bottom: 1px solid var(--border); }
+.site-header__logo { width: 200px; height: auto; margin: 0 auto; }
+
+.legal { max-width: 720px; margin: 0 auto; padding: 64px 24px 90px; }
+.legal__top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 18px; }
+.legal__eyebrow { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gray); }
+.legal__lang { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); text-decoration: none; }
+.legal h1 { font-family: var(--ff-heading); font-weight: 500; font-size: clamp(28px, 4.5vw, 40px); line-height: 1.15; margin-bottom: 8px; }
+.legal__updated { font-size: 11px; color: var(--gray); margin-bottom: 40px; }
+.legal h2 {
+  font-family: var(--ff-heading); font-weight: 500; font-size: 17px;
+  margin: 40px 0 12px; padding-top: 20px; border-top: 1px solid var(--border);
+}
+.legal p, .legal li { font-size: 14px; line-height: 1.75; color: #27272a; }
+.legal p + p { margin-top: 12px; }
+.legal ul, .legal ol { margin: 10px 0 0 20px; }
+.legal li + li { margin-top: 6px; }
+.legal a { color: var(--orange); }
+.legal table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+.legal th, .legal td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border); line-height: 1.6; }
+.legal th { font-weight: 500; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); }
+.legal .box { margin-top: 14px; padding: 16px 18px; background: #f7f7f5; border-left: 2px solid var(--black); }
+/* Business details still to be filled in before launch. */
+.legal .todo { background: #fff3c4; padding: 0 3px; }
+
+.site-footer { padding: 32px 24px; border-top: 1px solid var(--border); text-align: center; }
+.footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin-bottom: 12px; }
+.footer__links a { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray); text-decoration: none; }
+.footer__links a:hover { color: var(--black); }
+.footer__legal { font-size: 8px; letter-spacing: 0.18em; color: var(--gray); text-transform: uppercase; }
+
+@media (max-width: 600px) {
+  .legal { padding: 44px 16px 70px; }
+  .legal table, .legal thead, .legal tbody, .legal tr, .legal th, .legal td { display: block; }
+  .legal thead { display: none; }
+  .legal td { border-bottom: none; padding: 2px 0; }
+  .legal tr { border-bottom: 1px solid var(--border); padding: 10px 0; }
+}

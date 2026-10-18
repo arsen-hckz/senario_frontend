@@ -49,6 +49,8 @@ async function handleLogin(e) {
       if (user.is_staff) localStorage.setItem('snr_is_staff', '1');
       else localStorage.removeItem('snr_is_staff');
     }
+    // Anything added to the cart before signing in comes along.
+    await snrMergeGuestCart();
     window.location.href = safeNext(new URLSearchParams(location.search).get('next'));
   } catch (ex) {
     err.textContent = 'Network error. Please try again.';

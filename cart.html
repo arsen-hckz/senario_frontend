@@ -198,6 +198,8 @@
     }
 
     .summary-row__label { color: var(--gray); text-transform: uppercase; }
+    .summary-note { margin: 12px 0 0; font-size: 11px; color: var(--gray); letter-spacing: 0.04em; }
+    .summary-note:empty { display: none; }
 
     .btn-checkout {
       width: 100%; padding: 18px; background: var(--black); color: var(--white);
@@ -294,6 +296,9 @@
       .cart-item__img { width: 80px; height: 96px; }
       .order-summary { padding: 24px 16px 48px; }
     }
+      .footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin: 0 0 12px; }
+    .footer__links a { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray, #9A9A9A); text-decoration: none; }
+    .footer__links a:hover { color: var(--orange, #C4622D); }
   </style>
 </head>
 <body>
@@ -361,12 +366,13 @@
       </div>
       <div class="summary-row">
         <span class="summary-row__label">Shipping</span>
-        <span>Calculated at checkout</span>
+        <span id="shipping">—</span>
       </div>
       <div class="summary-row summary-row--total">
         <span>Total</span>
         <span id="total">€234</span>
       </div>
+      <p class="summary-note" id="shippingNote"></p>
       <a class="btn-checkout" href="checkout">Proceed to Checkout</a>
       <a class="btn-continue" href="collection">← Continue Shopping</a>
     </div>
@@ -395,6 +401,7 @@
         </svg>
       </a>
     </div>
+    <nav class="footer__links"><a href="terms">Terms</a><a href="shipping-returns">Shipping &amp; Returns</a><a href="privacy">Privacy</a><a href="terms-el">Ελληνικά</a></nav>
     <p class="footer__legal">© 2025 Σenario — All Rights Reserved</p>
   </footer>
 
