@@ -1,0 +1,45 @@
+/* Site-wide colours, as on the moodboard: black header and footer with orange
+   text, white page content. Linked after each page's own styles so it wins. */
+
+/* Space past the footer on short pages (and overscroll) is black like the footer;
+   the page content keeps its own white background. */
+html { background: var(--black); }
+/* A full-screen-tall white body would show white below the footer instead.
+   .full-height pages (404) lay out their footer at the bottom themselves. */
+body:not(.full-height) { min-height: 0; }
+
+.site-header { background: var(--black); border-bottom: none; }
+
+.site-header__nav a,
+.site-header__actions a,
+.account-menu__trigger { color: var(--orange); }
+
+.site-header__nav a:hover,
+.site-header__nav a.active,
+.site-header__actions a:hover,
+.account-menu__trigger:hover { color: var(--white); }
+
+.site-footer { background: var(--black); border-top: none; position: relative; padding-top: 60px; }
+
+/* The moodboard's divider above the footer: a thin line with an orange diamond. */
+.site-footer::before {
+  content: '';
+  position: absolute; top: 22px; left: 10px; right: 10px; height: 1px;
+  background: linear-gradient(to right,
+    var(--border) calc(50% - 13px), transparent calc(50% - 13px),
+    transparent calc(50% + 13px), var(--border) calc(50% + 13px));
+}
+.site-footer::after {
+  content: '';
+  position: absolute; top: 22px; left: 50%; width: 5px; height: 5px;
+  background: var(--orange);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.footer__slogan { color: var(--orange); }
+
+.social-btn { color: var(--white); border-color: rgba(255, 255, 255, 0.18); }
+.social-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+.footer__links a { color: var(--gray); }
+.footer__links a:hover { color: var(--orange); }
+.footer__legal { color: rgba(255, 255, 255, 0.35); }
