@@ -170,6 +170,13 @@
     }
     .btn-place-order:hover { background: var(--orange); }
 
+    .secure-by {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 14px; font-family: var(--ff-body); font-size: 9px;
+      letter-spacing: 0.12em; color: var(--gray);
+    }
+    .secure-by img { height: 16px; width: auto; display: block; }
+
     .form-note {
       margin-top: 14px; font-family: var(--ff-body); font-size: 8px;
       letter-spacing: 0.12em; color: var(--gray); line-height: 1.7;
@@ -528,6 +535,7 @@
       </div>
 
       <button class="btn-place-order">Place Order</button>
+      <p class="secure-by">Secure payment by <img src="viva-logo.png" alt="viva.com" width="92" height="16"></p>
       <p class="form-note">
         By placing your order you agree to our <a href="terms">Terms &amp; Conditions</a>, <a href="shipping-returns">Shipping &amp; Returns</a> and <a href="privacy">Privacy Policy</a>.<br>
         All transactions are secured and encrypted.
