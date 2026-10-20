@@ -43,7 +43,11 @@ async function apiFetch(path, opts) {
    backend for a Viva checkout and redirects there. Returns null when the
    redirect is under way, or a message to show when it couldn't start
    (already paid, cancelled, an item sold out, Viva unreachable). */
-async function snrStartPayment(orderId, guestToken) {
+/* Viva's payment page opens on this method first: 0 card, 20 Apple Pay,
+   21 Google Pay. The customer can still switch there. */
+var SNR_PAYMENT_METHODS = ['0', '20', '21'];
+
+async function snrStartPayment(orderId, guestToken, paymentMethod) {
   var res;
   try {
     res = guestToken
@@ -57,7 +61,11 @@ async function snrStartPayment(orderId, guestToken) {
     sessionStorage.setItem('snr_pending_order_id', String(orderId));
     if (guestToken) sessionStorage.setItem('snr_pending_order_token', guestToken);
     else sessionStorage.removeItem('snr_pending_order_token');
-    window.location.href = data.checkout_url;
+    var url = data.checkout_url;
+    if (SNR_PAYMENT_METHODS.indexOf(String(paymentMethod)) !== -1) {
+      url += (url.indexOf('?') === -1 ? '?' : '&') + 'paymentMethod=' + paymentMethod;
+    }
+    window.location.href = url;
     return null;
   }
   var detail = null;

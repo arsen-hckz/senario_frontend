@@ -128,13 +128,25 @@ async function placeOrder(details) {
   return {order: gdata, token: gdata.access_token};
 }
 
+/* Card, Apple Pay or Google Pay: Viva's page opens on the chosen one. */
+var paymentMethod = '0';
+document.querySelectorAll('.pay-icon').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    paymentMethod = btn.dataset.method;
+    document.querySelectorAll('.pay-icon').forEach(function(other) {
+      other.classList.toggle('active', other === btn);
+      other.setAttribute('aria-pressed', other === btn ? 'true' : 'false');
+    });
+  });
+});
+
 document.querySelector('.btn-place-order').addEventListener('click', async function() {
   var btn = this;
 
   if (createdOrderId) {
     btn.textContent = 'Redirecting to payment...';
     btn.disabled = true;
-    var retryError = await snrStartPayment(createdOrderId, createdOrderToken);
+    var retryError = await snrStartPayment(createdOrderId, createdOrderToken, paymentMethod);
     if (retryError) {
       alert(retryError);
       btn.textContent = 'Retry Payment';
@@ -172,7 +184,7 @@ document.querySelector('.btn-place-order').addEventListener('click', async funct
     createdOrderId = result.order.id;
     createdOrderToken = result.token;
     btn.textContent = 'Redirecting to payment...';
-    var startError = await snrStartPayment(createdOrderId, createdOrderToken);
+    var startError = await snrStartPayment(createdOrderId, createdOrderToken, paymentMethod);
     if (startError) {
       alert('Your order #' + createdOrderId + ' is saved, but payment could not start: ' + startError +
             ' You can retry here' + (createdOrderToken ? '.' : ' or from My Orders.'));
