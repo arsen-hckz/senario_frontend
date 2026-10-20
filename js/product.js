@@ -117,22 +117,39 @@ async function loadProduct() {
     });
     renderQty();
 
-    document.querySelector('.btn-atc').addEventListener('click', async function() {
+    /* Adds the selected size and quantity to the cart. Returns true when added;
+       otherwise shows why on `btn` for a moment and returns false. */
+    async function addSelected(btn, label) {
       var sel = sizeGrid.querySelector('.size-btn.selected');
       var variantId = sel ? sel.dataset.variantId : null;
-      var self = this;
+      clearTimeout(btn._t);
       if (variants.length && !variantId) {
-        self.textContent = 'Choose a size';
-        clearTimeout(self._t);
-        self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2000);
-        return;
+        btn.textContent = 'Choose a size';
+        btn._t = setTimeout(function() { btn.textContent = label; }, 2000);
+        return false;
       }
-      self.textContent = '...';
-      self.disabled = true;
+      btn.textContent = '...';
+      btn.disabled = true;
       // Signed in or not: guests get a cart in the browser (see api.js).
       var error = await snrCartAdd(p.id, variantId, qty);
-      clearTimeout(self._t);
-      if (!error) {
+      if (error) {
+        // e.g. "Only 2 left in stock." Shown on the button briefly.
+        btn.textContent = error;
+        btn.disabled = false;
+        btn._t = setTimeout(function() { btn.textContent = label; }, 2500);
+        return false;
+      }
+      return true;
+    }
+
+    // Adds the selection to the cart and goes straight to checkout.
+    document.querySelector('.btn-buy-now').addEventListener('click', async function() {
+      if (await addSelected(this, 'Buy it Now')) window.location.href = 'checkout';
+    });
+
+    document.querySelector('.btn-atc').addEventListener('click', async function() {
+      var self = this;
+      if (await addSelected(self, 'Add to Cart')) {
         self.textContent = '✓ Added to Cart';
         self.classList.add('added');
         qty = 1;
@@ -143,11 +160,6 @@ async function loadProduct() {
           self.classList.remove('added');
           self.disabled = false;
         }, 2000);
-      } else {
-        // e.g. "Only 2 left in stock." Shown on the button briefly.
-        self.textContent = error;
-        self.disabled = false;
-        self._t = setTimeout(function() { self.textContent = 'Add to Cart'; }, 2500);
       }
     });
 
