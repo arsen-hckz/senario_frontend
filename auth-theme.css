@@ -1,0 +1,67 @@
+/* Sign-in pages (login/register, forgot/reset password, verify email) in the
+   moodboard colours: black page, orange accents, white text. Linked after each
+   page's own styles so it wins. */
+
+:root { --border: rgba(255, 255, 255, 0.14); }
+
+html, body { background: var(--black); color: var(--white); }
+
+/* ─── Login / Register ───────────────────────── */
+.form-panel { background: var(--black); }
+
+.back-link:hover { color: var(--orange); }
+
+.auth-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+.auth-tab:hover  { color: var(--white); }
+
+.auth-heading { color: var(--white); }
+
+.field__input { color: var(--white); border-bottom-color: rgba(255, 255, 255, 0.22); }
+.field__input::placeholder { color: rgba(255, 255, 255, 0.22); }
+.field__input:focus { border-bottom-color: var(--orange); }
+/* Browser autofill paints inputs light; keep them dark. */
+.field__input:-webkit-autofill,
+.field input:-webkit-autofill,
+.resend-form input:-webkit-autofill {
+  -webkit-text-fill-color: var(--white);
+  -webkit-box-shadow: 0 0 0 1000px var(--black) inset;
+  caret-color: var(--white);
+}
+
+.auth-submit { background: var(--orange); color: var(--white); }
+.auth-submit:hover { background: var(--white); color: var(--black); }
+
+.auth-divider { color: rgba(255, 255, 255, 0.3); }
+
+.auth-switch button { color: var(--white); }
+.auth-switch button:hover { color: var(--orange); }
+
+.pass-toggle:hover { color: var(--white); }
+
+/* The error lines carry an inline colour that is too dark on black. */
+#loginErr, #regErr { color: #e0533d !important; }
+#regDoneEmail { color: var(--white); font-weight: 500; }
+
+/* ─── Forgot / reset password, verify email ──── */
+.heading { color: var(--white); }
+
+.btn { background: var(--orange); color: var(--white); }
+.btn:hover { background: var(--white); color: var(--black); }
+
+.field input,
+.resend-form input {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--white);
+}
+.field input::placeholder,
+.resend-form input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.field input:focus,
+.resend-form input:focus { border-color: var(--orange); }
+
+.resend-form button { border-color: var(--white); color: var(--white); }
+.resend-form button:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+.spinner { border-color: rgba(255, 255, 255, 0.14); border-top-color: var(--orange); }
+
+.back:hover { color: var(--orange); }
