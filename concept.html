@@ -97,7 +97,7 @@
       max-width: 900px;
     }
 
-    .hero-statement__text span { color: var(--orange); }
+    .hero-statement__text .hero-statement__accent { color: var(--orange); }
 
     .hero-statement__body {
       font-family: var(--ff-body);
@@ -371,13 +371,13 @@
 
   <!-- HERO -->
   <section class="hero-statement">
-    <p class="hero-statement__eyebrow">Σenario / The Story</p>
+    <p class="hero-statement__eyebrow" data-text="hero_eyebrow">Σenario / The Story</p>
     <h1 class="hero-statement__text">
-      A new form of luxury.<br>
-      Not built on status. <span>Built on reality.</span>
+      <span data-text="hero_title">A new form of luxury.<br>
+      Not built on status.</span> <span class="hero-statement__accent" data-text="hero_title_accent">Built on reality.</span>
     </h1>
     <p class="hero-statement__body">
-      Σenario is a shift in perception. We find beauty where others see waste. Silence where others see emptiness. Structure inside chaos.<br><br>
+      <span data-text="hero_body">Σenario is a shift in perception. We find beauty where others see waste. Silence where others see emptiness. Structure inside chaos.<br><br>
       Industrial spaces. Rust. Movement. Human truth.<br>
       Not imperfections. Evidence.<br><br>
       Every piece reflects observation.<br>
@@ -385,69 +385,69 @@
       No noise. No performance. No excess.<br>
       Just identity.<br><br>
       Luxury is no longer about showing more.<br>
-      It's about seeing more.
-      <em>Σenario is a mindset.</em>
+      It's about seeing more.</span>
+      <em data-text="hero_closing">Σenario is a mindset.</em>
     </p>
   </section>
 
   <!-- PROCESS STRIP -->
   <section class="process-strip">
     <div class="process-strip__header">
-      <h2 class="process-strip__title">The Process</h2>
-      <p class="process-strip__sub">Where the clothes come from</p>
+      <h2 class="process-strip__title" data-text="process_title">The Process</h2>
+      <p class="process-strip__sub" data-text="process_subtitle">Where the clothes come from</p>
     </div>
     <div class="process-grid">
       <div class="process-cell">
-        <img src="extracted_images/page4_img1.jpeg" alt="Observation">
-        <span class="process-cell__label">01 — Observation</span>
+        <img src="process/process-1.jpg" alt="" loading="lazy">
+        <span class="process-cell__label" data-text="process_1">01 — Observation</span>
       </div>
       <div class="process-cell">
-        <img src="extracted_images/page7_img1.jpeg" alt="Movement">
-        <span class="process-cell__label">02 — Movement</span>
+        <img src="process/process-2.jpg" alt="" loading="lazy">
+        <span class="process-cell__label" data-text="process_2">02 — Movement</span>
       </div>
       <div class="process-cell">
-        <img src="new_img1.png" alt="Craft">
-        <span class="process-cell__label">03 — Craft</span>
+        <img src="process/process-3.jpg" alt="" loading="lazy">
+        <span class="process-cell__label" data-text="process_3">03 — Craft</span>
       </div>
       <div class="process-cell">
-        <img src="extracted_images/page8_img1.jpeg" alt="Contrast">
-        <span class="process-cell__label">04 — Contrast</span>
+        <img src="process/process-4.jpg" alt="" loading="lazy">
+        <span class="process-cell__label" data-text="process_4">04 — Contrast</span>
       </div>
     </div>
   </section>
 
   <!-- FULL BLEED QUOTE -->
   <div class="bleed-quote">
-    <p class="bleed-quote__text">Wear<br>the<br>Script.</p>
-    <p class="bleed-quote__attr">Σenario / Brand Manifesto</p>
+    <p class="bleed-quote__text" data-text="quote">Wear<br>the<br>Script.</p>
+    <p class="bleed-quote__attr" data-text="quote_attr">Σenario / Brand Manifesto</p>
   </div>
 
   <!-- COMPACT PILLARS -->
   <section class="pillars">
-    <p class="pillars__header">The Brand</p>
+    <p class="pillars__header" data-text="pillars_title">The Brand</p>
     <div class="pillars__grid">
       <div class="pillar">
-        <p class="pillar__num">01 — The Idea</p>
-        <h3 class="pillar__title">Born from Raw Reality</h3>
-        <p class="pillar__body">
+        <p class="pillar__num" data-text="pillar_1_num">01 — The Idea</p>
+        <h3 class="pillar__title" data-text="pillar_1_title">Born from Raw Reality</h3>
+        <p class="pillar__body" data-text="pillar_1_body">
           Σenario did not start in a studio. It started in the street — industrial zones,
           waste environments, real human moments most brands filter out. Trash, rust,
           and texture are not imperfections. They are evidence of a life actually lived.
         </p>
       </div>
       <div class="pillar">
-        <p class="pillar__num">02 — The Purpose</p>
-        <h3 class="pillar__title">Real People. No Models.</h3>
-        <p class="pillar__body">
+        <p class="pillar__num" data-text="pillar_2_num">02 — The Purpose</p>
+        <h3 class="pillar__title" data-text="pillar_2_title">Real People. No Models.</h3>
+        <p class="pillar__body" data-text="pillar_2_body">
           Every piece is designed to be worn by the person who builds things and moves
           through cities without performance. We shoot the people around us — friends,
           workers, anyone who carries themselves with quiet presence.
         </p>
       </div>
       <div class="pillar">
-        <p class="pillar__num">03 — The Identity</p>
-        <h3 class="pillar__title">The Σ Symbol</h3>
-        <p class="pillar__body">
+        <p class="pillar__num" data-text="pillar_3_num">03 — The Identity</p>
+        <h3 class="pillar__title" data-text="pillar_3_title">The Σ Symbol</h3>
+        <p class="pillar__body" data-text="pillar_3_body">
           In mathematics, sigma represents a sum — the total of all parts. Every garment
           is the sum of the environment it came from, the person who will wear it,
           and the moment it was made for. Nothing added that should not be there.

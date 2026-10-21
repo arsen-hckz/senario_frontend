@@ -256,6 +256,24 @@
     .action-btn--delete { color: var(--gray); }
     .action-btn--delete:hover { color: #c0392b; }
 
+    /* product order: arrows + drag */
+    .order-cell-btns { white-space: nowrap; }
+    .order-btn {
+      background: none; border: 1px solid var(--border); cursor: pointer;
+      width: 26px; height: 26px; font-size: 12px; line-height: 1; color: var(--black);
+    }
+    .order-btn:hover:not(:disabled) { border-color: var(--black); color: var(--orange); }
+    .order-btn:disabled { opacity: 0.25; cursor: default; }
+    .product-row { cursor: grab; }
+    .product-row--dragging td { opacity: 0.4; }
+    .product-row--over td { box-shadow: inset 0 2px 0 var(--orange); }
+
+    /* concept text editor */
+    .text-form { display: flex; flex-direction: column; gap: 22px; max-width: 720px; }
+    .text-form .form-field textarea { resize: vertical; line-height: 1.6; }
+    .text-form__actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+    .text-form__status { font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.1em; color: var(--gray); }
+
     /* STATUS BADGE */
     .status-badge {
       display: inline-block;
@@ -661,6 +679,7 @@
         <li><a href="#" data-page="orders" data-click="showPage">Orders</a></li>
         <li><a href="#" data-page="moodboard" data-click="showPage">Moodboard</a></li>
         <li><a href="#" data-page="posts" data-click="showPage">Sale Posts</a></li>
+        <li><a href="#" data-page="concept" data-click="showPage">Concept Text</a></li>
       </ul>
     </aside>
 
@@ -694,9 +713,11 @@
           <p class="table-title" id="productCount"></p>
           <button class="btn-add" data-click="addProduct">+ Add Product</button>
         </div>
+        <p class="mb-micro-hint">Use the arrows (or drag a row) to change the order — the Collection page shows products in this order.</p>
         <table class="data-table">
           <thead>
             <tr>
+              <th>Order</th>
               <th></th>
               <th>Name</th>
               <th>Price</th>
@@ -751,6 +772,15 @@
         </div>
         <p class="mb-micro-hint">Drag a post to reorder. The "Sale" nav link stays hidden on the live site until the first post exists.</p>
         <div class="sp-list" id="postGrid"></div>
+      </div>
+
+      <!-- CONCEPT TEXT -->
+      <div class="admin-page" id="page-concept">
+        <h1 class="page-title">Concept Text</h1>
+        <p class="mb-note">The texts on the Concept page. Empty a box to go back to the original text. Changes show on the live page as soon as you save.</p>
+        <form class="text-form" id="conceptForm" data-submit="saveConceptText">
+          <p class="text-form__status">Loading...</p>
+        </form>
       </div>
 
     </main>

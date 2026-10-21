@@ -1,8 +1,6 @@
 gsap.registerPlugin(ScrollTrigger);
 
-gsap.to('.hero-statement', {
-  opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.1
-});
+/* The hero fades in from concept-2.js once the edited texts have loaded. */
 
 ['.process-strip', '.bleed-quote', '.pillars'].forEach(sel => {
   document.querySelectorAll(sel).forEach(el => {

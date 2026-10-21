@@ -15,6 +15,7 @@ function showPage(page, link) {
   if (page === 'orders')     renderAllOrders();
   if (page === 'moodboard')  renderMoodboardAdmin();
   if (page === 'posts')      renderSalePostsAdmin();
+  if (page === 'concept')    renderConceptText();
 }
 
 /* OVERVIEW */
@@ -114,41 +115,121 @@ function stockBadge(stock) {
   return                  '<span class="stock-badge stock-badge--in">In Stock</span>';
 }
 
+/* The admin list, in shop order; the arrows and drag-and-drop reorder it. */
+var adminProducts = [];
+
 async function renderProducts() {
   var tbody = document.getElementById('productTableBody');
-  tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr>';
   try {
     var res = await apiFetch('/products/admin/');
-    var products = res && res.ok ? await res.json() : [];
-    document.getElementById('productCount').textContent = products.length + ' product' + (products.length===1?'':'s');
-    tbody.innerHTML = '';
-    products.forEach(function(p) {
-      var stock  = (p.variants && p.variants.length)
-        ? p.variants.reduce(function(sum, v) { return sum + (v.stock || 0); }, 0)
-        : (p.stock || 0);
-      var onSale = p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price);
-      var priceCell = onSale
-        ? '<span style="text-decoration:line-through;color:var(--gray);">' + formatEuro(parseFloat(p.price))+'</span> <span style="color:var(--orange);">' + formatEuro(parseFloat(p.sale_price))+'</span>'
-        : '' + formatEuro(parseFloat(p.price));
-      var safeName = escHtml(p.name);
-      var nameCell = safeName + (onSale ? '<span class="sale-badge">Sale</span>' : '');
-      var tr = document.createElement('tr');
-      tr.innerHTML =
-        '<td><img class="product-thumb" src="'+(p.image||'')+'" alt="'+safeName+'"></td>'+
-        '<td>'+nameCell+'</td>'+
-        '<td style="font-family:var(--ff-mono);font-size:11px;">'+priceCell+'</td>'+
-        '<td style="font-family:var(--ff-mono);font-size:11px;">'+stock+'</td>'+
-        '<td>'+stockBadge(stock)+'</td>'+
-        '<td>'+(p.category ? escHtml(p.category.name) : '—')+'</td>'+
-        '<td>'+
-          '<button class="action-btn action-btn--edit" data-click="editProduct" data-id="'+p.id+'">Edit</button>'+
-          '<button class="action-btn action-btn--delete" data-click="deleteProduct" data-id="'+p.id+'">Delete</button>'+
-        '</td>';
-      tbody.appendChild(tr);
-    });
+    adminProducts = res && res.ok ? await res.json() : [];
+    drawProductRows();
   } catch (ex) {
-    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Failed to load products.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--gray);text-align:center;padding:24px;">Failed to load products.</td></tr>';
   }
+}
+
+function drawProductRows() {
+  var tbody = document.getElementById('productTableBody');
+  var products = adminProducts;
+  document.getElementById('productCount').textContent = products.length + ' product' + (products.length===1?'':'s');
+  tbody.innerHTML = '';
+  products.forEach(function(p, i) {
+    var stock  = (p.variants && p.variants.length)
+      ? p.variants.reduce(function(sum, v) { return sum + (v.stock || 0); }, 0)
+      : (p.stock || 0);
+    var onSale = p.sale_price && parseFloat(p.sale_price) < parseFloat(p.price);
+    var priceCell = onSale
+      ? '<span style="text-decoration:line-through;color:var(--gray);">' + formatEuro(parseFloat(p.price))+'</span> <span style="color:var(--orange);">' + formatEuro(parseFloat(p.sale_price))+'</span>'
+      : '' + formatEuro(parseFloat(p.price));
+    var safeName = escHtml(p.name);
+    var nameCell = safeName + (onSale ? '<span class="sale-badge">Sale</span>' : '');
+    var tr = document.createElement('tr');
+    tr.className = 'product-row';
+    tr.draggable = true;
+    tr.dataset.id = p.id;
+    tr.innerHTML =
+      '<td class="order-cell-btns">'+
+        '<button type="button" class="order-btn" title="Move up" data-click="moveProduct" data-id="'+p.id+'" data-dir="-1"'+(i===0?' disabled':'')+'>&uarr;</button> '+
+        '<button type="button" class="order-btn" title="Move down" data-click="moveProduct" data-id="'+p.id+'" data-dir="1"'+(i===products.length-1?' disabled':'')+'>&darr;</button>'+
+      '</td>'+
+      '<td><img class="product-thumb" src="'+escHtml(p.image||'')+'" alt="'+safeName+'"></td>'+
+      '<td>'+nameCell+'</td>'+
+      '<td style="font-family:var(--ff-mono);font-size:11px;">'+priceCell+'</td>'+
+      '<td style="font-family:var(--ff-mono);font-size:11px;">'+stock+'</td>'+
+      '<td>'+stockBadge(stock)+'</td>'+
+      '<td>'+(p.category ? escHtml(p.category.name) : '—')+'</td>'+
+      '<td>'+
+        '<button class="action-btn action-btn--edit" data-click="editProduct" data-id="'+p.id+'">Edit</button>'+
+        '<button class="action-btn action-btn--delete" data-click="deleteProduct" data-id="'+p.id+'">Delete</button>'+
+      '</td>';
+    tbody.appendChild(tr);
+  });
+  bindTileDrag(tbody, '.product-row', prDragStart, prDragOver, prDragLeave, prDrop, prDragEnd);
+}
+
+/* Moves product `id` to index `to`, redraws at once, then saves the order.
+   On failure the list is reloaded so it shows what the server has. */
+async function moveProductTo(id, to) {
+  var from = adminProducts.findIndex(function (p) { return String(p.id) === String(id); });
+  if (from < 0 || to < 0 || to >= adminProducts.length || from === to) return;
+  var moved = adminProducts.splice(from, 1)[0];
+  adminProducts.splice(to, 0, moved);
+  drawProductRows();
+  try {
+    var res = await apiFetch('/products/admin/reorder/', {
+      method: 'POST',
+      body: JSON.stringify({ order: adminProducts.map(function (p) { return p.id; }) })
+    });
+    if (!res || !res.ok) throw new Error();
+  } catch (ex) {
+    alert('Could not save the new order. Please try again.');
+    renderProducts();
+  }
+}
+
+function moveProduct(id, dir) {
+  var from = adminProducts.findIndex(function (p) { return String(p.id) === String(id); });
+  moveProductTo(id, from + dir);
+}
+
+var prDragSrcId = null;
+
+function prDragStart(e, id) {
+  prDragSrcId = String(id);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', prDragSrcId);
+  e.currentTarget.classList.add('product-row--dragging');
+}
+
+function prDragOver(e, id) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (prDragSrcId === String(id)) return;
+  e.currentTarget.classList.add('product-row--over');
+}
+
+function prDragLeave(e) {
+  e.currentTarget.classList.remove('product-row--over');
+}
+
+function prDragEnd(e) {
+  e.currentTarget.classList.remove('product-row--dragging');
+  document.querySelectorAll('.product-row--over').forEach(function (el) {
+    el.classList.remove('product-row--over');
+  });
+  prDragSrcId = null;
+}
+
+function prDrop(e, targetId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('product-row--over');
+  var srcId = prDragSrcId;
+  prDragSrcId = null;
+  if (!srcId || srcId === String(targetId)) return;
+  var to = adminProducts.findIndex(function (p) { return String(p.id) === String(targetId); });
+  moveProductTo(srcId, to);
 }
 
 /* ALL ORDERS */
@@ -836,6 +917,72 @@ document.getElementById('postModal').addEventListener('click', function (e) {
   if (e.target === this) closePostModal();
 });
 
+/* CONCEPT TEXT */
+async function renderConceptText() {
+  var form = document.getElementById('conceptForm');
+  form.innerHTML = '<p class="text-form__status">Loading...</p>';
+  try {
+    var res = await apiFetch('/content/admin/concept/');
+    if (!res || !res.ok) throw new Error();
+    drawConceptFields(await res.json());
+  } catch (ex) {
+    form.innerHTML = '<p class="text-form__status">Failed to load the texts.</p>';
+  }
+}
+
+function drawConceptFields(fields) {
+  var form = document.getElementById('conceptForm');
+  form.innerHTML = '';
+  fields.forEach(function (f) {
+    var wrap = document.createElement('div');
+    wrap.className = 'form-field';
+    var label = document.createElement('label');
+    label.htmlFor = 'ct_' + f.key;
+    label.textContent = f.label;
+    var input;
+    if (f.multiline) {
+      input = document.createElement('textarea');
+      input.rows = Math.min(14, Math.max(3, f.value.split('\n').length + Math.ceil(f.value.length / 90)));
+    } else {
+      input = document.createElement('input');
+      input.type = 'text';
+    }
+    input.id = 'ct_' + f.key;
+    input.name = f.key;
+    input.maxLength = f.max_length;
+    input.value = f.value;
+    input.placeholder = f.default;
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    form.appendChild(wrap);
+  });
+  var actions = document.createElement('div');
+  actions.className = 'text-form__actions';
+  actions.innerHTML = '<button type="submit" class="btn-save">Save Texts</button><span class="text-form__status" id="conceptStatus"></span>';
+  form.appendChild(actions);
+}
+
+async function saveConceptText() {
+  var form = document.getElementById('conceptForm');
+  var status = document.getElementById('conceptStatus');
+  var body = {};
+  form.querySelectorAll('input[name], textarea[name]').forEach(function (el) { body[el.name] = el.value; });
+  status.textContent = 'Saving...';
+  try {
+    var res = await apiFetch('/content/admin/concept/', { method: 'PATCH', body: JSON.stringify(body) });
+    var data = res ? await res.json() : null;
+    if (!res || !res.ok) {
+      var problems = data && typeof data === 'object' ? Object.keys(data).map(function (k) { return k + ': ' + data[k]; }) : [];
+      status.textContent = 'Not saved. ' + problems.join(' ');
+      return;
+    }
+    drawConceptFields(data);
+    document.getElementById('conceptStatus').textContent = 'Saved.';
+  } catch (ex) {
+    status.textContent = 'Not saved — check your connection and try again.';
+  }
+}
+
 renderOverview();
 
 /* Handlers for this page's data-click / data-change / data-submit
@@ -845,6 +992,8 @@ snrOn('click', 'showPage', function (el, event) { showPage(el.dataset.page, el);
 snrOn('click', 'addProduct', function (el, event) { openModal(); });
 snrOn('click', 'editProduct', function (el, event) { openModal(Number(el.dataset.id)); });
 snrOn('click', 'deleteProduct', function (el, event) { deleteProduct(Number(el.dataset.id)); });
+snrOn('click', 'moveProduct', function (el, event) { moveProduct(el.dataset.id, Number(el.dataset.dir)); });
+snrOn('submit', 'saveConceptText', function (el, event) { event.preventDefault(); saveConceptText(); });
 snrOn('change', 'addGalleryFiles', function (el, event) { addGalleryFiles(el); });
 snrOn('click', 'saveProduct', function (el, event) { saveProduct(); });
 snrOn('click', 'closeModal', function (el, event) { closeModal(); });
