@@ -32,19 +32,24 @@ if (isSignedIn()) {
 var cartIsEmpty = true;
 
 async function loadCartSummary() {
+  renderSummary(await snrCartGet());
+}
+
+function renderSummary(cart) {
   var container = document.querySelector('.order-summary');
   var emptyEl   = document.getElementById('summaryEmpty');
   var totalsEl  = container.querySelector('.summary-totals');
   container.querySelectorAll('.summary-item').forEach(function(el) { el.remove(); });
 
-  var cart = await snrCartGet();
   if (!cart) {
     emptyEl.textContent = 'Could not load your cart. Please refresh the page.';
     return;
   }
   cartIsEmpty = !cart.items.length;
   if (cartIsEmpty) {
+    emptyEl.style.display = '';
     emptyEl.innerHTML = 'Your cart is empty. <a href="collection">Browse the collection →</a>';
+    ['sumSubtotal', 'sumShipping', 'sumTotal'].forEach(function(id) { document.getElementById(id).textContent = '—'; });
     return;
   }
   emptyEl.style.display = 'none';
@@ -56,12 +61,19 @@ async function loadCartSummary() {
     var safeSize = escHtml(size);
     var div   = document.createElement('div');
     div.className = 'summary-item';
+    div.dataset.itemId = item.id;
     div.innerHTML =
       '<img class="summary-item__img" src="' + escHtml(item.product.image || '') + '" alt="' + safeName + '">' +
       '<div class="summary-item__info">' +
         '<p class="summary-item__name">' + safeName + '</p>' +
-        '<p class="summary-item__meta">' + (size ? 'Size: ' + safeSize + ' — ' : '') + 'Qty: ' + item.qty + '</p>' +
+        (size ? '<p class="summary-item__meta">Size: ' + safeSize + '</p>' : '') +
         (item.problem ? '<p class="summary-item__meta" style="color:var(--orange);">' + escHtml(item.problem) + '</p>' : '') +
+        '<div class="summary-qty">' +
+          '<button type="button" class="summary-qty__btn" data-click="changeQty" data-delta="-1" aria-label="One less"' + (item.qty <= 1 ? ' disabled' : '') + '>−</button>' +
+          '<span class="summary-qty__val">' + item.qty + '</span>' +
+          '<button type="button" class="summary-qty__btn" data-click="changeQty" data-delta="1" aria-label="One more">+</button>' +
+          '<button type="button" class="summary-qty__remove" data-click="removeItem">Remove</button>' +
+        '</div>' +
       '</div>' +
       '<span class="summary-item__price">' + formatEuro(price * item.qty) + '</span>';
     container.insertBefore(div, totalsEl);
@@ -71,6 +83,30 @@ async function loadCartSummary() {
   document.getElementById('sumSubtotal').textContent = formatEuro(parseFloat(cart.total || 0));
   document.getElementById('sumShipping').textContent = shipping > 0 ? formatEuro(shipping) : 'Free';
   document.getElementById('sumTotal').textContent    = formatEuro(parseFloat(cart.grand_total || cart.total || 0));
+}
+
+/* Quantity changes on the summary. Locked once the order exists: placing
+   it empties the cart, so the order (not the cart) holds the items then. */
+var summaryBusy = false;
+
+async function setSummaryQty(el, qty) {
+  if (createdOrderId || summaryBusy) return;
+  var row = el.closest('.summary-item');
+  summaryBusy = true;
+  row.style.opacity = '0.5';
+  var result = await snrCartSetQty(row.dataset.itemId, qty);
+  summaryBusy = false;
+  if (result.cart) {
+    renderSummary(result.cart);
+    snrUpdateCartBadge();
+  } else {
+    row.style.opacity = '';
+    if (result.error) alert(result.error);
+  }
+}
+
+function lockSummary() {
+  document.querySelector('.order-summary').classList.add('order-summary--locked');
 }
 
 /* Order creation and payment are separate steps against the API. We keep
@@ -183,6 +219,7 @@ document.querySelector('.btn-place-order').addEventListener('click', async funct
     }
     createdOrderId = result.order.id;
     createdOrderToken = result.token;
+    lockSummary();
     btn.textContent = 'Redirecting to payment...';
     var startError = await snrStartPayment(createdOrderId, createdOrderToken, paymentMethod);
     if (startError) {
@@ -203,3 +240,9 @@ document.querySelector('.btn-place-order').addEventListener('click', async funct
 snrOn('click', 'logout', function (el, event) { logout(); });
 snrOn('click', 'loginCheckout', function (el, event) { loginCheckout(); });
 snrOn('click', 'startCheckout', function (el, event) { startCheckout(); });
+snrOn('click', 'changeQty', function (el, event) {
+  var current = parseInt(el.closest('.summary-item').querySelector('.summary-qty__val').textContent, 10);
+  var next = current + Number(el.dataset.delta);
+  if (next >= 1) setSummaryQty(el, next);
+});
+snrOn('click', 'removeItem', function (el, event) { setSummaryQty(el, 0); });

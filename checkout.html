@@ -218,6 +218,26 @@
       text-transform: uppercase; color: var(--gray); margin-top: 4px;
     }
 
+    .summary-qty { display: flex; align-items: center; gap: 0; margin-top: 8px; }
+    .summary-qty__btn {
+      width: 28px; height: 28px; border: 1px solid var(--border); background: none;
+      font-family: var(--ff-body); font-size: 13px; cursor: pointer; color: var(--black);
+      transition: background 0.2s;
+    }
+    .summary-qty__btn:hover:not(:disabled) { background: var(--border); }
+    .summary-qty__btn:disabled { opacity: 0.35; cursor: default; }
+    .summary-qty__val {
+      min-width: 32px; height: 28px; line-height: 26px; text-align: center;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      font-family: var(--ff-body); font-size: 12px;
+    }
+    .summary-qty__remove {
+      margin-left: 14px; background: none; border: none; cursor: pointer; padding: 0;
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gray);
+    }
+    .summary-qty__remove:hover { color: var(--black); }
+    .order-summary--locked .summary-qty { display: none; }
     .summary-item__price {
       font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.1em;
     }
