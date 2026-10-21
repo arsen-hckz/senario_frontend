@@ -56,14 +56,14 @@ async function renderPosts() {
           (post.note ? '<span class="post-card__note">' + escHtml(post.note) + '</span>' : '') +
         '</div>';
 
-      var imgSrc = p.image || 'test images/TS01556BLK.jpg';
+      var imgSrc = p.image || 'logo_mark_transparent_orange.png';
 
       var card = document.createElement('a');
       card.className = 'product-card' + (oos ? ' product-card--oos' : '');
       card.href = 'product?slug=' + p.slug;
       card.innerHTML =
         '<div class="product-card__image">' +
-          '<img src="' + imgSrc + '" alt="' + safeName + '">' +
+          '<img src="' + escHtml(imgSrc) + '" alt="' + safeName + '">' +
           captionHtml + stockTag + atcBtn +
         '</div>' +
         '<div class="product-card__info">' +

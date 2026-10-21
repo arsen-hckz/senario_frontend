@@ -27,7 +27,7 @@ function renderCart(data) {
   data.items.forEach(function(item) {
     var size = item.variant ? item.variant.size : '';
     var price = parseFloat(item.product.effective_price || item.product.price);
-    var imgSrc = item.product.image || 'test images/TS01556BLK.jpg';
+    var imgSrc = item.product.image || 'logo_mark_transparent_orange.png';
     var safeName = escHtml(item.product.name);
     var safeSize = escHtml(size);
 
@@ -36,7 +36,7 @@ function renderCart(data) {
     div.dataset.itemId = item.id;
     div.dataset.price  = price;
     div.innerHTML =
-      '<img class="cart-item__img" src="' + imgSrc + '" alt="' + safeName + '">' +
+      '<img class="cart-item__img" src="' + escHtml(imgSrc) + '" alt="' + safeName + '">' +
       '<div class="cart-item__details">' +
         '<span class="cart-item__name">' + safeName + '</span>' +
         (size ? '<span class="cart-item__meta">Size: ' + safeSize + '</span>' : '') +

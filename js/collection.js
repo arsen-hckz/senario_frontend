@@ -47,14 +47,14 @@ async function renderGrid() {
         ? '<div class="product-card__price-wrap"><span class="product-card__price--original">' + formatEuro(origPrice) + '</span><span class="product-card__price--sale">' + formatEuro(effPrice) + '</span></div>'
         : '<span class="product-card__price">' + formatEuro(effPrice) + '</span>';
 
-      var imgSrc = p.image || 'test images/TS01556BLK.jpg';
+      var imgSrc = p.image || 'logo_mark_transparent_orange.png';
 
       var card = document.createElement('a');
       card.className = 'product-card' + (oos ? ' product-card--oos' : '');
       card.href = 'product?slug=' + p.slug;
       card.innerHTML =
         '<div class="product-card__image">' +
-          '<img src="' + imgSrc + '" alt="' + safeName + '">' +
+          '<img src="' + escHtml(imgSrc) + '" alt="' + safeName + '">' +
           tagHtml + stockTag + atcBtn +
         '</div>' +
         '<div class="product-card__info">' +

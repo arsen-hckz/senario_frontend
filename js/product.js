@@ -5,7 +5,7 @@ var slug = new URLSearchParams(window.location.search).get('slug');
 
 function initGallery(p) {
   var urls = (p.images || []).map(function(img) { return img.image; });
-  if (!urls.length) urls = [p.image || 'test images/TS01556BLK.jpg'];
+  if (!urls.length) urls = [p.image || 'logo_mark_transparent_orange.png'];
 
   var main   = document.getElementById('prod-img');
   var prev   = document.getElementById('galleryPrev');
