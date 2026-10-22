@@ -35,6 +35,20 @@ function showConceptHero() {
   showConceptHero();
 })();
 
+/* Photos staff replaced in the admin dashboard. The HTML keeps the original
+   photos; an uploaded one (non-null URL) takes its place. */
+(async function loadConceptImages() {
+  try {
+    var res = await fetch(API_BASE + '/content/concept/images/');
+    if (!res.ok) return;
+    var urls = await res.json();
+    document.querySelectorAll('img[data-image]').forEach(function (img) {
+      var url = urls[img.dataset.image];
+      if (typeof url === 'string' && /^https?:\/\//.test(url)) img.src = url;
+    });
+  } catch (ex) { /* keep the built-in photos */ }
+})();
+
 /* Handlers for this page's data-click / data-change / data-submit
    attributes (see actions.js). */
 snrOn('click', 'logout', function (el, event) { logout(); });

@@ -274,6 +274,23 @@
     .text-form__actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
     .text-form__status { font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.1em; color: var(--gray); }
 
+    /* concept photos */
+    .photo-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; max-width: 900px; margin-bottom: 44px; }
+    .photo-slot { display: flex; flex-direction: column; gap: 8px; }
+    .photo-slot img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #f0f0ee; }
+    .photo-slot__label { font-family: var(--ff-body); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .photo-slot__note { font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.1em; color: var(--gray); min-height: 10px; }
+    .photo-slot__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .photo-slot__actions label,
+    .photo-slot__actions button {
+      font-family: var(--ff-body); font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 8px 10px; border: 1px solid var(--black); background: var(--white); color: var(--black); cursor: pointer;
+    }
+    .photo-slot__actions label:hover,
+    .photo-slot__actions button:hover { background: var(--black); color: var(--white); }
+    .photo-slot__actions input[type=file] { display: none; }
+    .section-title { font-family: var(--ff-heading); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; margin: 8px 0 16px; }
+
     /* STATUS BADGE */
     .status-badge {
       display: inline-block;
@@ -679,7 +696,7 @@
         <li><a href="#" data-page="orders" data-click="showPage">Orders</a></li>
         <li><a href="#" data-page="moodboard" data-click="showPage">Moodboard</a></li>
         <li><a href="#" data-page="posts" data-click="showPage">Sale Posts</a></li>
-        <li><a href="#" data-page="concept" data-click="showPage">Concept Text</a></li>
+        <li><a href="#" data-page="concept" data-click="showPage">Concept Page</a></li>
       </ul>
     </aside>
 
@@ -776,7 +793,11 @@
 
       <!-- CONCEPT TEXT -->
       <div class="admin-page" id="page-concept">
-        <h1 class="page-title">Concept Text</h1>
+        <h1 class="page-title">Concept Page</h1>
+        <h2 class="section-title">Photos</h2>
+        <p class="mb-note">The four process photos. "Change photo" uploads a new one straight away; "Use original" puts the site's own photo back.</p>
+        <div class="photo-slots" id="conceptPhotos"><p class="text-form__status">Loading...</p></div>
+        <h2 class="section-title">Texts</h2>
         <p class="mb-note">The texts on the Concept page. Empty a box to go back to the original text. Changes show on the live page as soon as you save.</p>
         <form class="text-form" id="conceptForm" data-submit="saveConceptText">
           <p class="text-form__status">Loading...</p>

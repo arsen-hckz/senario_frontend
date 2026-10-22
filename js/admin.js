@@ -15,7 +15,7 @@ function showPage(page, link) {
   if (page === 'orders')     renderAllOrders();
   if (page === 'moodboard')  renderMoodboardAdmin();
   if (page === 'posts')      renderSalePostsAdmin();
-  if (page === 'concept')    renderConceptText();
+  if (page === 'concept')    { renderConceptText(); renderConceptPhotos(); }
 }
 
 /* OVERVIEW */
@@ -983,6 +983,94 @@ async function saveConceptText() {
   }
 }
 
+/* CONCEPT PHOTOS */
+/* The page's own photo for each slot, shown until one is uploaded. */
+var CONCEPT_PHOTO_DEFAULTS = {
+  process_photo_1: 'process/process-1.jpg',
+  process_photo_2: 'process/process-2.jpg',
+  process_photo_3: 'process/process-3.jpg',
+  process_photo_4: 'process/process-4.jpg'
+};
+
+async function renderConceptPhotos() {
+  var box = document.getElementById('conceptPhotos');
+  try {
+    var res = await apiFetch('/content/admin/concept/images/');
+    if (!res || !res.ok) throw new Error();
+    drawConceptPhotos(await res.json());
+  } catch (ex) {
+    box.innerHTML = '<p class="text-form__status">Failed to load the photos.</p>';
+  }
+}
+
+function drawConceptPhotos(slots) {
+  var box = document.getElementById('conceptPhotos');
+  box.innerHTML = '';
+  slots.forEach(function (s) {
+    var card = document.createElement('div');
+    card.className = 'photo-slot';
+    var img = document.createElement('img');
+    img.src = s.url || CONCEPT_PHOTO_DEFAULTS[s.key] || '';
+    img.alt = '';
+    var label = document.createElement('p');
+    label.className = 'photo-slot__label';
+    label.textContent = s.label;
+    var note = document.createElement('p');
+    note.className = 'photo-slot__note';
+    note.id = 'cp_note_' + s.key;
+    note.textContent = s.url ? 'Uploaded photo' : 'Original photo';
+    var actions = document.createElement('div');
+    actions.className = 'photo-slot__actions';
+    var pick = document.createElement('label');
+    pick.textContent = 'Change photo';
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/jpeg,image/png,image/webp';
+    input.dataset.change = 'uploadConceptPhoto';
+    input.dataset.key = s.key;
+    pick.appendChild(input);
+    actions.appendChild(pick);
+    if (s.url) {
+      var reset = document.createElement('button');
+      reset.type = 'button';
+      reset.textContent = 'Use original';
+      reset.dataset.click = 'resetConceptPhoto';
+      reset.dataset.key = s.key;
+      actions.appendChild(reset);
+    }
+    card.appendChild(img);
+    card.appendChild(label);
+    card.appendChild(note);
+    card.appendChild(actions);
+    box.appendChild(card);
+  });
+}
+
+/* Uploads `file` for the slot, or (file = null) goes back to the original. */
+async function changeConceptPhoto(key, file) {
+  var note = document.getElementById('cp_note_' + key);
+  var opts = { method: 'DELETE' };
+  if (file) {
+    if (file.size > 20 * 1024 * 1024) { note.textContent = 'Too big (max 20 MB).'; return; }
+    var payload = new FormData();
+    payload.append('image', file);
+    opts = { method: 'POST', body: payload };
+  }
+  note.textContent = file ? 'Uploading...' : 'Resetting...';
+  try {
+    var res = await apiFetch('/content/admin/concept/images/' + key + '/', opts);
+    var data = res ? await res.json().catch(function () { return null; }) : null;
+    if (!res || !res.ok) {
+      note.textContent = 'Not saved. ' + (data && Array.isArray(data.image) ? data.image.join(' ') : '');
+      return;
+    }
+    drawConceptPhotos(data);
+    document.getElementById('cp_note_' + key).textContent = file ? 'Uploaded — live now.' : 'Original photo back.';
+  } catch (ex) {
+    note.textContent = 'Not saved — check your connection and try again.';
+  }
+}
+
 renderOverview();
 
 /* Handlers for this page's data-click / data-change / data-submit
@@ -994,6 +1082,8 @@ snrOn('click', 'editProduct', function (el, event) { openModal(Number(el.dataset
 snrOn('click', 'deleteProduct', function (el, event) { deleteProduct(Number(el.dataset.id)); });
 snrOn('click', 'moveProduct', function (el, event) { moveProduct(el.dataset.id, Number(el.dataset.dir)); });
 snrOn('submit', 'saveConceptText', function (el, event) { event.preventDefault(); saveConceptText(); });
+snrOn('change', 'uploadConceptPhoto', function (el, event) { if (el.files[0]) changeConceptPhoto(el.dataset.key, el.files[0]); });
+snrOn('click', 'resetConceptPhoto', function (el, event) { changeConceptPhoto(el.dataset.key, null); });
 snrOn('change', 'addGalleryFiles', function (el, event) { addGalleryFiles(el); });
 snrOn('click', 'saveProduct', function (el, event) { saveProduct(); });
 snrOn('click', 'closeModal', function (el, event) { closeModal(); });
