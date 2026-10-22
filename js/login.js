@@ -136,3 +136,6 @@ snrOn('submit', 'handleLogin', function (el, event) { handleLogin(event); });
 snrOn('submit', 'handleRegister', function (el, event) { handleRegister(event); });
 snrOn('click', 'togglePass', function (el, event) { togglePass(el.dataset.target, el); });
 snrOn('click', 'handleResend', function (el, event) { handleResend(); });
+
+snrInitNav();
+snrOn('click', 'logout', function () { snrLogout(); });
