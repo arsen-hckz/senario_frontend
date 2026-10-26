@@ -157,25 +157,18 @@ async function startPayment(details) {
   return {error: errorText(data) || 'Could not reach the payment page. Please try again in a moment.'};
 }
 
-/* Viva's payment page opens on this method first: 0 card, 20 Apple Pay,
-   21 Google Pay. The customer can still switch there. */
-var PAYMENT_METHODS = ['0', '20', '21'];
-
 /* checkout-return reads these to find out whether the payment went
    through. A guest's paid lines are kept too, so only those leave the
-   guest cart once paid (a signed-in cart is updated by the server). */
-function goToPayment(checkout, method) {
+   guest cart once paid (a signed-in cart is updated by the server).
+   The customer picks card, Apple Pay or Google Pay on Viva's page. */
+function goToPayment(checkout) {
   try {
     sessionStorage.setItem('snr_checkout_id', String(checkout.checkout_id));
     sessionStorage.setItem('snr_checkout_token', checkout.token);
     if (isSignedIn()) sessionStorage.removeItem('snr_checkout_lines');
     else sessionStorage.setItem('snr_checkout_lines', JSON.stringify(snrGuestLines()));
   } catch (ex) {}
-  var url = checkout.checkout_url;
-  if (PAYMENT_METHODS.indexOf(String(method)) !== -1) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + 'paymentMethod=' + method;
-  }
-  window.location.href = url;
+  window.location.href = checkout.checkout_url;
 }
 
 function resetPlaceOrder(btn) {
@@ -193,17 +186,6 @@ window.addEventListener('pageshow', function(event) {
   }
 });
 
-/* Card, Apple Pay or Google Pay: Viva's page opens on the chosen one. */
-var paymentMethod = '0';
-document.querySelectorAll('.pay-icon').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    paymentMethod = btn.dataset.method;
-    document.querySelectorAll('.pay-icon').forEach(function(other) {
-      other.classList.toggle('active', other === btn);
-      other.setAttribute('aria-pressed', other === btn ? 'true' : 'false');
-    });
-  });
-});
 
 document.querySelector('.btn-place-order').addEventListener('click', async function() {
   var btn = this;
@@ -235,7 +217,7 @@ document.querySelector('.btn-place-order').addEventListener('click', async funct
       loadCartSummary();
       return;
     }
-    goToPayment(result, paymentMethod);
+    goToPayment(result);
   } catch (ex) {
     alert('Network error. Please try again.');
     resetPlaceOrder(btn);
