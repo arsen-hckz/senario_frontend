@@ -41,7 +41,6 @@ async function renderOverview() {
       { label:'On Sale',    value: onSale }
     ];
     var grid = document.getElementById('statGrid');
-    grid.style.gridTemplateColumns = 'repeat(5,1fr)';
     grid.innerHTML = stats.map(function(s){
       return '<div class="stat-card"><div class="stat-label">'+s.label+'</div><div class="stat-value">'+s.value+'</div></div>';
     }).join('');
@@ -245,7 +244,7 @@ async function renderAllOrders() {
       return;
     }
     orders.forEach(function(order) {
-      var date  = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+      var date  = snrOrderTime(order.created_at);
       var total = formatEuro(order.total);
       var tr    = document.createElement('tr');
       tr.innerHTML =
@@ -262,7 +261,9 @@ async function renderAllOrders() {
         '<td>'+total+'</td>'+
         '<td>'+
           '<select class="order-status-select" data-change="updateOrderStatus" data-order-id="'+order.id+'">'+
-            ['pending','confirmed','shipped','delivered','cancelled'].map(function(s){
+            /* Orders only exist once paid: "pending" is only shown on old
+               orders from before that, never offered as a new status. */
+            (order.status==='pending' ? ['pending'] : []).concat(['confirmed','shipped','delivered','cancelled']).map(function(s){
               return '<option value="'+s+'"'+(order.status===s?' selected':'')+'>'+s+'</option>';
             }).join('')+
           '</select>'+

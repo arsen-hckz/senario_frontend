@@ -107,7 +107,9 @@
     /* ADMIN LAYOUT */
     .admin-layout {
       display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
+      /* minmax(0, …): a wide table or form must scroll inside the content
+         column, not stretch the page wider than a phone screen. */
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
       min-height: calc(100vh - 80px);
     }
 
@@ -144,7 +146,7 @@
     }
 
     /* MAIN CONTENT */
-    .admin-main { padding: 40px 48px; }
+    .admin-main { padding: 40px 48px; min-width: 0; }
     .admin-page { display: none; }
     .admin-page.active { display: block; }
 
@@ -159,7 +161,7 @@
     /* STAT CARDS */
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 16px;
       margin-bottom: 48px;
     }
@@ -606,11 +608,13 @@
     }
 
     @media (max-width: 768px) {
-      .admin-layout { grid-template-columns: 1fr; }
+      .admin-layout { grid-template-columns: minmax(0, 1fr); }
       .admin-sidebar { border-right: none; border-bottom: 1px solid var(--border); padding: 12px 0; }
       .admin-main { padding: 24px 16px; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
       .analytics-grid { grid-template-columns: 1fr; }
+      /* Wide tables scroll sideways on their own instead of widening the page. */
+      .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     }
 
     @media (max-width: 640px) {
@@ -634,8 +638,6 @@
       .site-header__logo { grid-area: logo; width: 150px; margin-top: 0; justify-self: center; }
       .site-header__actions { grid-area: actions; padding-top: 0; gap: 14px; }
       .site-header__actions a span { display: none; }
-      .stat-grid { grid-template-columns: repeat(2, 1fr); }
-      .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .modal { padding: 24px 20px; }
       .modal-grid { grid-template-columns: 1fr; }
       .modal-grid .span2 { grid-column: auto; }

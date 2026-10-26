@@ -85,12 +85,11 @@ function renderSummary(cart) {
   document.getElementById('sumTotal').textContent    = formatEuro(parseFloat(cart.grand_total || cart.total || 0));
 }
 
-/* Quantity changes on the summary. Locked once the order exists: placing
-   it empties the cart, so the order (not the cart) holds the items then. */
+/* Quantity changes on the summary. */
 var summaryBusy = false;
 
 async function setSummaryQty(el, qty) {
-  if (createdOrderId || summaryBusy) return;
+  if (paying || summaryBusy) return;
   var row = el.closest('.summary-item');
   summaryBusy = true;
   row.style.opacity = '0.5';
@@ -105,16 +104,11 @@ async function setSummaryQty(el, qty) {
   }
 }
 
-function lockSummary() {
-  document.querySelector('.order-summary').classList.add('order-summary--locked');
-}
-
-/* Order creation and payment are separate steps against the API. We keep
-   the created order (and a guest order's secret) in memory so a failed or
-   retried "start payment" never creates a second order behind the
-   customer's back. */
-var createdOrderId = null;
-var createdOrderToken = null;
+/* No order exists until Viva confirms the payment: the backend keeps the
+   basket as a "checkout" and the payment webhook turns it into the order.
+   The cart stays as it is until then, so a declined card or a closed
+   payment page just means placing the order again. */
+var paying = false;
 
 function readForm() {
   var vals = {};
@@ -142,27 +136,62 @@ function errorText(err) {
   return Object.keys(err).map(function(k) { return errorText(err[k]); }).join(' ');
 }
 
-async function placeOrder(details) {
+/* Asks the backend for a Viva payment page for the cart:
+   {checkout_id, token, checkout_url} or {error}. */
+async function startPayment(details) {
+  var res;
   if (isSignedIn()) {
-    var res = await apiFetch('/orders/create/', {method: 'POST', body: JSON.stringify(details)});
+    res = await apiFetch('/payments/checkout/', {method: 'POST', body: JSON.stringify(details)});
     if (!res) return {error: 'Your session expired. Please sign in again.'};
-    var data = await res.json();
-    return res.ok ? {order: data, token: null} : {error: errorText(data)};
+  } else {
+    details.items = snrGuestLines();
+    res = await fetch(API_BASE + '/payments/guest-checkout/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(details)
+    });
   }
-  details.items = snrGuestLines();
-  var gres = await fetch(API_BASE + '/orders/guest/', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(details)
-  });
-  var gdata = await gres.json();
-  if (!gres.ok) return {error: errorText(gdata)};
-  /* The order now holds these items, as the server cart is emptied for
-     signed-in customers. */
-  snrSaveGuestLines([]);
-  snrUpdateCartBadge();
-  return {order: gdata, token: gdata.access_token};
+  var data = null;
+  try { data = await res.json(); } catch (ex) {}
+  if (res.ok && data && data.checkout_url) return data;
+  return {error: errorText(data) || 'Could not reach the payment page. Please try again in a moment.'};
 }
+
+/* Viva's payment page opens on this method first: 0 card, 20 Apple Pay,
+   21 Google Pay. The customer can still switch there. */
+var PAYMENT_METHODS = ['0', '20', '21'];
+
+/* checkout-return reads these to find out whether the payment went
+   through. A guest's paid lines are kept too, so only those leave the
+   guest cart once paid (a signed-in cart is updated by the server). */
+function goToPayment(checkout, method) {
+  try {
+    sessionStorage.setItem('snr_checkout_id', String(checkout.checkout_id));
+    sessionStorage.setItem('snr_checkout_token', checkout.token);
+    if (isSignedIn()) sessionStorage.removeItem('snr_checkout_lines');
+    else sessionStorage.setItem('snr_checkout_lines', JSON.stringify(snrGuestLines()));
+  } catch (ex) {}
+  var url = checkout.checkout_url;
+  if (PAYMENT_METHODS.indexOf(String(method)) !== -1) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'paymentMethod=' + method;
+  }
+  window.location.href = url;
+}
+
+function resetPlaceOrder(btn) {
+  paying = false;
+  btn.textContent = 'Place Order';
+  btn.disabled = false;
+}
+
+/* Coming back with the browser's Back button from Viva's page can restore
+   this page exactly as it was left (button disabled): make it usable again. */
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    resetPlaceOrder(document.querySelector('.btn-place-order'));
+    loadCartSummary();
+  }
+});
 
 /* Card, Apple Pay or Google Pay: Viva's page opens on the chosen one. */
 var paymentMethod = '0';
@@ -178,18 +207,7 @@ document.querySelectorAll('.pay-icon').forEach(function(btn) {
 
 document.querySelector('.btn-place-order').addEventListener('click', async function() {
   var btn = this;
-
-  if (createdOrderId) {
-    btn.textContent = 'Redirecting to payment...';
-    btn.disabled = true;
-    var retryError = await snrStartPayment(createdOrderId, createdOrderToken, paymentMethod);
-    if (retryError) {
-      alert(retryError);
-      btn.textContent = 'Retry Payment';
-      btn.disabled = false;
-    }
-    return;
-  }
+  if (paying) return;
 
   if (cartIsEmpty) {
     alert('Your cart is empty.');
@@ -205,33 +223,22 @@ document.querySelector('.btn-place-order').addEventListener('click', async funct
     return;
   }
 
-  btn.textContent = 'Placing order...';
+  paying = true;
+  btn.textContent = 'Redirecting to payment...';
   btn.disabled = true;
 
   try {
-    var result = await placeOrder(details);
+    var result = await startPayment(details);
     if (result.error) {
-      alert(result.error || 'Order failed. Please try again.');
-      btn.textContent = 'Place Order';
-      btn.disabled = false;
+      alert(result.error);
+      resetPlaceOrder(btn);
       loadCartSummary();
       return;
     }
-    createdOrderId = result.order.id;
-    createdOrderToken = result.token;
-    lockSummary();
-    btn.textContent = 'Redirecting to payment...';
-    var startError = await snrStartPayment(createdOrderId, createdOrderToken, paymentMethod);
-    if (startError) {
-      alert('Your order #' + createdOrderId + ' is saved, but payment could not start: ' + startError +
-            ' You can retry here' + (createdOrderToken ? '.' : ' or from My Orders.'));
-      btn.textContent = 'Retry Payment';
-      btn.disabled = false;
-    }
+    goToPayment(result, paymentMethod);
   } catch (ex) {
     alert('Network error. Please try again.');
-    btn.textContent = 'Place Order';
-    btn.disabled = false;
+    resetPlaceOrder(btn);
   }
 });
 

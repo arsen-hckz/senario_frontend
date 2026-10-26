@@ -1,18 +1,5 @@
 if (!localStorage.getItem('snr_token')) window.location.href = 'login';
 
-/* An unpaid order (card declined, payment page closed) can be paid
-   from here — the cart was already emptied when the order was placed. */
-async function payOrder(orderId, btn) {
-  btn.disabled = true;
-  btn.textContent = 'Redirecting...';
-  var error = await snrStartPayment(orderId);
-  if (error) {
-    alert(error);
-    btn.disabled = false;
-    btn.textContent = 'Complete Payment';
-  }
-}
-
 function toggleOrder(header) {
   header.parentElement.classList.toggle('open');
 }
@@ -34,7 +21,7 @@ async function renderOrders() {
     }
 
     orders.forEach(function(order) {
-      var date   = new Date(order.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+      var date   = snrOrderTime(order.created_at);
       var total  = parseFloat(order.total || 0);
       var badge  = 'order-badge--' + order.status;
       var itemsHTML = (order.items || []).map(function(item) {
@@ -60,9 +47,6 @@ async function renderOrders() {
         '<div class="order-card__body">' + itemsHTML +
           (parseFloat(order.shipping || 0) > 0 ? '<div class="order-total">Shipping &nbsp;' + formatEuro(order.shipping) + '</div>' : '') +
           '<div class="order-total">Total &nbsp;<strong>' + formatEuro(total) + '</strong></div>' +
-          (order.status === 'pending'
-            ? '<div style="margin-top:16px;text-align:right;"><button class="btn-ghost" type="button" data-click="payOrder" data-order-id="' + order.id + '">Complete Payment</button></div>'
-            : '') +
         '</div>';
       list.appendChild(card);
     });
@@ -79,4 +63,3 @@ renderOrders();
    attributes (see actions.js). */
 snrOn('click', 'logout', function (el, event) { logout(); });
 snrOn('click', 'toggleOrder', function (el, event) { toggleOrder(el); });
-snrOn('click', 'payOrder', function (el, event) { payOrder(Number(el.dataset.orderId), el); });

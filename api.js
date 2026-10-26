@@ -16,6 +16,15 @@ function formatEuro(value) {
   return '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2));
 }
 
+/* When an order was placed, in Greek time wherever it's viewed from:
+   "26 Oct 2026, 14:05". */
+function snrOrderTime(iso) {
+  return new Date(iso).toLocaleString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Athens'
+  });
+}
+
 async function apiFetch(path, opts) {
   opts = opts || {};
   var url = API_BASE + path;
@@ -37,40 +46,6 @@ async function apiFetch(path, opts) {
   }
 
   return res;
-}
-
-/* Start (or retry) payment for one of the customer's own orders: asks the
-   backend for a Viva checkout and redirects there. Returns null when the
-   redirect is under way, or a message to show when it couldn't start
-   (already paid, cancelled, an item sold out, Viva unreachable). */
-/* Viva's payment page opens on this method first: 0 card, 20 Apple Pay,
-   21 Google Pay. The customer can still switch there. */
-var SNR_PAYMENT_METHODS = ['0', '20', '21'];
-
-async function snrStartPayment(orderId, guestToken, paymentMethod) {
-  var res;
-  try {
-    res = guestToken
-      ? await fetch(API_BASE + '/payments/guest-checkout/' + orderId + '/', {
-          method: 'POST', headers: {'X-Order-Token': guestToken}
-        })
-      : await apiFetch('/payments/checkout/' + orderId + '/', {method: 'POST'});
-  } catch (ex) { res = null; }
-  if (res && res.ok) {
-    var data = await res.json();
-    sessionStorage.setItem('snr_pending_order_id', String(orderId));
-    if (guestToken) sessionStorage.setItem('snr_pending_order_token', guestToken);
-    else sessionStorage.removeItem('snr_pending_order_token');
-    var url = data.checkout_url;
-    if (SNR_PAYMENT_METHODS.indexOf(String(paymentMethod)) !== -1) {
-      url += (url.indexOf('?') === -1 ? '?' : '&') + 'paymentMethod=' + paymentMethod;
-    }
-    window.location.href = url;
-    return null;
-  }
-  var detail = null;
-  try { detail = res ? (await res.json()).detail : null; } catch (ex) {}
-  return detail || 'Could not reach the payment page. Please try again in a moment.';
 }
 
 /* The backend rotates refresh tokens: every refresh returns a new one and

@@ -7,7 +7,7 @@ var orderId = params.get('id');
 var token = new URLSearchParams(location.hash.slice(1)).get('t');
 
 var STATUS_TEXT = {
-  pending:   'Awaiting payment. If you already paid, it will show as confirmed within a few minutes.',
+  pending:   'This order was never paid. If you were charged, contact us and we will sort it out.',
   confirmed: 'Paid and confirmed — we are packing it.',
   shipped:   'On its way to you.',
   delivered: 'Delivered. Enjoy!',
@@ -24,6 +24,7 @@ function render(order) {
   document.getElementById('orderTitle').textContent = 'Order #' + order.id;
   var status = document.getElementById('orderStatus');
   status.innerHTML = '<span class="badge badge--' + escHtml(order.status) + '">' + escHtml(order.status) + '</span><br>' +
+    'Placed ' + escHtml(snrOrderTime(order.created_at)) + '<br>' +
     escHtml(STATUS_TEXT[order.status] || '');
 
   document.getElementById('orderItems').innerHTML = (order.items || []).map(function(item) {
@@ -48,8 +49,6 @@ function render(order) {
     address.appendChild(document.createElement('br'));
   });
   document.getElementById('orderShipTo').style.display = '';
-
-  document.getElementById('payBtn').style.display = order.status === 'pending' ? '' : 'none';
 }
 
 async function loadOrder() {
@@ -67,16 +66,3 @@ async function loadOrder() {
 }
 
 loadOrder();
-
-/* Handlers for this page's data-click / data-change / data-submit
-   attributes (see actions.js). */
-snrOn('click', 'payOrder', async function (el) {
-  el.disabled = true;
-  el.textContent = 'Redirecting to payment...';
-  var error = await snrStartPayment(orderId, token);
-  if (error) {
-    alert(error);
-    el.disabled = false;
-    el.textContent = 'Complete Payment';
-  }
-});
